@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@500;700&display=swap');
+
+:root {
+  --bg-dark: #0f172a;
+  --bg-panel: rgba(30, 41, 59, 0.7);
+  --primary-accent: #6366f1;
+  --primary-glow: rgba(99, 102, 241, 0.4);
+  --secondary-accent: #10b981;
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+/* Glassmorphism Structural Classes */
+.glass-panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+}
+
+.glass-panel:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px var(--primary-glow);
+}
+
+/* Base Utility Classes */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-accent), #8b5cf6);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, var(--secondary-accent), #059669);
+}
+
+.input-glass {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--glass-border);
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.3s;
+  margin-bottom: 1rem;
+}
+
+.input-glass:focus {
+  outline: none;
+  border-color: var(--primary-accent);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in { animation: fadeIn 0.6s ease forwards; }
+
+.grid-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}

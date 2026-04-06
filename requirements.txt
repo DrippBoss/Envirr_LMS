@@ -1,0 +1,12 @@
+Django>=5.0
+djangorestframework
+djangorestframework-simplejwt
+psycopg2-binary>=2.9
+celery
+redis
+django-environ
+django-cors-headers
+gunicorn
+tzdata
+requests
+Pillow
