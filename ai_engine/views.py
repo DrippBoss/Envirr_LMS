@@ -1,7 +1,7 @@
 from rest_framework import views, response, status, permissions
 from ai_engine.serializers import GeneratePaperSerializer
 from ai_engine.tasks import generate_paper_task
-from ai_engine.models import GeneratedPaper
+from ai_engine.models import QuestionPaper
 
 class GeneratePaperAPIView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -10,7 +10,7 @@ class GeneratePaperAPIView(views.APIView):
         if request.user.role not in ['teacher', 'admin']:
             return response.Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
             
-        papers = GeneratedPaper.objects.filter(created_by=request.user).order_by('-created_at')
+        papers = QuestionPaper.objects.filter(created_by=request.user).order_by('-created_at')
         data = []
         for p in papers:
             data.append({
@@ -30,10 +30,14 @@ class GeneratePaperAPIView(views.APIView):
         serializer.is_valid(raise_exception=True)
         
         # Create pending placeholder so UI shows "Synthesizing..."
-        paper = GeneratedPaper.objects.create(
+        paper = QuestionPaper.objects.create(
             created_by=request.user, 
             title=f"Generated {serializer.validated_data.get('subject')} Exam", 
-            config=serializer.validated_data
+            config=serializer.validated_data,
+            subject=serializer.validated_data.get('subject'),
+            class_grade=serializer.validated_data.get('grade'),
+            board=serializer.validated_data.get('board'),
+            total_marks=serializer.validated_data.get('max_marks', 80)
         )
 
         # Fully Integrated Async Invocation!

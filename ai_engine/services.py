@@ -1,6 +1,6 @@
 import random
 from django.db.models import Count, Q
-from ai_engine.models import QuestionBank, GeneratedPaper, PaperQuestion
+from ai_engine.models import QuestionBank, QuestionPaper, PaperQuestion
 
 def get_fresh_questions(teacher, config: dict, required_count: int):
     """

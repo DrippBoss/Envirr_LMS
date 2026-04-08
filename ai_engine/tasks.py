@@ -2,144 +2,271 @@ import os
 import subprocess
 import requests
 import json
+import re
 from celery import shared_task
 from django.conf import settings
-from ai_engine.models import GeneratedPaper, QuestionBank, PaperQuestion, DoubtTicket, DoubtResponse
+from ai_engine.models import QuestionPaper, PaperSection, QuestionBank, PaperQuestion, DoubtTicket, DoubtResponse
 from users.models import CustomUser
 
-def construct_latex(config, questions):
-    # Handle common unicode math symbols that might slip past the AI's prompt
-    unicode_map = {
-        '√': r'$\sqrt{\quad}$',
-        'θ': r'$\theta$',
-        'α': r'$\alpha$',
-        'β': r'$\beta$',
-        'γ': r'$\gamma$',
-        'π': r'$\pi$',
-        'Σ': r'$\sum$',
-        'Δ': r'$\Delta$',
+def _build_prompt(class_level, subject, chapter, requirements, difficulty, board):
+    type_definitions = {
+        "MCQ": "4 options (A-D). One correct answer.",
+        "ASSERTION_REASON": "Assertion/Reason (a,b,c,d options)",
+        "VERY_SHORT": "2-mark short answer. Options MUST be [].",
+        "SHORT": "3-mark answer (2-3 sentences). Options MUST be [].",
+        "LONG": "5-mark detailed answer. Options MUST be [].",
+        "CASE": "Passage as 'question', 3 sub-questions.",
     }
+    req_summary = [f"{req['count']}x {req['type']} ({req['marks']} Marks each): {type_definitions.get(req['type'], '')}" for req in requirements]
+    requirements_text = "\n".join(req_summary)
 
+    return f"""Task: Generate unique {board} questions for Class {class_level} {subject}, Chapter: "{chapter}".
+Difficulty: {difficulty}
+
+Requirements:
+{requirements_text}
+
+Rules:
+1. ANY and ALL mathematical symbols or equations MUST be wrapped in LaTeX delimiters ($...$).
+2. Return ONLY a JSON array. No markdown fences.
+3. NO REPETITION. Keep varied concept vectors.
+4. ZERO IMPROVISATION: The 'type' field MUST be an EXACT match from this list: ['MCQ', 'ASSERTION_REASON', 'VERY_SHORT', 'SHORT', 'LONG', 'CASE'].
+5. Structure EVERY object perfectly like this:
+[{{
+  "question": "text or passage",
+  "answer": "answer text",
+  "difficulty": "{difficulty}",
+  "type": "TYPE_FROM_LIST",
+  "marks": integer
+}}]"""
+
+def process_latex_text(text):
+    if not text:
+        return text
+    import re
+    text = str(text)
+    
+    # Escape LaTeX special reserved characters to prevent fatal compilation errors
+    for char in ['%', '&', '#', '_']:
+        text = text.replace(char, f'\\{char}')
+    text = text.replace('$', r'\$')
+        
+    # Smart replace roots (Note: we inject $ here, so don't escape $ after this)
+    text = re.sub(r'√\s*\(([^)]+)\)', r'$\\sqrt{\1}$', text)
+    text = re.sub(r'√\s*(\d+|\w+)', r'$\\sqrt{\1}$', text)
+    text = text.replace('√', r'$\sqrt{\quad}$') # unmatched fallback
+    
+    unicode_map = {
+        'θ': r'$\theta$', 'α': r'$\alpha$', 'β': r'$\beta$',
+        'γ': r'$\gamma$', 'π': r'$\pi$', 'Σ': r'$\sum$', 'Δ': r'$\Delta$',
+    }
+    for char, rep in unicode_map.items():
+        text = text.replace(char, rep)
+    return text
+
+def construct_latex(config, paper):
     latex = []
     latex.append(r"\documentclass[12pt]{article}")
     latex.append(r"\usepackage[utf8]{inputenc}")
-    latex.append(r"\usepackage{amsmath, amssymb, amsfonts, graphicx}")
+    latex.append(r"\usepackage{amsmath, amssymb, amsfonts, graphicx, enumitem}")
     latex.append(r"\usepackage[margin=1in]{geometry}")
     
-    if not config.get('include_answers', True):
-        latex.append(r"\usepackage{draftwatermark}")
-        latex.append(r"\SetWatermarkText{Envirr Document Generator}")
+    # Always include watermark for now
+    latex.append(r"\usepackage{draftwatermark}")
+    latex.append(r"\SetWatermarkText{Envirr Question Paper}")
     
     latex.append(r"\begin{document}")
     latex.append(f"\\begin{{center}} \\LARGE \\textbf{{{config.get('subject', 'Assessment')}}} \\\\ \\large \\textbf{{{config.get('chapter', 'Unit Test')}}} \\end{{center}}")
     latex.append(f"\\begin{{center}} \\small Board: {config.get('board', 'N/A')} | Grade: {config.get('grade', 'N/A')} | Max Marks: {config.get('max_marks', 80)} \\end{{center}}")
     latex.append(r"\vspace{0.5cm}")
     
-    latex.append(r"\begin{enumerate}")
-    for q in questions:
-        q_text = q.question_text
-        a_text = q.answer_text
-        for char, replacement in unicode_map.items():
-            q_text = q_text.replace(char, replacement)
-            if a_text:
-                a_text = a_text.replace(char, replacement)
+    # Iterate through database sections
+    sections = paper.sections.all().order_by('order')
+        
+    for sec in sections:
+        q_label = str(sec.section_name)
+        latex.append(f"\\section*{{{q_label} - {sec.question_type.replace('_', ' ').title()}}}")
+        latex.append(f"\\textit{{Note: Each question carries {sec.marks_per_question} mark(s)}}\\vspace{{0.2cm}}")
+        latex.append(r"\begin{enumerate}")
+        
+        paper_qs = sec.paper_questions.all().order_by('order_in_section')
+        for pq in paper_qs:
+            q = pq.question
+            q_text = process_latex_text(q.question_text)
 
-        latex.append(f"\\item \\textbf{{[{q.marks} Marks]}} {q_text}")
-        if config.get('include_answers', True) and a_text and str(a_text).lower() != "none":
-            latex.append(f"\\\\ \\textit{{Answer: {a_text}}}\\vspace{{0.5cm}}")
-        else:
+            latex.append(f"\\item {q_text}")
+            
+            # Fetch options for MCQs
+            if q.question_type in ['MCQ', 'ASSERTION_REASON']:
+                opts = q.options.all().order_by('order')
+                if opts.exists():
+                    latex.append(r"\begin{enumerate}[label=\alph*.]")
+                    for opt in opts:
+                        opt_text = process_latex_text(opt.option_text)
+                        latex.append(f"\\item {opt_text}")
+                    latex.append(r"\end{enumerate}")
+            
+            # Fetch parts for Case Studies
+            if q.question_type == 'CASE':
+                parts = q.case_parts.all().order_by('part_number')
+                if parts.exists():
+                    latex.append(r"\begin{enumerate}[label=(\roman*)]")
+                    for part in parts:
+                        part_text = process_latex_text(part.part_text)
+                        latex.append(f"\\item {part_text} \\hfill ({part.marks} mark{'s' if part.marks > 1 else ''})")
+                    latex.append(r"\end{enumerate}")
+
             latex.append(r"\vspace{0.5cm}")
-    latex.append(r"\end{enumerate}")
+        latex.append(r"\end{enumerate}")
+        latex.append(r"\vspace{0.5cm}")
+
     latex.append(r"\end{document}")
     
     return "\n".join(latex)
 
-def parse_rubric(max_marks):
-    # Generates exact counts required mapped back from old Express logic
-    if max_marks <= 20: return {1: 5, 2: 2, 3: 2, 5: 1}
-    elif max_marks <= 40: return {1: 10, 2: 4, 3: 4, 5: 2} 
-    else: return {1: 20, 2: 8, 3: 8, 5: 4}
+def calculate_marks_distribution(total_marks):
+    if total_marks <= 20: return [
+        {"type": "MCQ", "count": 4, "marks": 1, "sec": "Section A"},
+        {"type": "VERY_SHORT", "count": 2, "marks": 2, "sec": "Section B"},
+        {"type": "SHORT", "count": 2, "marks": 3, "sec": "Section C"},
+        {"type": "CASE", "count": 1, "marks": 4, "sec": "Section E"},
+    ]
+    if total_marks <= 40: return [
+        {"type": "MCQ", "count": 10, "marks": 1, "sec": "Section A"},
+        {"type": "VERY_SHORT", "count": 4, "marks": 2, "sec": "Section B"},
+        {"type": "SHORT", "count": 3, "marks": 3, "sec": "Section C"},
+        {"type": "LONG", "count": 1, "marks": 5, "sec": "Section D"},
+        {"type": "CASE", "count": 1, "marks": 4, "sec": "Section E"},
+    ]
+    if total_marks <= 60: return [
+        {"type": "MCQ", "count": 15, "marks": 1, "sec": "Section A"},
+        {"type": "VERY_SHORT", "count": 5, "marks": 2, "sec": "Section B"},
+        {"type": "SHORT", "count": 6, "marks": 3, "sec": "Section C"},
+        {"type": "LONG", "count": 2, "marks": 5, "sec": "Section D"},
+        {"type": "CASE", "count": 2, "marks": 4, "sec": "Section E"},
+    ]
+    return [
+        {"type": "MCQ", "count": 16, "marks": 1, "sec": "Section A"},
+        {"type": "ASSERTION_REASON", "count": 4, "marks": 1, "sec": "Section A"},
+        {"type": "VERY_SHORT", "count": 6, "marks": 2, "sec": "Section B"},
+        {"type": "SHORT", "count": 8, "marks": 3, "sec": "Section C"},
+        {"type": "LONG", "count": 2, "marks": 5, "sec": "Section D"},
+        {"type": "CASE", "count": 3, "marks": 4, "sec": "Section E"},
+    ]
 
 @shared_task(bind=True, max_retries=3)
 def generate_paper_task(self, config_data, user_id, paper_id):
     try:
         user = CustomUser.objects.get(id=user_id)
-        paper = GeneratedPaper.objects.get(id=paper_id)
+        paper = QuestionPaper.objects.get(id=paper_id)
         max_marks = config_data.get('max_marks', 80)
-        rubric = parse_rubric(max_marks)
         
-        selected_questions = []
+        distribution = calculate_marks_distribution(max_marks)
+        
+        gaps = []
+        
+        # Setup PaperSections
+        section_models = []
+        for idx, req in enumerate(distribution):
+            sec = PaperSection.objects.create(
+                paper=paper,
+                section_name=req['sec'],
+                question_type=req['type'],
+                marks_per_question=req['marks'],
+                question_count=req['count'],
+                order=idx
+            )
+            section_models.append((sec, req))
         
         # Phase 1: Bank Synthesis
-        for g_marks, count_needed in rubric.items():
+        for sec, req in section_models:
             db_qs = list(QuestionBank.objects.filter(
                 subject=config_data.get('subject'),
                 chapter=config_data.get('chapter'),
-                marks=g_marks
-            ).order_by('?')[:count_needed])
+                question_type=req['type']
+            ).order_by('?')[:req['count']])
             
-            selected_questions.extend(db_qs)
-            deficit = count_needed - len(db_qs)
+            for i, q in enumerate(db_qs):
+                PaperQuestion.objects.create(
+                    section=sec,
+                    question=q,
+                    order_in_section=i+1,
+                    was_ai_generated=False
+                )
             
-            # Phase 2: JSON Targeted AI Extraction Loop
+            deficit = req['count'] - len(db_qs)
             if deficit > 0:
-                prompt = f'''
-                You are a test generator.
-                Subject: {config_data.get('subject')}
-                Chapter: {config_data.get('chapter')}
-                Grade: {config_data.get('grade')}
-                Board: {config_data.get('board')}
-                Generate EXACTLY {deficit} distinct questions worth {g_marks} marks each.
-                Difficulty: {config_data.get('difficulty')}
-                Custom Instructions: {config_data.get('custom_instructions')}
+                gaps.append({"sec_id": sec.id, "type": req['type'], "count": deficit, "marks": req['marks']})
                 
-                You MUST return ONLY a strict JSON array of objects. 
-                Format: [{{"question_text": "...", "answer_text": "..."}}]
-                DO NOT INCLUDE MARKDOWN FENCES. JUST RAW JSON.
-                '''
+        # Phase 2: Batch AI Generation
+        if gaps:
+            prompt = _build_prompt(
+                config_data.get('grade'), 
+                config_data.get('subject'), 
+                config_data.get('chapter'), 
+                gaps, 
+                config_data.get('difficulty'), 
+                config_data.get('board')
+            )
+            
+            # Using Local AI (Ollama - Llama3) as fallback for database gaps
+            url = "http://host.docker.internal:11434/api/generate"
+            payload = { "model": "llama3", "prompt": prompt, "format": "json", "stream": False }
+            
+            try:
+                response = requests.post(url, json=payload, timeout=240)
+                response.raise_for_status()
+                data = response.json()
+                raw_json_str = data.get('response', '[]')
                 
-                url = "http://host.docker.internal:11434/api/generate"
-                payload = { "model": "llama3", "prompt": prompt, "format": "json", "stream": False }
+                # Cleanup potential code fences
+                raw_json_str = re.sub(r'```(?:json)?', '', raw_json_str).strip()
                 
-                try:
-                    response = requests.post(url, json=payload, timeout=120)
-                    response.raise_for_status()
-                    data = response.json()
-                    raw_json_str = data.get('response', '[]')
+                new_q_dicts = json.loads(raw_json_str)
+                
+                if isinstance(new_q_dicts, dict):
+                    for k, v in new_q_dicts.items():
+                        if isinstance(v, list):
+                            new_q_dicts = v
+                            break
+                    else:
+                        new_q_dicts = [new_q_dicts]
+                
+                if not isinstance(new_q_dicts, list):
+                    new_q_dicts = []
                     
-                    new_q_dicts = json.loads(raw_json_str)
+                # Distribute back to sections
+                for gap in gaps:
+                    sec = PaperSection.objects.get(id=gap['sec_id'])
+                    needed = gap['count']
+                    found = [qd for qd in new_q_dicts if qd.get('type') == gap['type'] and qd.get('_used') is not True][:needed]
                     
-                    if isinstance(new_q_dicts, dict):
-                        for k, v in new_q_dicts.items():
-                            if isinstance(v, list):
-                                new_q_dicts = v
-                                break
-                        else:
-                            new_q_dicts = [new_q_dicts]
-                    
-                    if not isinstance(new_q_dicts, list):
-                        new_q_dicts = []
-                        
-                    for q_dict in new_q_dicts:
-                        if not isinstance(q_dict, dict): continue
-                        
+                    last_order = sec.paper_questions.count()
+                    for q_dict in found:
+                        q_dict['_used'] = True
                         new_q = QuestionBank.objects.create(
                             subject=config_data.get('subject'),
                             chapter=config_data.get('chapter'),
-                            question_type='short_answer' if g_marks > 1 else 'mcq',
-                            marks=g_marks,
+                            question_type=q_dict.get('type', gap['type']),
+                            marks=gap['marks'],
                             difficulty=config_data.get('difficulty', 'medium'),
-                            question_text=q_dict.get('question_text', 'Fallback Question'),
-                            answer_text=q_dict.get('answer_text', 'Fallback Answer'),
+                            question_text=q_dict.get('question', 'Fallback Question'),
+                            answer_text=q_dict.get('answer', 'Fallback Answer'),
                             is_ai_generated=True
                         )
-                        selected_questions.append(new_q)
-                except Exception as e:
-                    print(f"Llama3 Network or JSON Parsing Failure: {e}")
-                    pass 
-                    
+                        last_order += 1
+                        PaperQuestion.objects.create(
+                            section=sec,
+                            question=new_q,
+                            order_in_section=last_order,
+                            was_ai_generated=True
+                        )
+            except Exception as e:
+                print(f"Local AI Generation Failure: {e}")
+                pass 
+                
         # Phase 3: Final Document String Compilation
-        latex_content = construct_latex(config_data, selected_questions)
+        latex_content = construct_latex(config_data, paper)
         temp_dir = os.path.join(settings.BASE_DIR, 'temp')
         os.makedirs(temp_dir, exist_ok=True)
         unique_id = f"paper_{self.request.id}"
@@ -159,8 +286,6 @@ def generate_paper_task(self, config_data, user_id, paper_id):
         with open(pdf_path, 'rb') as f:
             paper.secure_pdf_path.save(f"{unique_id}.pdf", File(f))
         paper.save()
-        
-        for sq in selected_questions: PaperQuestion.objects.create(paper=paper, question=sq)
         
         for ext in ['.tex', '.log', '.aux', '.out']:
             junk_file = os.path.join(temp_dir, f"{unique_id}{ext}")

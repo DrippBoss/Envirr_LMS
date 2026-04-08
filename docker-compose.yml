@@ -40,5 +40,19 @@ services:
       - redis
       - web # to ensure web runs migrations if we add that
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api
+    depends_on:
+      - web
+
 volumes:
   postgres_data:

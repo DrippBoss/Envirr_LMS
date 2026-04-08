@@ -10,3 +10,4 @@ gunicorn
 tzdata
 requests
 Pillow
+pydantic>=2.0
