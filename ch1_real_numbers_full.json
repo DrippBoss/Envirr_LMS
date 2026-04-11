@@ -1,0 +1,2312 @@
+{
+  "subject": "Mathematics",
+  "chapter": "Real Numbers",
+  "class_grade": "10",
+  "board": "CBSE",
+  "extraction_notes": "Pages 2, 3, and 6 of the PDF were scanned images and could not be text-extracted. Missing content: MCQ questions 12-37 (1 mark), Assertion-Reason questions 1-37, and 5-mark (LONG) questions. All visible questions have been extracted verbatim.",
+  "questions": [
+    {
+      "concept": "LCM using prime factorization",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "LCM",
+        "prime factorization",
+        "prime numbers"
+      ],
+      "question_text": "If two positive integers p and q can be expressed as p = ab² and q = a³b, where a and b are prime numbers then LCM(a, b) =",
+      "answer_text": "a³b²",
+      "source_page": 1,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "ab",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "a²b²",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "a³b²",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "a³b³",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF of multiples",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "understand",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "multiples",
+        "natural numbers"
+      ],
+      "question_text": "If p and q are natural numbers and ‘p’ is the multiple of ‘q’, then what is the HCF of ‘p’ and ‘q’?",
+      "answer_text": "q",
+      "source_page": 1,
+      "board_year": "BOARD 2023",
+      "options": [
+        {
+          "label": "A",
+          "text": "pq",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "p",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "q",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "p + q",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF and LCM exponent relations",
+      "question_type": "MCQ",
+      "difficulty": "hard",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "prime factorization",
+        "exponents"
+      ],
+      "question_text": "Let a and b be two positive integers such that a = p³q⁴ and b = p²q³, where p and q are prime numbers. If HCF(a, b) = pᵐqⁿ and LCM(a, b) = pʳqˢ, then (m + n)(r + s) =",
+      "answer_text": "35",
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "15",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "30",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "35",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "72",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Sum of exponents in prime factorization",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "exponents",
+        "196"
+      ],
+      "question_text": "The sum of exponents of prime factors in the prime factorization of 196 is",
+      "answer_text": "4",
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "3",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "4",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "5",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "2",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Sum of exponents in prime factorization",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "exponents",
+        "1764"
+      ],
+      "question_text": "The sum of exponents of prime factors in the prime factorization of 1764 is",
+      "answer_text": "6",
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "3",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "4",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "5",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "6",
+          "is_correct": true,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Factor tree",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "factor tree",
+        "prime factorization",
+        "1001"
+      ],
+      "question_text": "The values of x and y in the given figure are [Factor tree: 1001 at top, x and 143 as factors of 1001, 11 and y as factors of 143]",
+      "answer_text": "7, 13",
+      "has_image": true,
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "7, 13",
+          "is_correct": true,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "13, 7",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "9, 12",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "12, 9",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Factors of prime numbers",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "remember",
+      "marks": 1,
+      "tags": [
+        "prime number",
+        "factors"
+      ],
+      "question_text": "The total number of factors of prime number is",
+      "answer_text": "2",
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "1",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "0",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "2",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "3",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF and LCM of three numbers",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "three numbers"
+      ],
+      "question_text": "The HCF and LCM of 12, 21, 15 respectively are",
+      "answer_text": "3, 420",
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "3, 140",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "12, 420",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "3, 420",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "420, 3",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF and LCM of three numbers",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "three numbers"
+      ],
+      "question_text": "The HCF and LCM of 378, 180, 420 are",
+      "answer_text": "6, 3780",
+      "source_page": 1,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "6, 3980",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "12, 3780",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "6, 3780",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "12, 3980",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF of co-prime numbers",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "remember",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "co-prime numbers"
+      ],
+      "question_text": "If the product of two co-prime numbers is 553, then their HCF is",
+      "answer_text": "1",
+      "source_page": 1,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "1",
+          "is_correct": true,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "553",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "7",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "79",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "LCM of composite numbers",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "LCM",
+        "composite numbers",
+        "two-digit numbers"
+      ],
+      "question_text": "The LCM of smallest two digit composite number and smallest composite number is",
+      "answer_text": "20",
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "12",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "4",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "20",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "44",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Powers of 5 and digit 0",
+      "question_type": "ASSERTION_REASON",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "powers",
+        "irrational numbers"
+      ],
+      "question_text": "Assertion (A): The number 5ⁿ never ends with digit 0 for any natural number n.\nReason (R): Prime factorisation of 5 has only two factors, 1 and 5.",
+      "answer_text": "Both A and R are true but R is not the correct explanation of A. A is true because 5ⁿ = (5)ⁿ contains no factor of 2, so it cannot end in 0. R is true (5 is prime) but does not directly explain A.",
+      "source_page": 4,
+      "board_year": "BOARD 2023",
+      "options": [
+        {
+          "label": "A",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is not the correct explanation of assertion (A)",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "Assertion (A) is true but reason (R) is false",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "Assertion (A) is false but reason (R) is true",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF and remainders",
+      "question_type": "ASSERTION_REASON",
+      "difficulty": "hard",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "remainders",
+        "Euclid's algorithm"
+      ],
+      "question_text": "Assertion (A): The largest number that divides 70 and 125 which leaves remainder 5 and 8 is 13.\nReason (R): HCF(65, 117) = 13",
+      "answer_text": "Both A and R are true and R is the correct explanation of A. To find the number: HCF(70−5, 125−8) = HCF(65, 117) = 13.",
+      "source_page": 4,
+      "options": [
+        {
+          "label": "A",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is the correct explanation of assertion (A)",
+          "is_correct": true,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is not the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "Assertion (A) is true but reason (R) is false",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "Assertion (A) is false but reason (R) is true",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Composite numbers",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "understand",
+      "marks": 2,
+      "tags": [
+        "composite numbers",
+        "prime factorization",
+        "fundamental theorem of arithmetic"
+      ],
+      "question_text": "Explain why (7 × 13 × 11) + 11 and (7 × 6 × 5 × 4 × 3 × 2 × 1) + 3 are composite numbers.",
+      "answer_text": "(7×13×11)+11 = 11(7×13+1) = 11×92. Since it has factors other than 1 and itself, it is composite. (7×6×5×4×3×2×1)+3 = 3(7×6×5×4×2×1+1) = 3×1681. Since it has factors other than 1 and itself, it is composite.",
+      "source_page": 4,
+      "board_year": "BOARD 2024"
+    },
+    {
+      "concept": "Prime and composite numbers",
+      "question_type": "VERY_SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "composite numbers",
+        "prime number",
+        "fundamental theorem of arithmetic"
+      ],
+      "question_text": "Explain whether (3 × 12 × 101) + 4 is a prime number or a composite number.",
+      "answer_text": "(3×12×101)+4 = 4(3×3×101+1) = 4×910 = 2³×5×7×13. Since it has factors other than 1 and itself, it is a composite number.",
+      "source_page": 4
+    },
+    {
+      "concept": "Relationship between HCF and LCM",
+      "question_type": "VERY_SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "HCF",
+        "LCM",
+        "relationship"
+      ],
+      "question_text": "Given that HCF(306, 1314) = 18. Find LCM(306, 1314).",
+      "answer_text": "LCM(306, 1314) = (306 × 1314) / HCF(306, 1314) = (306 × 1314) / 18 = 22338.",
+      "source_page": 4
+    },
+    {
+      "concept": "Powers of 4 and digit 0",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 2,
+      "tags": [
+        "prime factorization",
+        "powers",
+        "digit 0"
+      ],
+      "question_text": "Check whether 4ⁿ can end with the digit 0 for any natural number n.",
+      "answer_text": "4ⁿ = (2²)ⁿ = 2²ⁿ. The prime factorization of 4ⁿ contains only the prime 2, not 5. Since 10 = 2×5, for a number to end in 0 it must have both 2 and 5 as prime factors. Therefore 4ⁿ cannot end with the digit 0 for any natural number n.",
+      "source_page": 4,
+      "board_year": "BOARD 2023 & BOARD 2024"
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "irrational numbers",
+        "proof by contradiction",
+        "surds"
+      ],
+      "question_text": "Show that 5√6 is an irrational number.",
+      "answer_text": "Assume 5√6 is rational. Then 5√6 = p/q where p, q are integers, q ≠ 0. So √6 = p/(5q), which is rational. But √6 is irrational — contradiction. Therefore 5√6 is irrational.",
+      "source_page": 4
+    },
+    {
+      "concept": "LCM and HCF product property",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "LCM",
+        "HCF",
+        "prime factorization",
+        "verification"
+      ],
+      "question_text": "If two positive integers p and q are written as p = a²b³ and q = a³b where a and b are prime numbers then verify LCM(p, q) × HCF(p, q) = pq.",
+      "answer_text": "LCM(p,q) = a³b³, HCF(p,q) = a²b. LCM×HCF = a³b³×a²b = a⁵b⁴. pq = a²b³×a³b = a⁵b⁴. Since LCM×HCF = pq = a⁵b⁴, verified.",
+      "source_page": 4
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "irrational numbers",
+        "proof by contradiction"
+      ],
+      "question_text": "Prove that 3 + √5 is an irrational number.",
+      "answer_text": "Assume 3+√5 is rational = p/q. Then √5 = p/q − 3 = (p−3q)/q, which is rational. But √5 is irrational — contradiction. Therefore 3+√5 is irrational.",
+      "source_page": 4,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "irrational numbers",
+        "proof by contradiction"
+      ],
+      "question_text": "Prove that 6 − √7 is an irrational number.",
+      "answer_text": "Assume 6−√7 is rational = p/q. Then √7 = 6 − p/q = (6q−p)/q, which is rational. But √7 is irrational — contradiction. Therefore 6−√7 is irrational.",
+      "source_page": 4,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "HCF from ratio and LCM",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "HCF",
+        "LCM",
+        "ratio"
+      ],
+      "question_text": "Two numbers are in the ratio 2:3 and their LCM is 180. What is the HCF of these numbers?",
+      "answer_text": "Let the numbers be 2k and 3k. LCM(2k, 3k) = 6k = 180, so k = 30. HCF = k = 30.",
+      "source_page": 4,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "HCF and LCM by prime factorization",
+      "question_type": "VERY_SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "HCF",
+        "LCM",
+        "prime factorization"
+      ],
+      "question_text": "Using prime factorization find HCF and LCM of 96 and 120.",
+      "answer_text": "96 = 2⁵×3, 120 = 2³×3×5. HCF = 2³×3 = 24. LCM = 2⁵×3×5 = 480.",
+      "source_page": 4,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "Greatest number with given remainders",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "HCF",
+        "remainders",
+        "Euclid's algorithm"
+      ],
+      "question_text": "Find the greatest number which divides 85 and 72 leaving remainders 1 and 2 respectively.",
+      "answer_text": "Required number = HCF(85−1, 72−2) = HCF(84, 70). 84 = 2²×3×7, 70 = 2×5×7. HCF = 2×7 = 14.",
+      "source_page": 4,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "Greatest number divisible by given numbers",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "LCM",
+        "three-digit numbers"
+      ],
+      "question_text": "Find the greatest 3-digit number which is divisible by 18, 24 and 36.",
+      "answer_text": "LCM(18, 24, 36) = 72. Greatest 3-digit multiple of 72 = 72×13 = 936.",
+      "source_page": 4,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "Least number with given remainders",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "LCM",
+        "remainders"
+      ],
+      "question_text": "Find the least number which when divided by 12, 16 and 24 leaves remainder 7 in each case.",
+      "answer_text": "LCM(12, 16, 24) = 48. Required number = 48 + 7 = 55.",
+      "source_page": 4,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "Rational square roots",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "rational numbers",
+        "square root",
+        "prime factorization"
+      ],
+      "question_text": "Find the smallest natural number by which 1200 should be multiplied so that the square root of the product is a rational number.",
+      "answer_text": "1200 = 2⁴×3×5². For a perfect square, all prime exponents must be even. The exponent of 3 is 1 (odd), so multiply by 3. The product 1200×3 = 3600 = 60². Smallest natural number = 3.",
+      "source_page": 4
+    },
+    {
+      "concept": "LCM in real-life context",
+      "question_type": "VERY_SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "LCM",
+        "real-life application"
+      ],
+      "question_text": "In a school, there are two sections of class X. There are 40 students in the first section and 48 students in the second section. Determine the minimum number of books required for their class library so that they can be distributed equally among students of both sections.",
+      "answer_text": "Minimum books = LCM(40, 48). 40 = 2³×5, 48 = 2⁴×3. LCM = 2⁴×3×5 = 240. Minimum 240 books required.",
+      "source_page": 4,
+      "board_year": "BOARD 2024"
+    },
+    {
+      "concept": "Factor tree",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "factor tree",
+        "prime factorization",
+        "composite number"
+      ],
+      "question_text": "Complete the following factor tree and find the composite number x. [Factor tree: x at top, factors 3 and 195; 195 splits into 3 and y; y splits into 5 and 13]",
+      "answer_text": "y = 5×13 = 65. x = 3×195 = 3×3×65 = 3²×5×13 = 585.",
+      "has_image": true,
+      "source_page": 4,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "Factor tree",
+      "question_type": "VERY_SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 2,
+      "tags": [
+        "factor tree",
+        "prime factorization",
+        "composite number"
+      ],
+      "question_text": "Complete the following factor tree and find the composite number x. [Factor tree: x at top, factors 2 and 3381; 3381 splits into 3 and ?; ? splits into 7 and 161; 161 splits into 7 and ?]",
+      "answer_text": "161 = 7×23, so the missing factor of 161 is 23. 3381 = 3×1127 = 3×7×161 = 3×7×7×23. x = 2×3381 = 2×3×7²×23 = 6762.",
+      "has_image": true,
+      "source_page": 5
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 3,
+      "tags": [
+        "irrational numbers",
+        "proof by contradiction",
+        "square root of 5"
+      ],
+      "question_text": "Prove that √5 is an irrational number.",
+      "answer_text": "Assume √5 is rational. Then √5 = p/q where p, q are co-prime integers and q≠0. So 5 = p²/q², i.e. p² = 5q². Thus 5 divides p², so 5 divides p. Let p = 5m. Then 25m² = 5q², so q² = 5m². Thus 5 divides q², so 5 divides q. But then 5 is a common factor of p and q, contradicting that p and q are co-prime. Hence √5 is irrational.",
+      "source_page": 5,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "irrational numbers",
+        "proof by contradiction"
+      ],
+      "question_text": "Given that √3 is an irrational, prove that 5 + 2√3 is an irrational number.",
+      "answer_text": "Assume 5+2√3 is rational = p/q. Then 2√3 = p/q−5 = (p−5q)/q. So √3 = (p−5q)/(2q), which is rational. But √3 is irrational — contradiction. Therefore 5+2√3 is irrational.",
+      "source_page": 5,
+      "board_year": "BOARD 2024"
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "irrational numbers",
+        "proof by contradiction"
+      ],
+      "question_text": "Given that √5 is an irrational, prove that 2√5 − 3 is an irrational number.",
+      "answer_text": "Assume 2√5−3 is rational = p/q. Then 2√5 = p/q+3 = (p+3q)/q. So √5 = (p+3q)/(2q), which is rational. But √5 is irrational — contradiction. Therefore 2√5−3 is irrational.",
+      "source_page": 5
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "irrational numbers",
+        "proof by contradiction"
+      ],
+      "question_text": "Given that √3 is an irrational, prove that (2−√3)/5 is an irrational number.",
+      "answer_text": "Assume (2−√3)/5 is rational = p/q. Then 2−√3 = 5p/q. So √3 = 2−5p/q = (2q−5p)/q, which is rational. But √3 is irrational — contradiction. Therefore (2−√3)/5 is irrational.",
+      "source_page": 5,
+      "board_year": "BOARD 2024"
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "irrational numbers",
+        "proof by contradiction"
+      ],
+      "question_text": "Given that √2 is an irrational, prove that 5 + 3√2 is an irrational number.",
+      "answer_text": "Assume 5+3√2 is rational = p/q. Then 3√2 = p/q−5 = (p−5q)/q. So √2 = (p−5q)/(3q), which is rational. But √2 is irrational — contradiction. Therefore 5+3√2 is irrational.",
+      "source_page": 5
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "SHORT",
+      "difficulty": "hard",
+      "bloom_level": "analyze",
+      "marks": 3,
+      "tags": [
+        "irrational numbers",
+        "proof",
+        "surds"
+      ],
+      "question_text": "Prove that (√2 + √3)² is irrational number, given that √6 is an irrational number.",
+      "answer_text": "(√2+√3)² = 2+2√6+3 = 5+2√6. Assume 5+2√6 is rational = p/q. Then 2√6 = p/q−5 = (p−5q)/q. So √6 = (p−5q)/(2q), which is rational. But √6 is irrational — contradiction. Therefore (√2+√3)² is irrational.",
+      "source_page": 5,
+      "board_year": "BOARD 2024"
+    },
+    {
+      "concept": "LCM of two numbers",
+      "question_type": "SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "LCM",
+        "prime factorization"
+      ],
+      "question_text": "Write the smallest number which is divisible by both 306 and 657.",
+      "answer_text": "Smallest number divisible by both = LCM(306, 657). 306 = 2×3²×17, 657 = 3²×73. LCM = 2×3²×17×73 = 22338.",
+      "source_page": 5
+    },
+    {
+      "concept": "HCF and LCM by prime factorization",
+      "question_type": "SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "HCF",
+        "LCM",
+        "prime factorization",
+        "verification"
+      ],
+      "question_text": "Find HCF and LCM of 16 and 36 by prime factorization and check your answer.",
+      "answer_text": "16 = 2⁴, 36 = 2²×3². HCF = 2² = 4. LCM = 2⁴×3² = 144. Check: HCF×LCM = 4×144 = 576 = 16×36. ✓",
+      "source_page": 5
+    },
+    {
+      "concept": "HCF and LCM of three numbers",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "HCF",
+        "LCM",
+        "prime factorization",
+        "three numbers"
+      ],
+      "question_text": "Find HCF and LCM of 26, 65 and 117 using prime factorization.",
+      "answer_text": "26 = 2×13, 65 = 5×13, 117 = 3²×13. HCF = 13. LCM = 2×3²×5×13 = 1170.",
+      "source_page": 5,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "HCF and LCM with verification",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "HCF",
+        "LCM",
+        "prime factorization",
+        "three numbers",
+        "verification"
+      ],
+      "question_text": "Find HCF and LCM of 378, 180 and 420 by prime factorization. Verify that HCF × LCM = product of two numbers.",
+      "answer_text": "378 = 2×3³×7, 180 = 2²×3²×5, 420 = 2²×3×5×7. HCF = 2×3 = 6. LCM = 2²×3³×5×7 = 3780. Note: HCF×LCM = product holds for two numbers. For any two of these, e.g. 378 and 180: HCF(378,180)=18, LCM(378,180)=3780. 18×3780 = 68040 = 378×180. ✓",
+      "source_page": 5
+    },
+    {
+      "concept": "HCF and LCM by prime factorization",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "HCF",
+        "LCM",
+        "prime factorization"
+      ],
+      "question_text": "Find by prime factorization the LCM of the numbers 18180 and 7575. Also find the HCF of two numbers.",
+      "answer_text": "18180 = 2²×3²×5×101, 7575 = 3×5²×101. HCF = 3×5×101 = 1515. LCM = 2²×3²×5²×101 = 90900.",
+      "source_page": 5,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "HCF in real-life context",
+      "question_type": "SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "HCF",
+        "real-life application",
+        "stacking"
+      ],
+      "question_text": "144 cartons of Coke cans and 90 cartons of Pepsi cans are to be stacked in a canteen. If each stack is of the same height and if it equal contain cartons of the same drink, what would be the greatest number of cartons each stack would have?",
+      "answer_text": "Greatest number of cartons per stack = HCF(144, 90). 144 = 2⁴×3², 90 = 2×3²×5. HCF = 2×3² = 18.",
+      "source_page": 5
+    },
+    {
+      "concept": "LCM in real-life context",
+      "question_type": "SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "LCM",
+        "real-life application",
+        "bells tolling"
+      ],
+      "question_text": "Three bells toll at intervals of 9, 12, 15 minutes respectively. If they start tolling together, after what time will they next toll together?",
+      "answer_text": "LCM(9, 12, 15). 9 = 3², 12 = 2²×3, 15 = 3×5. LCM = 2²×3²×5 = 180 minutes = 3 hours. They will next toll together after 3 hours.",
+      "source_page": 5,
+      "board_year": "BOARD 2024"
+    },
+    {
+      "concept": "LCM in real-life context",
+      "question_type": "SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "LCM",
+        "real-life application",
+        "bells ringing"
+      ],
+      "question_text": "Three bells ring at intervals of 6, 12 and 18 minutes. If all the three bells rang at 6 a.m., when will they ring together again?",
+      "answer_text": "LCM(6, 12, 18). 6 = 2×3, 12 = 2²×3, 18 = 2×3². LCM = 2²×3² = 36 minutes. They will ring together again at 6:36 a.m.",
+      "source_page": 5,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "LCM in real-life context",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "LCM",
+        "real-life application",
+        "bells tolling",
+        "frequency"
+      ],
+      "question_text": "Four bells toll at an interval of 8, 12, 15 and 18 seconds respectively. All the four begin to toll together. Find the number of times they toll together in one hour excluding the one at the start.",
+      "answer_text": "LCM(8, 12, 15, 18). 8=2³, 12=2²×3, 15=3×5, 18=2×3². LCM = 2³×3²×5 = 360 seconds = 6 minutes. In 1 hour (3600 seconds): 3600÷360 = 10 times.",
+      "source_page": 5
+    },
+    {
+      "concept": "HCF in real-life context",
+      "question_type": "CASE",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 4,
+      "tags": [
+        "HCF",
+        "LCM",
+        "real-life application",
+        "stacking books"
+      ],
+      "question_text": "Three sets of English, Hindi and Mathematics books have to be stacked in such a way that all the books are stored topic wise and the height of each stack is the same. The number of English books is 96, the number of Hindi books is 240 and the number of Mathematics books is 336. Assuming that the books are of the same thickness.",
+      "answer_text": "HCF(96, 240, 336) = 48. Each stack has 48 books.",
+      "has_image": true,
+      "source_page": 7,
+      "case_parts": [
+        {
+          "part_number": 1,
+          "part_text": "Find the number of stacks of Hindi books?",
+          "part_answer": "Number of stacks of Hindi books = 240 ÷ 48 = 5.",
+          "question_type": "VERY_SHORT",
+          "marks": 1
+        },
+        {
+          "part_number": 2,
+          "part_text": "Find the number of stacks of English books? OR Find the number of stacks of Mathematics books?",
+          "part_answer": "English stacks = 96 ÷ 48 = 2. OR Mathematics stacks = 336 ÷ 48 = 7.",
+          "question_type": "VERY_SHORT",
+          "marks": 2
+        },
+        {
+          "part_number": 3,
+          "part_text": "What is the number of books that can be stored in each stack?",
+          "part_answer": "HCF(96, 240, 336): 96=2⁵×3, 240=2⁴×3×5, 336=2⁴×3×7. HCF = 2⁴×3 = 48. Each stack stores 48 books.",
+          "question_type": "VERY_SHORT",
+          "marks": 1
+        }
+      ]
+    },
+    {
+      "concept": "Prime factorization in real-life context",
+      "question_type": "CASE",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 4,
+      "tags": [
+        "prime factorization",
+        "real-life application",
+        "prime numbers"
+      ],
+      "question_text": "Teaching Mathematics through activities is a powerful approach that enhances students’ understanding and engagement. Keeping this in mind, Ms. Muktha planned a prime number game for class 5 students. She announces the number 2in her class and asked the first student to multiply it by a prime number and then pass it to second student. Second student also multiplied it by a prime number and passed it to third student. In this way by multiplying to a prime number, the last student got 173250.",
+      "answer_text": "173250 = 2 × 3² × 5³ × 7 × 11. Starting from 2, students multiplied by: 3, 3, 5, 5, 5, 7, 11 (7 multiplications = 7 students).",
+      "source_page": 7,
+      "board_year": "BOARD 2024",
+      "case_parts": [
+        {
+          "part_number": 1,
+          "part_text": "What is the least prime number used by students?",
+          "part_answer": "173250 = 2×3²×5³×7×11. Students multiplied using primes: 3, 3, 5, 5, 5, 7, 11. Least prime used by students = 3.",
+          "question_type": "VERY_SHORT",
+          "marks": 1
+        },
+        {
+          "part_number": 2,
+          "part_text": "How many students are in the class? OR What is the highest prime number used by students?",
+          "part_answer": "173250 = 2×3²×5³×7×11. Total prime factors (with repetition) = 1+2+3+1+1 = 8. Starting number is 2 (1 factor), so students multiplied 7 times = 7 students. OR Highest prime used = 11.",
+          "question_type": "SHORT",
+          "marks": 2
+        },
+        {
+          "part_number": 3,
+          "part_text": "Which prime number has been used maximum times?",
+          "part_answer": "173250 = 2×3²×5³×7×11. Among primes used by students (3,3,5,5,5,7,11), prime 5 appears 3 times. Prime used maximum times = 5.",
+          "question_type": "VERY_SHORT",
+          "marks": 1
+        }
+      ]
+    },
+    {
+      "concept": "Ratio of LCM and HCF",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "LCM",
+        "HCF",
+        "composite numbers",
+        "prime numbers"
+      ],
+      "question_text": "The ratio of LCM and HCF of the least composite and the least prime numbers is",
+      "answer_text": "2:1",
+      "source_page": 2,
+      "board_year": "BOARD 2023",
+      "options": [
+        {
+          "label": "A",
+          "text": "1:2",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "2:1",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "1:1",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "1:3",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "LCM from HCF",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "LCM",
+        "HCF",
+        "product property"
+      ],
+      "question_text": "If HCF(336, 54) = 6, LCM(336, 54) is",
+      "answer_text": "3024",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "2024",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "3024",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "1012",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "1512",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Finding unknown from HCF and LCM",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "unknown variable"
+      ],
+      "question_text": "The value of 'a', if HCF(x, 18) = 2 and LCM(x, 18) = 36, is",
+      "answer_text": "4",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "2",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "5",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "7",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "4",
+          "is_correct": true,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Finding unknown from HCF and LCM",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "unknown number"
+      ],
+      "question_text": "HCF of two numbers is 27 and their LCM is 162. If one of the numbers is 54 then the other number is",
+      "answer_text": "81",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "36",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "35",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "9",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "81",
+          "is_correct": true,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "LCM and HCF relationship",
+      "question_type": "MCQ",
+      "difficulty": "hard",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "LCM",
+        "HCF",
+        "sum of LCM and HCF"
+      ],
+      "question_text": "The LCM of two numbers is 14 times their HCF. The sum of LCM and HCF is 600. If one number is 280 then the other number is",
+      "answer_text": "80",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "20",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "28",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "60",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "80",
+          "is_correct": true,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF by prime factorization",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "prime factorization"
+      ],
+      "question_text": "HCF of 144 and 198 is",
+      "answer_text": "18",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "9",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "18",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "6",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "12",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Prime factorization",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "remember",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "225"
+      ],
+      "question_text": "225 can be expressed as",
+      "answer_text": "5² × 3²",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "5 × 3²",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "5² × 3",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "5² × 3²",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "5³ × 3",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Prime factorization",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "108"
+      ],
+      "question_text": "108 can be expressed as a product of its prime as",
+      "answer_text": "2² × 3³",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "2³ × 3²",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "2³ × 3³",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "2² × 3²",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "2² × 3³",
+          "is_correct": true,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Prime factorization",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "2120"
+      ],
+      "question_text": "When 2120 is expressed as the product of its prime factors we get",
+      "answer_text": "2³ × 5 × 53",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "2 × 5² × 53",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "2³ × 5 × 53",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "5 × 7² × 31",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "5² × 7 × 33",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Irrational numbers",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "remember",
+      "marks": 1,
+      "tags": [
+        "irrational numbers",
+        "surds"
+      ],
+      "question_text": "2√3 is ______ number.",
+      "answer_text": "irrational",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "Integer",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "rational",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "irrational",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "whole",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Least prime factor of sum",
+      "question_type": "MCQ",
+      "difficulty": "hard",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "prime factors",
+        "addition",
+        "even numbers"
+      ],
+      "question_text": "If a and b are two positive integers such that the least prime factor of a is 3 and the least prime factor of b is 5. Then the least prime factor of (a + b) is",
+      "answer_text": "2",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "1",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "2",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "3",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "4",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "LCM of consecutive numbers",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "LCM",
+        "consecutive integers"
+      ],
+      "question_text": "Select the least number that is divisible by all numbers between 1 and 10 (both inclusive)",
+      "answer_text": "2520",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "2520",
+          "is_correct": true,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "5040",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "1010",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "2020",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Numbers ending with zero",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "understand",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "digit 0",
+        "powers"
+      ],
+      "question_text": "If 'n' is a natural number then which of the following numbers end with zero?",
+      "answer_text": "(2 × 5)ⁿ",
+      "source_page": 2,
+      "board_year": "BOARD 2023",
+      "options": [
+        {
+          "label": "A",
+          "text": "(8 × 2)ⁿ",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "(2 × 5)ⁿ",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "(6 × 2)ⁿ",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "(5 × 3)ⁿ",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Rational and irrational numbers",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "rational numbers",
+        "square root"
+      ],
+      "question_text": "If p² = 32/50, then p is ______ number.",
+      "answer_text": "rational",
+      "source_page": 2,
+      "board_year": "BOARD 2023",
+      "options": [
+        {
+          "label": "A",
+          "text": "Whole",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "integer",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "rational",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "irrational",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "LCM from HCF using product property",
+      "question_type": "MCQ",
+      "difficulty": "hard",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "LCM",
+        "HCF",
+        "product property"
+      ],
+      "question_text": "If HCF(2520, 6600) = 40 and LCM(2520, 6600) = 252 × k then the value of k is",
+      "answer_text": "1650",
+      "source_page": 2,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "1650",
+          "is_correct": true,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "1600",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "165",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "1625",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "LCM and unknown exponent",
+      "question_type": "MCQ",
+      "difficulty": "hard",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "LCM",
+        "prime factorization",
+        "unknown exponent"
+      ],
+      "question_text": "If a = 2³ × 3^x, b = 2^x × 3 × 5, c = 2² × 3^x and LCM(a, b, c) = 3780 then x is",
+      "answer_text": "2",
+      "source_page": 3,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "1",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "2",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "3",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "0",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Prime factorization with exponents",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "exponents",
+        "3825"
+      ],
+      "question_text": "If 3825 = 3^x × 5^y × 17^z then the value of x + y − 2z is",
+      "answer_text": "2",
+      "source_page": 3,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "0",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "1",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "2",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "3",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Product of irrational numbers",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "irrational numbers",
+        "rational product",
+        "surds"
+      ],
+      "question_text": "A pair of irrational numbers whose product is a rational number is",
+      "answer_text": "(√3, √27)",
+      "source_page": 3,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "(√16, √4)",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "(√5, √2)",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "(√3, √27)",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "(√36, √2)",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Rationalizing irrational numbers",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "irrational numbers",
+        "rational number",
+        "surds"
+      ],
+      "question_text": "The smallest irrational number by which √20 should be multiplied so as to get a rational number, is",
+      "answer_text": "√5",
+      "source_page": 3,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "√20",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "√2",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "5",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "√5",
+          "is_correct": true,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Greatest number with given remainders",
+      "question_type": "MCQ",
+      "difficulty": "hard",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "remainders",
+        "Euclid's algorithm"
+      ],
+      "question_text": "The greatest number which divides 281 and 1249, leaving remainder 5 and 7 respectively, is",
+      "answer_text": "138",
+      "source_page": 3,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "23",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "276",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "138",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "69",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF and LCM product property",
+      "question_type": "ASSERTION_REASON",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "product property"
+      ],
+      "question_text": "Assertion (A): If HCF of 510 and 92 is 2 then their LCM is 32460.\nReason (R): HCF(a, b) × LCM(a, b) = a × b",
+      "answer_text": "A is false (correct LCM = 510×92÷2 = 23460, not 32460). R is true. Answer: d) A is false but R is true.",
+      "source_page": 3,
+      "options": [
+        {
+          "label": "A",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "Both assertion (A) and reason (R) are true but reason (R) is not the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "Assertion (A) is true but reason (R) is false",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "Assertion (A) is false but reason (R) is true",
+          "is_correct": true,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "LCM from product and HCF",
+      "question_type": "ASSERTION_REASON",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "product property"
+      ],
+      "question_text": "Assertion (A): If the product of two numbers is 5780 and their HCF is 17, then their LCM is 340.\nReason (R): HCF is always a factor of LCM.",
+      "answer_text": "A is true (LCM = 5780÷17 = 340). R is true (HCF is always a factor of LCM) but R is not the correct explanation of A (the correct explanation uses HCF×LCM = product). Answer: b).",
+      "source_page": 3,
+      "options": [
+        {
+          "label": "A",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "Both assertion (A) and reason (R) are true but reason (R) is not the correct explanation of assertion (A)",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "Assertion (A) is true but reason (R) is false",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "Assertion (A) is false but reason (R) is true",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "LCM verification using product property",
+      "question_type": "ASSERTION_REASON",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "product property"
+      ],
+      "question_text": "Assertion (A): If HCF(90, 144) = 18, LCM(90, 144) = 720\nReason (R): HCF(a, b) × LCM(a, b) = a × b",
+      "answer_text": "A is true (LCM = 90×144÷18 = 720). R is true and is the correct explanation of A. Answer: a).",
+      "source_page": 3,
+      "options": [
+        {
+          "label": "A",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is the correct explanation of assertion (A)",
+          "is_correct": true,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "Both assertion (A) and reason (R) are true but reason (R) is not the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "Assertion (A) is true but reason (R) is false",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "Assertion (A) is false but reason (R) is true",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF and LCM product property",
+      "question_type": "ASSERTION_REASON",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "product property"
+      ],
+      "question_text": "Assertion (A): The HCF of two numbers is 5 and their product is 150 then their LCM is 30.\nReason (R): HCF(a, b) + LCM(a, b) = a × b",
+      "answer_text": "A is true (LCM = 150÷5 = 30). R is false (correct formula is HCF×LCM = a×b, not HCF+LCM). Answer: c).",
+      "source_page": 3,
+      "options": [
+        {
+          "label": "A",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "Both assertion (A) and reason (R) are true but reason (R) is not the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "Assertion (A) is true but reason (R) is false",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "Assertion (A) is false but reason (R) is true",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Finding unknown using HCF and LCM",
+      "question_type": "ASSERTION_REASON",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "product property"
+      ],
+      "question_text": "Assertion (A): The HCF of two numbers is 9 and their LCM is 2016. If one number is 54 then the other number is 336.\nReason (R): HCF(a, b) × LCM(a, b) = a × b",
+      "answer_text": "A is true (other = 9×2016÷54 = 336). R is true and is the correct explanation of A. Answer: a).",
+      "source_page": 3,
+      "options": [
+        {
+          "label": "A",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is the correct explanation of assertion (A)",
+          "is_correct": true,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "Both assertion (A) and reason (R) are true but reason (R) is not the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "Assertion (A) is true but reason (R) is false",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "Assertion (A) is false but reason (R) is true",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "Powers and digit 0",
+      "question_type": "ASSERTION_REASON",
+      "difficulty": "medium",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "powers",
+        "digit 0"
+      ],
+      "question_text": "Assertion (A): The number 6ⁿ never end with digit 0 for any natural number n.\nReason (R): The number 9ⁿ never end with digit 0 for any natural number n.",
+      "answer_text": "A is true (6ⁿ always ends in 6). R is true (9ⁿ ends in 9 or 1). Both are true but R does not explain A. Answer: b).",
+      "source_page": 3,
+      "options": [
+        {
+          "label": "A",
+          "text": "Both assertion (A) and reason (R) are true and reason (R) is the correct explanation of assertion (A)",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "Both assertion (A) and reason (R) are true but reason (R) is not the correct explanation of assertion (A)",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "Assertion (A) is true but reason (R) is false",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "Assertion (A) is false but reason (R) is true",
+          "is_correct": false,
+          "order": 4
+        }
+      ]
+    },
+    {
+      "concept": "HCF in measurement",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "HCF",
+        "measurement",
+        "real-life application"
+      ],
+      "question_text": "The length, breadth and height of a room are 8m 50cm, 6m 25cm and 4m 75cm respectively. Find the length of the longest rod that can measure the dimensions of the room exactly.",
+      "answer_text": "Convert: 850cm, 625cm, 475cm. HCF(850, 625, 475). 850=2×5²×17, 625=5⁴, 475=5²×19. HCF=5²=25 cm.",
+      "source_page": 6
+    },
+    {
+      "concept": "LCM in real-life context",
+      "question_type": "SHORT",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "LCM",
+        "real-life application",
+        "steps",
+        "distance"
+      ],
+      "question_text": "On a morning walk, three persons step off together and their steps measure 40 cm, 42 cm and 45 cm respectively. Find the minimum distance each should walk so that each can cover the same distance in complete steps.",
+      "answer_text": "Minimum distance = LCM(40, 42, 45). 40=2³×5, 42=2×3×7, 45=3²×5. LCM=2³×3²×5×7=2520 cm = 25.2 m.",
+      "source_page": 6
+    },
+    {
+      "concept": "LCM in real-life context",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "LCM",
+        "real-life application",
+        "traffic lights"
+      ],
+      "question_text": "The traffic lights at three different road crossings change after every 48 seconds, 72 seconds and 108 seconds respectively. If they change simultaneously at 7 a.m, at what time will they change together next?",
+      "answer_text": "LCM(48, 72, 108). 48=2⁴×3, 72=2³×3², 108=2²×3³. LCM=2⁴×3³=432 seconds = 7 min 12 sec. They will change together next at 7:07:12 a.m.",
+      "source_page": 6,
+      "board_year": "BOARD 2023"
+    },
+    {
+      "concept": "HCF in real-life context",
+      "question_type": "SHORT",
+      "difficulty": "hard",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "HCF",
+        "LCM",
+        "real-life application",
+        "groups"
+      ],
+      "question_text": "National Art convention got registrations from students from all parts of the country, of which 60 are interested in music, 84 are interested in dance and 108 students are interested in handicrafts. For optimum cultural exchange, organisers wish to keep them in minimum number of groups such that each group consists of students interested in the same artform and the number of students in each group is the same. Find the number of students in each group. Find the number of groups in each art form. How many rooms are required if each group will be allotted a room?",
+      "answer_text": "Students per group = HCF(60, 84, 108). 60=2²×3×5, 84=2²×3×7, 108=2²×3³. HCF=2²×3=12. Groups: Music=60÷12=5, Dance=84÷12=7, Handicrafts=108÷12=9. Total rooms=5+7+9=21.",
+      "source_page": 6
+    },
+    {
+      "concept": "HCF in real-life context",
+      "question_type": "SHORT",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 3,
+      "tags": [
+        "HCF",
+        "real-life application",
+        "rooms",
+        "teachers"
+      ],
+      "question_text": "In a teacher’s workshop the number of teacher teaching French, Hindi and English are 48, 80 and 144 respectively. Find the minimum number of rooms required if in each room the same numbers of teachers are seated and all of them are of same subject.",
+      "answer_text": "Teachers per room = HCF(48, 80, 144). 48=2⁴×3, 80=2⁴×5, 144=2⁴×3². HCF=2⁴=16. Rooms: 48÷16 + 80÷16 + 144÷16 = 3+5+9 = 17 rooms.",
+      "source_page": 6,
+      "board_year": "BOARD 2024"
+    },
+    {
+      "concept": "HCF in real-life context",
+      "question_type": "CASE",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 4,
+      "tags": [
+        "HCF",
+        "real-life application",
+        "stacking books",
+        "International Book Giving Day"
+      ],
+      "question_text": "February 14 is celebrated as International Book Giving Day and many countries in the world celebrate this day. Some people in India also started celebrating this day and donated the following number of books of various subjects to a public library: History = 96, Science = 240, Mathematics = 336.\n\nThese books have to be arranged in minimum number of stacks such that each stack contains books of only one subject and the number of books on each stack is the same.",
+      "answer_text": "HCF(96, 240, 336). 96=2⁵×3, 240=2⁴×3×5, 336=2⁴×3×7. HCF=2⁴×3=48 books per stack.",
+      "source_page": 6,
+      "board_year": "BOARD 2023",
+      "case_parts": [
+        {
+          "part_number": 1,
+          "part_text": "How many books are arranged in each stack?",
+          "part_answer": "HCF(96, 240, 336) = 48. Each stack has 48 books.",
+          "question_type": "VERY_SHORT",
+          "marks": 1
+        },
+        {
+          "part_number": 2,
+          "part_text": "How many stacks are used to arrange all the Mathematics books?",
+          "part_answer": "Mathematics stacks = 336 ÷ 48 = 7 stacks.",
+          "question_type": "VERY_SHORT",
+          "marks": 1
+        },
+        {
+          "part_number": 3,
+          "part_text": "(a) Determine the total number of stacks that will be used for arranging all the books.\nOR\n(b) If the thickness of each book of History, Science and Mathematics is 1.8 cm, 2.2 cm and 2.5 cm respectively, then find the height of each stack of History, Science and Mathematics books.",
+          "part_answer": "(a) Total stacks = 96÷48 + 240÷48 + 336÷48 = 2+5+7 = 14 stacks.\nOR\n(b) History stack height = 48×1.8 = 86.4 cm. Science = 48×2.2 = 105.6 cm. Mathematics = 48×2.5 = 120 cm.",
+          "question_type": "SHORT",
+          "marks": 2
+        }
+      ]
+    }
+  ]
+}

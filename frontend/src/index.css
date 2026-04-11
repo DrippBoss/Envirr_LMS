@@ -31,9 +31,11 @@ h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  padding: 24px;
+  padding: 32px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s;
+  display: flex;
+  flex-direction: column;
 }
 
 .glass-panel:hover {
@@ -63,9 +65,34 @@ h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
   min-width: 120px;
 }
 
-.btn-primary:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px var(--primary-glow);
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.btn-premium-large {
+  background: linear-gradient(135deg, var(--primary-accent), #8b5cf6);
+  color: white;
+  border: none;
+  padding: 18px 36px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  text-transform: uppercase;
+}
+
+.btn-premium-large:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 30px var(--primary-glow);
+  filter: brightness(1.1);
+}
+
+.btn-premium-large:active {
+  transform: scale(0.98);
 }
 
 .btn-success {

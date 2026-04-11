@@ -294,3 +294,99 @@ def generate_paper_task(self, config_data, user_id, paper_id):
         return paper.id
     except Exception as exc:
         raise self.retry(exc=exc, countdown=30)
+
+@shared_task(bind=True, max_retries=3)
+def compile_manual_paper_task(self, config_data, user_id, paper_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        paper = QuestionPaper.objects.get(id=paper_id)
+        
+        # Phase 1: Save Custom Questions
+        custom_qs = config_data.get('custom_questions', [])
+        custom_map = {}
+        for idx, cq in enumerate(custom_qs):
+            new_q = QuestionBank.objects.create(
+                subject=config_data.get('subject'),
+                chapter="Custom",
+                question_type=cq.get('type'),
+                marks=cq.get('marks', 1),
+                difficulty=cq.get('difficulty', 'medium'),
+                question_text=cq.get('question_text'),
+                answer_text=cq.get('answer_text', ''),
+                is_ai_generated=False
+            )
+            # Map string ID to real DB ID
+            custom_map[f"custom-{idx}"] = new_q
+
+        # Phase 2: Setup Sections & Links
+        total_paper_marks = 0
+        sections_data = config_data.get('sections', [])
+        
+        for idx, sec_data in enumerate(sections_data):
+            sec_type = sec_data.get('type')
+            q_ids = sec_data.get('questions', [])
+            
+            if not q_ids:
+                continue
+                
+            sec = PaperSection.objects.create(
+                paper=paper,
+                section_name=sec_data.get('name'),
+                question_type=sec_type,
+                marks_per_question=0, # Variable in manual
+                question_count=len(q_ids),
+                order=idx
+            )
+            
+            # Link questions in exact array order
+            order = 1
+            for q_id in q_ids:
+                q_id_str = str(q_id)
+                if q_id_str.startswith('custom-'):
+                    q = custom_map.get(q_id_str)
+                else:
+                    q = QuestionBank.objects.filter(id=q_id).first()
+                
+                if q:
+                    total_paper_marks += q.marks
+                    PaperQuestion.objects.create(
+                        section=sec,
+                        question=q,
+                        order_in_section=order,
+                        was_ai_generated=q.is_ai_generated
+                    )
+                    order += 1
+                    
+        # Update exact total marks
+        paper.total_marks = total_paper_marks
+        paper.save()
+
+        # Phase 3: Fast PDF Compilation
+        latex_content = construct_latex(config_data, paper)
+        temp_dir = os.path.join(settings.BASE_DIR, 'temp')
+        os.makedirs(temp_dir, exist_ok=True)
+        unique_id = f"paper_manual_{self.request.id}"
+        tex_path = os.path.join(temp_dir, f"{unique_id}.tex")
+        pdf_path = os.path.join(temp_dir, f"{unique_id}.pdf")
+        
+        with open(tex_path, 'w', encoding='utf-8') as f: f.write(latex_content)
+            
+        process = subprocess.run(
+            ['pdflatex', '-interaction=nonstopmode', f'-output-directory={temp_dir}', tex_path],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=temp_dir
+        )
+        if not os.path.exists(pdf_path):
+            raise Exception("pdflatex compilation failed to output a PDF")
+            
+        from django.core.files import File
+        with open(pdf_path, 'rb') as f:
+            paper.secure_pdf_path.save(f"{unique_id}.pdf", File(f))
+        paper.save()
+        
+        for ext in ['.tex', '.log', '.aux', '.out']:
+            junk_file = os.path.join(temp_dir, f"{unique_id}{ext}")
+            if os.path.exists(junk_file): os.remove(junk_file)
+                
+        return paper.id
+    except Exception as exc:
+        raise self.retry(exc=exc, countdown=30)

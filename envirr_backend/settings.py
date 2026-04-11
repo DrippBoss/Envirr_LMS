@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'activity.apps.ActivityConfig',
     'gamification.apps.GamificationConfig',
     'ai_engine.apps.AiEngineConfig',
+    'learning.apps.LearningConfig',
 ]
 
 MIDDLEWARE = [

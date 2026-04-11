@@ -1,0 +1,18 @@
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+src/components/FlashcardModal.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/LivesBar.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/NodeCard.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/PrerequisiteModal.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/PrerequisiteModal.tsx(2,26): error TS1484: 'Flashcard' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/components/QuestionCard.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/RevisionNodeCard.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/pages/LearningMap.tsx(10,11): error TS6133: 'navigate' is declared but its value is never read.
+src/pages/NodePage.tsx(6,26): error TS1484: 'Flashcard' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/pages/NodePage.tsx(15,22): error TS6133: 'setNodeData' is declared but its value is never read.
+src/pages/StudentDashboard.tsx(32,11): error TS6133: 'handleUnitClick' is declared but its value is never read.
+src/pages/StudentDashboard.tsx(37,15): error TS6133: 'res' is declared but its value is never read.
+src/pages/TeacherPanel.tsx(13,23): error TS6133: 'setPaperType' is declared but its value is never read.
+src/pages/TeacherPanel.tsx(16,28): error TS6133: 'setIncludeAnswers' is declared but its value is never read.

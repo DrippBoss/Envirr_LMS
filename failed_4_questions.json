@@ -1,0 +1,418 @@
+[
+  {
+    "raw": {
+      "concept": "Prime factorization with exponents",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "exponents",
+        "3825"
+      ],
+      "question_text": "If 3825 = 3^x \u00d7 5^y \u00d7 17^z then the value of x + y \u2212 2z is",
+      "answer_text": "2",
+      "source_page": 3,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "0",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "1",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "2",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "3",
+          "is_correct": false,
+          "order": 4
+        }
+      ],
+      "subject": "Mathematics",
+      "chapter": "Real Numbers"
+    },
+    "error": "[{'type': 'string_too_short', 'loc': ('answer_text',), 'msg': 'String should have at least 2 characters', 'input': '2', 'ctx': {'min_length': 2}, 'url': 'https://errors.pydantic.dev/2.12/v/string_too_short'}]"
+  },
+  {
+    "raw": {
+      "concept": "LCM and unknown exponent",
+      "question_type": "MCQ",
+      "difficulty": "hard",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "LCM",
+        "prime factorization",
+        "unknown exponent"
+      ],
+      "question_text": "If a = 2\u00b3 \u00d7 3^x, b = 2^x \u00d7 3 \u00d7 5, c = 2\u00b2 \u00d7 3^x and LCM(a, b, c) = 3780 then x is",
+      "answer_text": "2",
+      "source_page": 3,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "1",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "2",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "3",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "0",
+          "is_correct": false,
+          "order": 4
+        }
+      ],
+      "subject": "Mathematics",
+      "chapter": "Real Numbers"
+    },
+    "error": "[{'type': 'string_too_short', 'loc': ('answer_text',), 'msg': 'String should have at least 2 characters', 'input': '2', 'ctx': {'min_length': 2}, 'url': 'https://errors.pydantic.dev/2.12/v/string_too_short'}]"
+  },
+  {
+    "raw": {
+      "concept": "Least prime factor of sum",
+      "question_type": "MCQ",
+      "difficulty": "hard",
+      "bloom_level": "analyze",
+      "marks": 1,
+      "tags": [
+        "prime factors",
+        "addition",
+        "even numbers"
+      ],
+      "question_text": "If a and b are two positive integers such that the least prime factor of a is 3 and the least prime factor of b is 5. Then the least prime factor of (a + b) is",
+      "answer_text": "2",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "1",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "2",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "3",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "4",
+          "is_correct": false,
+          "order": 4
+        }
+      ],
+      "subject": "Mathematics",
+      "chapter": "Real Numbers"
+    },
+    "error": "[{'type': 'string_too_short', 'loc': ('answer_text',), 'msg': 'String should have at least 2 characters', 'input': '2', 'ctx': {'min_length': 2}, 'url': 'https://errors.pydantic.dev/2.12/v/string_too_short'}]"
+  },
+  {
+    "raw": {
+      "concept": "Finding unknown from HCF and LCM",
+      "question_type": "MCQ",
+      "difficulty": "medium",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "LCM",
+        "unknown variable"
+      ],
+      "question_text": "The value of 'a', if HCF(x, 18) = 2 and LCM(x, 18) = 36, is",
+      "answer_text": "4",
+      "source_page": 2,
+      "options": [
+        {
+          "label": "A",
+          "text": "2",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "5",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "7",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "4",
+          "is_correct": true,
+          "order": 4
+        }
+      ],
+      "subject": "Mathematics",
+      "chapter": "Real Numbers"
+    },
+    "error": "[{'type': 'string_too_short', 'loc': ('answer_text',), 'msg': 'String should have at least 2 characters', 'input': '4', 'ctx': {'min_length': 2}, 'url': 'https://errors.pydantic.dev/2.12/v/string_too_short'}]"
+  },
+  {
+    "raw": {
+      "concept": "HCF of co-prime numbers",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "remember",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "co-prime numbers"
+      ],
+      "question_text": "If the product of two co-prime numbers is 553, then their HCF is",
+      "answer_text": "1",
+      "source_page": 1,
+      "board_year": "BOARD 2024",
+      "options": [
+        {
+          "label": "A",
+          "text": "1",
+          "is_correct": true,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "553",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "7",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "79",
+          "is_correct": false,
+          "order": 4
+        }
+      ],
+      "subject": "Mathematics",
+      "chapter": "Real Numbers"
+    },
+    "error": "[{'type': 'string_too_short', 'loc': ('answer_text',), 'msg': 'String should have at least 2 characters', 'input': '1', 'ctx': {'min_length': 2}, 'url': 'https://errors.pydantic.dev/2.12/v/string_too_short'}]"
+  },
+  {
+    "raw": {
+      "concept": "Factors of prime numbers",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "remember",
+      "marks": 1,
+      "tags": [
+        "prime number",
+        "factors"
+      ],
+      "question_text": "The total number of factors of prime number is",
+      "answer_text": "2",
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "1",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "0",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "2",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "3",
+          "is_correct": false,
+          "order": 4
+        }
+      ],
+      "subject": "Mathematics",
+      "chapter": "Real Numbers"
+    },
+    "error": "[{'type': 'string_too_short', 'loc': ('answer_text',), 'msg': 'String should have at least 2 characters', 'input': '2', 'ctx': {'min_length': 2}, 'url': 'https://errors.pydantic.dev/2.12/v/string_too_short'}]"
+  },
+  {
+    "raw": {
+      "concept": "Sum of exponents in prime factorization",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "exponents",
+        "1764"
+      ],
+      "question_text": "The sum of exponents of prime factors in the prime factorization of 1764 is",
+      "answer_text": "6",
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "3",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "4",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "5",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "6",
+          "is_correct": true,
+          "order": 4
+        }
+      ],
+      "subject": "Mathematics",
+      "chapter": "Real Numbers"
+    },
+    "error": "[{'type': 'string_too_short', 'loc': ('answer_text',), 'msg': 'String should have at least 2 characters', 'input': '6', 'ctx': {'min_length': 2}, 'url': 'https://errors.pydantic.dev/2.12/v/string_too_short'}]"
+  },
+  {
+    "raw": {
+      "concept": "Sum of exponents in prime factorization",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "apply",
+      "marks": 1,
+      "tags": [
+        "prime factorization",
+        "exponents",
+        "196"
+      ],
+      "question_text": "The sum of exponents of prime factors in the prime factorization of 196 is",
+      "answer_text": "4",
+      "source_page": 1,
+      "options": [
+        {
+          "label": "A",
+          "text": "3",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "4",
+          "is_correct": true,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "5",
+          "is_correct": false,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "2",
+          "is_correct": false,
+          "order": 4
+        }
+      ],
+      "subject": "Mathematics",
+      "chapter": "Real Numbers"
+    },
+    "error": "[{'type': 'string_too_short', 'loc': ('answer_text',), 'msg': 'String should have at least 2 characters', 'input': '4', 'ctx': {'min_length': 2}, 'url': 'https://errors.pydantic.dev/2.12/v/string_too_short'}]"
+  },
+  {
+    "raw": {
+      "concept": "HCF of multiples",
+      "question_type": "MCQ",
+      "difficulty": "easy",
+      "bloom_level": "understand",
+      "marks": 1,
+      "tags": [
+        "HCF",
+        "multiples",
+        "natural numbers"
+      ],
+      "question_text": "If p and q are natural numbers and \u2018p\u2019 is the multiple of \u2018q\u2019, then what is the HCF of \u2018p\u2019 and \u2018q\u2019?",
+      "answer_text": "q",
+      "source_page": 1,
+      "board_year": "BOARD 2023",
+      "options": [
+        {
+          "label": "A",
+          "text": "pq",
+          "is_correct": false,
+          "order": 1
+        },
+        {
+          "label": "B",
+          "text": "p",
+          "is_correct": false,
+          "order": 2
+        },
+        {
+          "label": "C",
+          "text": "q",
+          "is_correct": true,
+          "order": 3
+        },
+        {
+          "label": "D",
+          "text": "p + q",
+          "is_correct": false,
+          "order": 4
+        }
+      ],
+      "subject": "Mathematics",
+      "chapter": "Real Numbers"
+    },
+    "error": "[{'type': 'string_too_short', 'loc': ('answer_text',), 'msg': 'String should have at least 2 characters', 'input': 'q', 'ctx': {'min_length': 2}, 'url': 'https://errors.pydantic.dev/2.12/v/string_too_short'}]"
+  }
+]

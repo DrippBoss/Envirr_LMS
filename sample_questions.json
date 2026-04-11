@@ -1,0 +1,24 @@
+[
+    {
+        "subject": "Mathematics",
+        "chapter": "Algebra",
+        "concept": "Quadratic Equations",
+        "question_type": "MCQ",
+        "marks": 1,
+        "difficulty": "medium",
+        "question_text": "What is the discriminant of the equation $x^2 + 5x + 6 = 0$?",
+        "answer_text": "The discriminant is $D = b^2 - 4ac = 5^2 - 4(1)(6) = 25 - 24 = 1$.",
+        "is_ai_generated": false
+    },
+    {
+        "subject": "Science",
+        "chapter": "Photosynthesis",
+        "concept": "Light Reaction",
+        "question_type": "SHORT",
+        "marks": 3,
+        "difficulty": "easy",
+        "question_text": "Explain the role of chlorophyll in photosynthesis.",
+        "answer_text": "Chlorophyll absorbs light energy (primarily blue and red wavelengths) and converts it into chemical energy during the light-dependent reactions.",
+        "is_ai_generated": false
+    }
+]

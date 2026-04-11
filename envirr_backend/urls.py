@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('users.urls')),
@@ -10,6 +11,8 @@ urlpatterns = [
     path('api/activity/', include('activity.urls')),
     path('api/gamification/', include('gamification.urls')),
     path('api/ai/', include('ai_engine.urls')),
+    path('api/student/', include('learning.urls')),
+    path('api/teacher/', include('learning.teacher_urls')),
 ]
 
 if settings.DEBUG:
