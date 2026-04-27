@@ -1,0 +1,414 @@
+{
+  "nodes": [
+    {
+      "id": "screen_lesson_completed_screen",
+      "label": "Lesson Completed / Lesson Mastered Screen",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_celebration_modal",
+      "label": "Celebration Modal Dialog",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_star_rating_display",
+      "label": "Three-Star Rating Display",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_perfect_score_badge",
+      "label": "Perfect Score Badge / Label",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_xp_reward",
+      "label": "Experience Points Reward (+15 XP)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_precision_stat",
+      "label": "Precision Accuracy Stat (100%)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_time_spent_stat",
+      "label": "Time Spent Stat (04:20)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_vitality_stat",
+      "label": "Vitality / Lives Remaining Stat (4/5)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_continue_next_lesson_cta",
+      "label": "Continue to Next Lesson CTA Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_review_mistakes_cta",
+      "label": "Review Mistakes Secondary CTA Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_dark_theme_ui",
+      "label": "Dark Theme UI Design",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_academic_orbit_app",
+      "label": "Academic Orbit Application",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_missions_nav_tab",
+      "label": "Missions Navigation Tab (Active)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_gamification_system",
+      "label": "Gamification System (XP, Stars, Vitality)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson_mastery_event",
+      "label": "Lesson Mastery Achievement Event",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_lesson_completed_screen",
+      "target": "screen_celebration_modal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_celebration_modal",
+      "target": "screen_star_rating_display",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_celebration_modal",
+      "target": "screen_perfect_score_badge",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_celebration_modal",
+      "target": "screen_xp_reward",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_celebration_modal",
+      "target": "screen_precision_stat",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_celebration_modal",
+      "target": "screen_time_spent_stat",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_celebration_modal",
+      "target": "screen_vitality_stat",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_celebration_modal",
+      "target": "screen_continue_next_lesson_cta",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_celebration_modal",
+      "target": "screen_review_mistakes_cta",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson_completed_screen",
+      "target": "screen_dark_theme_ui",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_lesson_completed_screen",
+      "target": "screen_academic_orbit_app",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_academic_orbit_app",
+      "target": "screen_missions_nav_tab",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_lesson_mastery_event",
+      "target": "screen_xp_reward",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_lesson_mastery_event",
+      "target": "screen_star_rating_display",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_star_rating_display",
+      "target": "screen_perfect_score_badge",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_gamification_system",
+      "target": "screen_xp_reward",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_gamification_system",
+      "target": "screen_vitality_stat",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_gamification_system",
+      "target": "screen_star_rating_display",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_precision_stat",
+      "target": "screen_perfect_score_badge",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_vitality_stat",
+      "target": "screen_lesson_mastery_event",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_continue_next_lesson_cta",
+      "target": "screen_review_mistakes_cta",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_review_mistakes_cta",
+      "target": "screen_precision_stat",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "screen_lesson_completed_screen",
+      "target": "screen_gamification_system",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_celebration_modal",
+      "target": "screen_lesson_mastery_event",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_completed/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1024,
+  "output_tokens": 820
+}

@@ -1,0 +1,749 @@
+{
+  "nodes": [
+    {
+      "id": "screen_StudentDashboard",
+      "label": "Student Dashboard Screen",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_WelcomeBanner",
+      "label": "Welcome Banner (Good morning, Abhishek)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_StreakIndicator",
+      "label": "Streak Indicator (12 Days)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_XPCounter",
+      "label": "XP Counter (2,450 XP)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_LivesIndicator",
+      "label": "Lives Indicator (3 Hearts)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_UserAvatar",
+      "label": "User Avatar / Profile Icon",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_BadgePromotion",
+      "label": "Badge Promotion Banner (Scholar Badge)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ContinueLearningCTA",
+      "label": "Continue Learning CTA Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_HeroImage",
+      "label": "Hero Image (Anime-style character)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_SubjectProgressSection",
+      "label": "Subject Progress Section",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_MathProgressCard",
+      "label": "Mathematics Progress Card (80%, Next: Intro to Calculus)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ScienceProgressCard",
+      "label": "Science Progress Card (45%, Next: Cell Biology)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_EnglishProgressCard",
+      "label": "English Progress Card (92%, Next: Shakespearean Sonnets)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ViewAllCurriculumLink",
+      "label": "View All Curriculum Link",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_WeakConceptsSection",
+      "label": "Weak Concepts Section (AI-identified for focused review)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ReviewRecommendedBanner",
+      "label": "AI Review Recommended Banner",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_WeakConceptTag_QuadraticEquations",
+      "label": "Weak Concept Tag: Quadratic Equations",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_WeakConceptTag_Photosynthesis",
+      "label": "Weak Concept Tag: Photosynthesis",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_WeakConceptTag_PassiveVoice",
+      "label": "Weak Concept Tag: Passive Voice",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_AIMockTestCard",
+      "label": "AI Mock Test Card (Personalized quiz based on study history)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_StudyGroupsCard",
+      "label": "Study Groups Card (Join 4 students studying Biology)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_RecentActivitySection",
+      "label": "Recent Activity Section",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActivityItem_EarlyBirdBadge",
+      "label": "Activity: Earned Early Bird Badge",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActivityItem_CompletedQuizAlgebra",
+      "label": "Activity: Completed Quiz: Algebra I",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActivityItem_ReadPhotosynthesis",
+      "label": "Activity: Read Photosynthesis Chapter",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActivityItem_UpdatedProfile",
+      "label": "Activity: Updated Profile Photo",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_LoadOlderActivityButton",
+      "label": "Load Older Activity Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_TopNavBar",
+      "label": "Top Navigation Bar (Dashboard, Curriculum, Practice)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_SideNavBar",
+      "label": "Left Sidebar Navigation Icons",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_GamificationBar",
+      "label": "Gamification Status Bar (Streak + XP + Lives)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_StudentDashboard",
+      "target": "screen_WelcomeBanner",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_StudentDashboard",
+      "target": "screen_GamificationBar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_GamificationBar",
+      "target": "screen_StreakIndicator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_GamificationBar",
+      "target": "screen_XPCounter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_GamificationBar",
+      "target": "screen_LivesIndicator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_GamificationBar",
+      "target": "screen_UserAvatar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WelcomeBanner",
+      "target": "screen_StreakIndicator",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_WelcomeBanner",
+      "target": "screen_BadgePromotion",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WelcomeBanner",
+      "target": "screen_ContinueLearningCTA",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WelcomeBanner",
+      "target": "screen_HeroImage",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_StudentDashboard",
+      "target": "screen_SubjectProgressSection",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SubjectProgressSection",
+      "target": "screen_MathProgressCard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SubjectProgressSection",
+      "target": "screen_ScienceProgressCard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SubjectProgressSection",
+      "target": "screen_EnglishProgressCard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SubjectProgressSection",
+      "target": "screen_ViewAllCurriculumLink",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_StudentDashboard",
+      "target": "screen_WeakConceptsSection",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WeakConceptsSection",
+      "target": "screen_ReviewRecommendedBanner",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WeakConceptsSection",
+      "target": "screen_WeakConceptTag_QuadraticEquations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WeakConceptsSection",
+      "target": "screen_WeakConceptTag_Photosynthesis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WeakConceptsSection",
+      "target": "screen_WeakConceptTag_PassiveVoice",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WeakConceptsSection",
+      "target": "screen_AIMockTestCard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WeakConceptsSection",
+      "target": "screen_StudyGroupsCard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_StudentDashboard",
+      "target": "screen_RecentActivitySection",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RecentActivitySection",
+      "target": "screen_ActivityItem_EarlyBirdBadge",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RecentActivitySection",
+      "target": "screen_ActivityItem_CompletedQuizAlgebra",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RecentActivitySection",
+      "target": "screen_ActivityItem_ReadPhotosynthesis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RecentActivitySection",
+      "target": "screen_ActivityItem_UpdatedProfile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RecentActivitySection",
+      "target": "screen_LoadOlderActivityButton",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_StudentDashboard",
+      "target": "screen_TopNavBar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_StudentDashboard",
+      "target": "screen_SideNavBar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WeakConceptTag_QuadraticEquations",
+      "target": "screen_MathProgressCard",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_WeakConceptTag_Photosynthesis",
+      "target": "screen_ScienceProgressCard",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_WeakConceptTag_PassiveVoice",
+      "target": "screen_EnglishProgressCard",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_ActivityItem_EarlyBirdBadge",
+      "target": "screen_GamificationBar",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_ActivityItem_CompletedQuizAlgebra",
+      "target": "screen_MathProgressCard",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_ActivityItem_ReadPhotosynthesis",
+      "target": "screen_ScienceProgressCard",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_AIMockTestCard",
+      "target": "screen_WeakConceptsSection",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_StudyGroupsCard",
+      "target": "screen_ScienceProgressCard",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "screen_BadgePromotion",
+      "target": "screen_StreakIndicator",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_ContinueLearningCTA",
+      "target": "screen_SubjectProgressSection",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_TopNavBar",
+      "target": "screen_ViewAllCurriculumLink",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "stitch (5)/stitch/student_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.7
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1420,
+  "output_tokens": 980
+}

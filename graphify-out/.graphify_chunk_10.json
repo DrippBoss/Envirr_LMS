@@ -1,0 +1,500 @@
+{
+  "nodes": [
+    {
+      "id": "screen_AIExamGenerator",
+      "label": "AI Exam Generator Screen",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ExamForgeAI",
+      "label": "ExamForge AI Platform",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_BoardSelector",
+      "label": "Board Selector (e.g. CBSE)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_GradeSelector",
+      "label": "Grade Selector (e.g. Grade 10)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_SubjectField",
+      "label": "Subject Input Field",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ChapterField",
+      "label": "Chapter Input Field",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_TotalMarks",
+      "label": "Total Marks Field (e.g. 80)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_DifficultySelector",
+      "label": "Difficulty Selector (Easy / Medium / Hard)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_NumberOfSections",
+      "label": "Number of Sections Toggle (2 / 3 / 4 Sections)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_CustomInstructions",
+      "label": "Custom Instructions Text Area",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_MarksDistributionTable",
+      "label": "Marks Distribution Table",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_QuestionTypeMCQ",
+      "label": "Question Type: MCQ",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_QuestionTypeAssertionReason",
+      "label": "Question Type: Assertion Reason",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_QuestionTypeVeryShortAnswer",
+      "label": "Question Type: Very Short Answer",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_QuestionTypeShortAnswer",
+      "label": "Question Type: Short Answer",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_QuestionTypeLongAnswer",
+      "label": "Question Type: Long Answer",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_GenerateWithAIButton",
+      "label": "Generate with AI Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_DatabaseWarningNotice",
+      "label": "Database Storage Warning Notice",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_NavSidebar",
+      "label": "Navigation Sidebar",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_TopNavTabs",
+      "label": "Top Navigation Tabs (Dashboard, Provision Reports, Templates)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_AcademicOrbit",
+      "label": "Academic Orbit Section",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_ExamForgeAI",
+      "target": "screen_AIExamGenerator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_BoardSelector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_GradeSelector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_SubjectField",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_ChapterField",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_TotalMarks",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_DifficultySelector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_NumberOfSections",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_CustomInstructions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_MarksDistributionTable",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIExamGenerator",
+      "target": "screen_GenerateWithAIButton",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionTable",
+      "target": "screen_QuestionTypeMCQ",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionTable",
+      "target": "screen_QuestionTypeAssertionReason",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionTable",
+      "target": "screen_QuestionTypeVeryShortAnswer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionTable",
+      "target": "screen_QuestionTypeShortAnswer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionTable",
+      "target": "screen_QuestionTypeLongAnswer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_BoardSelector",
+      "target": "screen_GradeSelector",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_SubjectField",
+      "target": "screen_ChapterField",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_TotalMarks",
+      "target": "screen_MarksDistributionTable",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_NumberOfSections",
+      "target": "screen_MarksDistributionTable",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_GenerateWithAIButton",
+      "target": "screen_DatabaseWarningNotice",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_ExamForgeAI",
+      "target": "screen_NavSidebar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ExamForgeAI",
+      "target": "screen_TopNavTabs",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_NavSidebar",
+      "target": "screen_AcademicOrbit",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_DifficultySelector",
+      "target": "screen_MarksDistributionTable",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_CustomInstructions",
+      "target": "screen_GenerateWithAIButton",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/full_ai_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1024,
+  "output_tokens": 890
+}

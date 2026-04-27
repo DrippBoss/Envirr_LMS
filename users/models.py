@@ -11,6 +11,7 @@ class CustomUser(AbstractUser):
         ('student', 'Student'),
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
+    can_build_courses = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.username} - ({self.role})"

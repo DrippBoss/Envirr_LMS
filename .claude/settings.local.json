@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import graphify\")",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(New-Item -ItemType Directory -Force -Path graphify-out)",
+      "Bash(Out-Null)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(node -e ':*)",
+      "Bash(npm run:*)",
+      "Bash(docker-compose ps:*)",
+      "Bash(docker ps:*)"
+    ]
+  }
+}

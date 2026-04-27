@@ -22,6 +22,13 @@ class CourseUnit(models.Model):
     icon = models.CharField(max_length=50, blank=True)
     description = models.TextField(blank=True)
     is_published = models.BooleanField(default=False)
+    assigned_teacher = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='assigned_courses',
+        limit_choices_to={'role': 'teacher'},
+    )
 
     class Meta:
         ordering = ['order']
@@ -51,6 +58,8 @@ class LearningNode(models.Model):
     order = models.PositiveIntegerField()
     xp_reward = models.PositiveIntegerField(default=10)
     is_bonus = models.BooleanField(default=False)
+    description = models.TextField(blank=True, help_text="About this lesson text shown on the video page")
+    objectives_json = models.JSONField(default=list, blank=True, help_text="List of learning objective strings")
 
     youtube_url = models.URLField(blank=True)
     video_file = models.FileField(upload_to='lesson_videos/', null=True, blank=True)
@@ -77,6 +86,9 @@ class QuestionType(models.TextChoices):
     FILL_BLANK = 'FILL_BLANK', 'Fill in the Blank'
     TRUE_FALSE = 'TRUE_FALSE', 'True/False'
     MATCH = 'MATCH', 'Match'
+    PROOF_PUZZLE = 'PROOF_PUZZLE', 'Proof Puzzle'
+    REARRANGE = 'REARRANGE', 'Rearrange / Picker'
+    MULTI_SELECT = 'MULTI_SELECT', 'Select All That Apply'
 
 class LessonQuestion(models.Model):
     node = models.ForeignKey(LearningNode, on_delete=models.CASCADE, related_name='questions')
@@ -87,6 +99,12 @@ class LessonQuestion(models.Model):
     hint = models.TextField(blank=True)
     explanation = models.TextField(blank=True)
     concept = models.CharField(max_length=150, blank=True)
+    source_question = models.ForeignKey(
+        'ai_engine.QuestionBank',
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='lesson_copies',
+    )
     order = models.PositiveIntegerField(default=0)
 
     class Meta:

@@ -1,0 +1,19 @@
+{
+  "learning/admin.py": 1775881309.6290784,
+  "learning/apps.py": 1775697494.3577561,
+  "learning/models.py": 1775878675.5216079,
+  "learning/serializers.py": 1775697630.8754783,
+  "learning/services.py": 1775697605.7330601,
+  "learning/teacher_urls.py": 1775878720.9579356,
+  "learning/tests.py": 1775697494.350633,
+  "learning/urls.py": 1775697674.2111554,
+  "learning/views.py": 1775898842.4064672,
+  "learning/wizard_views.py": 1775878700.5262976,
+  "learning/__init__.py": 1775697494.3002403,
+  "learning/management/__init__.py": 1775697731.0400395,
+  "learning/management/commands/seed_chapter1.py": 1775743164.8912985,
+  "learning/management/commands/__init__.py": 1775697738.6809754,
+  "learning/migrations/0001_initial.py": 1775697566.2591138,
+  "learning/migrations/0002_contenttemplate.py": 1775880935.5098643,
+  "learning/migrations/__init__.py": 1775697494.3858285
+}

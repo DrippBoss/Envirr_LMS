@@ -43,9 +43,22 @@ class GeneratePaperSerializer(serializers.Serializer):
     board = serializers.CharField(max_length=50, default="CBSE")
     grade = serializers.CharField(max_length=50, default="10th")
     subject = serializers.CharField()
-    chapter = serializers.CharField()
+    chapter = serializers.CharField(required=False, allow_blank=True, default='')
+    chapters = serializers.ListField(child=serializers.CharField(), required=False, default=list)
     paper_type = serializers.CharField()
     max_marks = serializers.IntegerField()
-    difficulty = serializers.ChoiceField(choices=['easy', 'medium', 'hard'])
+    difficulty = serializers.ChoiceField(choices=['easy', 'medium', 'hard', 'mixed'])
     include_answers = serializers.BooleanField(default=True)
     custom_instructions = serializers.CharField(required=False, allow_blank=True)
+
+    def validate(self, data):
+        # Normalise: always resolve to a non-empty `chapters` list
+        chapters = data.get('chapters') or []
+        chapter  = data.get('chapter', '').strip()
+        if not chapters and chapter:
+            chapters = [chapter]
+        if not chapters:
+            raise serializers.ValidationError("Provide at least one chapter.")
+        data['chapters'] = chapters
+        data['chapter']  = chapters[0]   # keep single-chapter field for LaTeX title fallback
+        return data

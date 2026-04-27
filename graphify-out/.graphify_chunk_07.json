@@ -1,0 +1,759 @@
+{
+  "nodes": [
+    {
+      "id": "screen_TeacherDashboard",
+      "label": "Teacher Dashboard (Academic Orbit)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_InstructorPortal",
+      "label": "Instructor Portal (Senor Educator)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_PendingDoubtsPanel",
+      "label": "Pending Doubts Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ResolvedHistoryPanel",
+      "label": "Resolved History Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_GenerateExamPaperSection",
+      "label": "Generate Exam Paper Section",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_StatPendingDoubts",
+      "label": "Stat: Pending Doubts (14, 4 High Priority)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_StatDoubtsResolved",
+      "label": "Stat: Doubts Resolved (142, +12% from last week)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_StatAvgResponseTime",
+      "label": "Stat: Avg Response Time (18m, Top 5% of Educators)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_DoubtCardArjun",
+      "label": "Doubt Card: Arjun K. (Physics - Electromagnetic Induction)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_DoubtCardSneha",
+      "label": "Doubt Card: Sneha R. (Mathematics - Calculus Integrals)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ResolvedCardRohan",
+      "label": "Resolved Doubt: Rohan M. (Subject: Chemistry)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ResolvedCardPriya",
+      "label": "Resolved Doubt: Priya G. (Subject: Biology)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ResolvedCardKabir",
+      "label": "Resolved Doubt: Kabir S. (Subject: Physics)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ExamModeManualPicker",
+      "label": "Exam Generation Mode: Manual Picker",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ExamModeSmartHybrid",
+      "label": "Exam Generation Mode: Smart Hybrid (Recommended)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ExamModeFullAI",
+      "label": "Exam Generation Mode: Full AI",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_NavOverview",
+      "label": "Navigation: Overview",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_NavDoubtSolver",
+      "label": "Navigation: Doubt Solver",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_NavExamFactory",
+      "label": "Navigation: Exam Factory",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_NavAnalytics",
+      "label": "Navigation: Analytics",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_TopNavDoubtQueue",
+      "label": "Top Navigation Tab: Doubt Queue",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_TopNavExamEngine",
+      "label": "Top Navigation Tab: Exam Engine",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActionReply",
+      "label": "Action Button: Reply (on Doubt Card)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActionMarkResolved",
+      "label": "Action Button: Mark as Resolved",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActionViewFullArchive",
+      "label": "Action Button: View Full Archive",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActionGenerateExam",
+      "label": "Action Button: Generate Exam (sidebar CTA)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActionStartManualSession",
+      "label": "Action Button: Start Manual Session",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActionLaunchConfigurator",
+      "label": "Action Button: Launch Configurator (Smart Hybrid)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ActionGenerateViaAI",
+      "label": "Action Button: Generate via AI",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_AutoRefreshIndicator",
+      "label": "Auto-refresh Indicator (Pending Doubts)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_InstructorPortal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.98,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_PendingDoubtsPanel",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_ResolvedHistoryPanel",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_GenerateExamPaperSection",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_StatPendingDoubts",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_StatDoubtsResolved",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_StatAvgResponseTime",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PendingDoubtsPanel",
+      "target": "screen_DoubtCardArjun",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.98,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PendingDoubtsPanel",
+      "target": "screen_DoubtCardSneha",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.98,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PendingDoubtsPanel",
+      "target": "screen_AutoRefreshIndicator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_PendingDoubtsPanel",
+      "target": "screen_StatPendingDoubts",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.92,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_ResolvedHistoryPanel",
+      "target": "screen_ResolvedCardRohan",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.98,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ResolvedHistoryPanel",
+      "target": "screen_ResolvedCardPriya",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.98,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ResolvedHistoryPanel",
+      "target": "screen_ResolvedCardKabir",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.98,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ResolvedHistoryPanel",
+      "target": "screen_StatDoubtsResolved",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.90,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_ResolvedHistoryPanel",
+      "target": "screen_ActionViewFullArchive",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.97,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_DoubtCardArjun",
+      "target": "screen_ActionReply",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.97,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_DoubtCardArjun",
+      "target": "screen_ActionMarkResolved",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.97,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_DoubtCardArjun",
+      "target": "screen_ResolvedHistoryPanel",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_DoubtCardSneha",
+      "target": "screen_ActionReply",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_GenerateExamPaperSection",
+      "target": "screen_ExamModeManualPicker",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_GenerateExamPaperSection",
+      "target": "screen_ExamModeSmartHybrid",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_GenerateExamPaperSection",
+      "target": "screen_ExamModeFullAI",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ExamModeManualPicker",
+      "target": "screen_ActionStartManualSession",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.97,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ExamModeSmartHybrid",
+      "target": "screen_ActionLaunchConfigurator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.97,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ExamModeFullAI",
+      "target": "screen_ActionGenerateViaAI",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.97,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ExamModeManualPicker",
+      "target": "screen_ExamModeSmartHybrid",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_ExamModeSmartHybrid",
+      "target": "screen_ExamModeFullAI",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_NavOverview",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_NavDoubtSolver",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_NavExamFactory",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_NavAnalytics",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_TopNavDoubtQueue",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TeacherDashboard",
+      "target": "screen_TopNavExamEngine",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.99,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_NavDoubtSolver",
+      "target": "screen_PendingDoubtsPanel",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_NavExamFactory",
+      "target": "screen_GenerateExamPaperSection",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_ActionGenerateExam",
+      "target": "screen_GenerateExamPaperSection",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.90,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_StatAvgResponseTime",
+      "target": "screen_InstructorPortal",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.82,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_TopNavDoubtQueue",
+      "target": "screen_PendingDoubtsPanel",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.87,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_TopNavExamEngine",
+      "target": "screen_GenerateExamPaperSection",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.87,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_ExamModeSmartHybrid",
+      "target": "screen_ExamModeManualPicker",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_ExamModeSmartHybrid",
+      "target": "screen_ExamModeFullAI",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/specialized_teacher_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1420,
+  "output_tokens": 980
+}

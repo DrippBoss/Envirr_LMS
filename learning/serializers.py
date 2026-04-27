@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import (
     CourseUnit, LearningPath, LearningNode, LessonQuestion, 
     NodeProgress, Flashcard, FlashcardDeck, RevisionNode, 
-    RevisionNodeProgress, WeakSpot, FlashcardProgress
+    RevisionNodeProgress, WeakSpot
 )
 
 class CourseUnitSerializer(serializers.ModelSerializer):
@@ -91,10 +91,18 @@ class RevisionNodeSerializer(serializers.ModelSerializer):
 class LearningPathSerializer(serializers.ModelSerializer):
     nodes = serializers.SerializerMethodField()
     revision_nodes = serializers.SerializerMethodField()
+    subject = serializers.SerializerMethodField()
+    grade = serializers.SerializerMethodField()
 
     class Meta:
         model = LearningPath
-        fields = ('id', 'title', 'description', 'nodes', 'revision_nodes')
+        fields = ('id', 'title', 'description', 'subject', 'grade', 'nodes', 'revision_nodes')
+
+    def get_subject(self, obj):
+        return obj.unit.subject if obj.unit else 'Mathematics'
+
+    def get_grade(self, obj):
+        return f"Grade {obj.class_grade}" if obj.class_grade else (f"Grade {obj.unit.class_grade}" if obj.unit else '')
 
     def get_nodes(self, obj):
         nodes = obj.nodes.all()
@@ -127,6 +135,17 @@ class FullLearningNodeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class LessonQuestionSerializer(serializers.ModelSerializer):
+    options_json = serializers.SerializerMethodField()
+    hint = serializers.CharField()
+
     class Meta:
         model = LessonQuestion
-        fields = ('id', 'question_type', 'question_text', 'options_json') # correct_answer explicitly omitted
+        fields = ('id', 'question_type', 'question_text', 'options_json', 'hint')  # correct_answer explicitly omitted
+
+    def get_options_json(self, obj):
+        if obj.question_type == 'PROOF_PUZZLE':
+            import random as _rnd
+            steps = list(obj.options_json.get('steps', []))
+            _rnd.shuffle(steps)
+            return {'steps': steps}
+        return obj.options_json

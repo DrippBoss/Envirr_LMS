@@ -1,0 +1,107 @@
+{
+  "nodes": [
+    {
+      "id": "hero_HeroImage",
+      "label": "Hero / Banner Image",
+      "file_type": "image",
+      "source_file": "frontend/src/assets/hero.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "description": "Isometric illustration of two stacked rounded-rectangle layers (cards/slabs). The top slab is white/transparent with a thin grey outline, giving a glass-like appearance. The bottom slab is filled with a rich violet-to-purple gradient with glossy vertical streaks, rendered in the brand purple (#7e14ff / #863bff range). The composition evokes layered knowledge, flashcard stacks, or structured learning content, consistent with an LMS product hero graphic. Background is white/transparent."
+    },
+    {
+      "id": "favicon_BrandLogomark",
+      "label": "Envirr Brand Logomark (Favicon)",
+      "file_type": "image",
+      "source_file": "frontend/public/favicon.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "description": "A stylised lightning-bolt / downward-pointing chevron shape at 48x46 px. The primary silhouette is a single unified path filled with brand purple (#863bff / display-p3 0.525 0.230 1.0). Inside the masked shape, multiple blurred ellipse glows create an internal iridescent sheen: deep violet (#7e14ff), pale lavender (#ede6ff), and electric cyan (#47bfff) streaks produce a holographic, glassy interior effect. The overall impression is a modern, tech-forward energy-symbol logo that doubles as the browser tab favicon."
+    },
+    {
+      "id": "icons_UIIconSprite",
+      "label": "UI Icon Sprite Sheet (SVG symbol set)",
+      "file_type": "image",
+      "source_file": "frontend/public/icons.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "description": "An SVG sprite containing six named symbol definitions used throughout the UI: (1) bluesky-icon — Bluesky social logo, solid dark (#08060d) butterfly/cloud mark; (2) discord-icon — Discord logo, solid dark, two-bubble gamepad silhouette; (3) documentation-icon — outlined document with code-bracket decoration, stroked in brand purple (#aa3bff); (4) github-icon — GitHub Octocat logo, solid dark, clip-rule evenodd; (5) social-icon — generic person+star social/community icon, stroked in brand purple (#aa3bff); (6) x-icon — X (formerly Twitter) logo, solid dark, clip-rule evenodd. Stroke icons use 1.35 px stroke-width with round caps/joins; fill icons use #08060d (near-black). Purple accent (#aa3bff) is used exclusively on the product-specific icons (documentation, social), signalling brand alignment."
+    },
+    {
+      "id": "brand_PurpleColorPalette",
+      "label": "Brand Purple Color Palette",
+      "file_type": "concept",
+      "source_file": "frontend/public/favicon.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "description": "Core brand colors used across visual assets: primary #863bff (medium purple), deep #7e14ff (vivid violet), light #ede6ff (pale lavender tint), accent #47bfff (electric cyan/sky blue), icon accent #aa3bff (lighter purple used in SVG icon strokes)."
+    }
+  ],
+  "edges": [
+    {
+      "source": "favicon_BrandLogomark",
+      "target": "brand_PurpleColorPalette",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/public/favicon.svg",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_HeroImage",
+      "target": "brand_PurpleColorPalette",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "frontend/src/assets/hero.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "icons_UIIconSprite",
+      "target": "brand_PurpleColorPalette",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/public/icons.svg",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_HeroImage",
+      "target": "favicon_BrandLogomark",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "frontend/src/assets/hero.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "icons_UIIconSprite",
+      "target": "favicon_BrandLogomark",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "frontend/public/icons.svg",
+      "source_location": null,
+      "weight": 0.8
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1850,
+  "output_tokens": 620
+}

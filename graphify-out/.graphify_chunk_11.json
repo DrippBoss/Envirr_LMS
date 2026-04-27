@@ -1,0 +1,749 @@
+{
+  "nodes": [
+    {
+      "id": "screen_examarchitect_app",
+      "label": "ExamArchitect Application",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_question_library_panel",
+      "label": "Question Library Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_paper_preview_panel",
+      "label": "Paper Preview Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_sidebar_navigation",
+      "label": "Sidebar Navigation",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_top_navbar",
+      "label": "Top Navigation Bar",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_question_bank",
+      "label": "Question Bank",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_question_card",
+      "label": "Question Card",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_difficulty_badge",
+      "label": "Difficulty Badge (HARD / EASY / MEDIUM)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_marks_badge",
+      "label": "Marks Badge",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_add_question_button",
+      "label": "Add Question Button (+)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_subject_filter",
+      "label": "Subject Filter (Physics)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_chapter_filter",
+      "label": "Chapter Filter (Electromagnetism)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_type_filter",
+      "label": "Type Filter",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_section_header",
+      "label": "Section Header",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_section_objective_mcq",
+      "label": "Section A: Objective (MCQ + A/R)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_section_very_short_answer",
+      "label": "Section B: Very Short Answer",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_section_short_answer",
+      "label": "Section C: Short Answer",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_section_long_answer",
+      "label": "Section D: Long Answer",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_total_marks_indicator",
+      "label": "Total Marks Indicator (35/70)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_question_count_badge",
+      "label": "Question Count Badge (12Qs)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_compile_download_pdf_button",
+      "label": "Compile & Download PDF Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_save_draft_button",
+      "label": "Save Draft Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_generate_pdf_button",
+      "label": "Generate PDF Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_exam_metadata",
+      "label": "Exam Metadata (Class XII Physics, Periodic Test, Oct 2024)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_cbse_portal_branding",
+      "label": "CBSE Portal Branding",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_browse_library_link",
+      "label": "Browse Library Link",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_drafts_tab",
+      "label": "Drafts Tab",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_templates_tab",
+      "label": "Templates Tab",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_archive_tab",
+      "label": "Archive Tab",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_available_questions_count",
+      "label": "Available Questions Count (1,248)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_examarchitect_app",
+      "target": "screen_question_library_panel",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_examarchitect_app",
+      "target": "screen_paper_preview_panel",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_examarchitect_app",
+      "target": "screen_sidebar_navigation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_examarchitect_app",
+      "target": "screen_top_navbar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_top_navbar",
+      "target": "screen_question_bank",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_top_navbar",
+      "target": "screen_drafts_tab",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_top_navbar",
+      "target": "screen_templates_tab",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_top_navbar",
+      "target": "screen_archive_tab",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_top_navbar",
+      "target": "screen_save_draft_button",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_top_navbar",
+      "target": "screen_generate_pdf_button",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_question_library_panel",
+      "target": "screen_question_bank",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_question_library_panel",
+      "target": "screen_subject_filter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_question_library_panel",
+      "target": "screen_chapter_filter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_question_library_panel",
+      "target": "screen_type_filter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_question_library_panel",
+      "target": "screen_question_card",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_question_library_panel",
+      "target": "screen_available_questions_count",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_question_card",
+      "target": "screen_difficulty_badge",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_question_card",
+      "target": "screen_marks_badge",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_question_card",
+      "target": "screen_add_question_button",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_add_question_button",
+      "target": "screen_paper_preview_panel",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.92,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 0.92
+    },
+    {
+      "source": "screen_paper_preview_panel",
+      "target": "screen_section_objective_mcq",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_paper_preview_panel",
+      "target": "screen_section_very_short_answer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_paper_preview_panel",
+      "target": "screen_section_short_answer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_paper_preview_panel",
+      "target": "screen_section_long_answer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_paper_preview_panel",
+      "target": "screen_total_marks_indicator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_paper_preview_panel",
+      "target": "screen_question_count_badge",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_paper_preview_panel",
+      "target": "screen_exam_metadata",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_paper_preview_panel",
+      "target": "screen_compile_download_pdf_button",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_section_header",
+      "target": "screen_section_objective_mcq",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_section_header",
+      "target": "screen_section_very_short_answer",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_section_header",
+      "target": "screen_section_short_answer",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_section_header",
+      "target": "screen_section_long_answer",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_section_objective_mcq",
+      "target": "screen_marks_badge",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 0.88
+    },
+    {
+      "source": "screen_compile_download_pdf_button",
+      "target": "screen_generate_pdf_button",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_sidebar_navigation",
+      "target": "screen_cbse_portal_branding",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_sidebar_navigation",
+      "target": "screen_subject_filter",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.80,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 0.80
+    },
+    {
+      "source": "screen_section_short_answer",
+      "target": "screen_browse_library_link",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_browse_library_link",
+      "target": "screen_question_library_panel",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.90,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 0.90
+    },
+    {
+      "source": "screen_save_draft_button",
+      "target": "screen_drafts_tab",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 0.88
+    },
+    {
+      "source": "screen_total_marks_indicator",
+      "target": "screen_marks_badge",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.92,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 0.92
+    },
+    {
+      "source": "screen_question_bank",
+      "target": "screen_available_questions_count",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/manual_exam_paper_builder/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1024,
+  "output_tokens": 890
+}

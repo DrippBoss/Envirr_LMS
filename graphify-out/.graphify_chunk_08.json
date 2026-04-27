@@ -1,0 +1,404 @@
+{
+  "nodes": [
+    {
+      "id": "screen_AskAITutorScreen",
+      "label": "Ask AI Tutor Screen",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ChatInterface",
+      "label": "Chat Interface",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_AiTutorAgent",
+      "label": "AI Tutor Agent (Envirr AI Tutor)",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_StudentQuestion",
+      "label": "Student Question Input",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_SocraticResponse",
+      "label": "Socratic AI Response Style",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ConceptKeyCard",
+      "label": "Concept Key Card (Inline)",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ProofByContradiction",
+      "label": "Proof by Contradiction (Concept)",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_EscalateToTeacher",
+      "label": "Escalate to Teacher Action",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_UploadPhotoProblem",
+      "label": "Upload Photo of Problem Feature",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_VoiceAsk",
+      "label": "Voice Ask Feature",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_PostDoubt",
+      "label": "Post Doubt Feature",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_SessionTopicContext",
+      "label": "Session Topic Context (Real Analysis)",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_StreakCounter",
+      "label": "Streak Counter (12 Days)",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_LeftSidebarNav",
+      "label": "Left Sidebar Navigation",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_TextFollowUpInput",
+      "label": "Follow-up Text Input Field",
+      "file_type": "image",
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_AskAITutorScreen",
+      "target": "screen_ChatInterface",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AskAITutorScreen",
+      "target": "screen_AiTutorAgent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AskAITutorScreen",
+      "target": "screen_LeftSidebarNav",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AskAITutorScreen",
+      "target": "screen_SessionTopicContext",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ChatInterface",
+      "target": "screen_StudentQuestion",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ChatInterface",
+      "target": "screen_SocraticResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AiTutorAgent",
+      "target": "screen_SocraticResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.97,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 0.97
+    },
+    {
+      "source": "screen_SocraticResponse",
+      "target": "screen_ConceptKeyCard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ConceptKeyCard",
+      "target": "screen_ProofByContradiction",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_StudentQuestion",
+      "target": "screen_ProofByContradiction",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.93,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 0.93
+    },
+    {
+      "source": "screen_AskAITutorScreen",
+      "target": "screen_EscalateToTeacher",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AskAITutorScreen",
+      "target": "screen_UploadPhotoProblem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AskAITutorScreen",
+      "target": "screen_VoiceAsk",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AskAITutorScreen",
+      "target": "screen_PostDoubt",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AskAITutorScreen",
+      "target": "screen_TextFollowUpInput",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_TextFollowUpInput",
+      "target": "screen_ChatInterface",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_UploadPhotoProblem",
+      "target": "screen_StudentQuestion",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 0.88
+    },
+    {
+      "source": "screen_VoiceAsk",
+      "target": "screen_StudentQuestion",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 0.88
+    },
+    {
+      "source": "screen_PostDoubt",
+      "target": "screen_EscalateToTeacher",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.80,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 0.80
+    },
+    {
+      "source": "screen_LeftSidebarNav",
+      "target": "screen_StreakCounter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AiTutorAgent",
+      "target": "screen_EscalateToTeacher",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_SessionTopicContext",
+      "target": "screen_ProofByContradiction",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.82,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 0.82
+    },
+    {
+      "source": "screen_ConceptKeyCard",
+      "target": "screen_SocraticResponse",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.90,
+      "source_file": "ai_doubt_resolution/screen.png",
+      "source_location": null,
+      "weight": 0.90
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1100,
+  "output_tokens": 620
+}

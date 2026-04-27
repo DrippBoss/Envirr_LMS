@@ -1,0 +1,290 @@
+{
+  "nodes": [
+    {
+      "id": "screen_unit_real_numbers",
+      "label": "Real Numbers – Unit 1 Learning Path",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson_fundamental_theorem",
+      "label": "Fundamental Theorem (Lesson Node – Completed)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson_euclids_division_lemma",
+      "label": "Euclid's Division Lemma (Lesson 1 – Completed)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson_irrationality_proofs",
+      "label": "Irrationality Proofs (Lesson 2)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_mid_unit_review",
+      "label": "Strengthen Your Knowledge (Mid-Unit Review – Locked)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson_decimal_expansions",
+      "label": "Decimal Expansions (Active Lesson – Resume)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_locked_node_1",
+      "label": "Locked Lesson Node (Post Decimal Expansions)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_locked_node_2",
+      "label": "Locked Lesson Node (Pre-Final Test)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_chapter_final_test",
+      "label": "Chapter Final Test (+1,000 XP, 25 Points – Locked)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_review_foundations_button",
+      "label": "Review Foundations (CTA Button)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_platform_the_observatory",
+      "label": "The Observatory (LMS Platform)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_platform_the_observatory",
+      "target": "screen_unit_real_numbers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_unit_real_numbers",
+      "target": "screen_lesson_fundamental_theorem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson_fundamental_theorem",
+      "target": "screen_lesson_euclids_division_lemma",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.98,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.98
+    },
+    {
+      "source": "screen_lesson_euclids_division_lemma",
+      "target": "screen_lesson_irrationality_proofs",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.98,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.98
+    },
+    {
+      "source": "screen_lesson_irrationality_proofs",
+      "target": "screen_mid_unit_review",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_mid_unit_review",
+      "target": "screen_lesson_decimal_expansions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_lesson_decimal_expansions",
+      "target": "screen_locked_node_1",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.92,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.92
+    },
+    {
+      "source": "screen_locked_node_1",
+      "target": "screen_locked_node_2",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.80,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.80
+    },
+    {
+      "source": "screen_locked_node_2",
+      "target": "screen_chapter_final_test",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.93,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.93
+    },
+    {
+      "source": "screen_lesson_fundamental_theorem",
+      "target": "screen_lesson_euclids_division_lemma",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.88
+    },
+    {
+      "source": "screen_lesson_euclids_division_lemma",
+      "target": "screen_lesson_irrationality_proofs",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.87,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.87
+    },
+    {
+      "source": "screen_lesson_irrationality_proofs",
+      "target": "screen_lesson_decimal_expansions",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_unit_real_numbers",
+      "target": "screen_review_foundations_button",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.97,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.97
+    },
+    {
+      "source": "screen_unit_real_numbers",
+      "target": "screen_chapter_final_test",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.96,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.96
+    },
+    {
+      "source": "screen_mid_unit_review",
+      "target": "screen_lesson_fundamental_theorem",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "screen_mid_unit_review",
+      "target": "screen_lesson_irrationality_proofs",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "stitch (5)/stitch/unit_learning_path_real_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.75
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

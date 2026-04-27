@@ -1,0 +1,519 @@
+{
+  "nodes": [
+    {
+      "id": "screen_quiz_irrational_numbers_screen",
+      "label": "Quiz Screen: Irrational Numbers",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_quiz_question_irrational_characteristic",
+      "label": "MCQ Question: Key Characteristic of an Irrational Number",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_answer_option_a_terminating_decimal",
+      "label": "Answer Option A: Terminating Decimal Expansion",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_answer_option_b_fraction",
+      "label": "Answer Option B: Can Be Expressed as a/b where b ≠ 0",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_answer_option_c_non_terminating_non_repeating",
+      "label": "Answer Option C: Non-Terminating, Non-Repeating Decimal Expansion (Selected/Correct)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_answer_option_d_repeating_decimal",
+      "label": "Answer Option D: Repeating Decimal Pattern",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_subject_mathematics",
+      "label": "Subject: Mathematics",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_subject_physics",
+      "label": "Subject: Physics",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_subject_chemistry",
+      "label": "Subject: Chemistry",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ui_lives_bar",
+      "label": "UI: Lives/Hearts Bar (3 hearts visible)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ui_timer",
+      "label": "UI: Timer (04:20 displayed)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ui_streak_badge",
+      "label": "UI: 5-Day Streak Badge",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ui_xp_earned",
+      "label": "UI: XP Earned Indicator (+110 XP Earned)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ui_progress_bar",
+      "label": "UI: Progress Bar (bottom of quiz area)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ui_check_answer_button",
+      "label": "UI: Check Answer Button (CTA)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ui_sidebar_nav",
+      "label": "UI: Left Sidebar Navigation (Mission Control, Curriculum, Rankings, Laboratory, Settings)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ui_user_profile",
+      "label": "UI: User Profile Widget (Commander)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_concept_irrational_numbers",
+      "label": "Concept: Irrational Numbers (Mathematics Topic)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_layout_2x2_answer_grid",
+      "label": "Layout Pattern: 2x2 Answer Options Grid",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_quiz_type_mcq",
+      "label": "Quiz Type: Multiple Choice Question (MCQ)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_quiz_question_irrational_characteristic",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_quiz_type_mcq",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_question_irrational_characteristic",
+      "target": "screen_answer_option_a_terminating_decimal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_question_irrational_characteristic",
+      "target": "screen_answer_option_b_fraction",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_question_irrational_characteristic",
+      "target": "screen_answer_option_c_non_terminating_non_repeating",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_question_irrational_characteristic",
+      "target": "screen_answer_option_d_repeating_decimal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_answer_option_c_non_terminating_non_repeating",
+      "target": "screen_concept_irrational_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.98,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.98
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_concept_irrational_numbers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_subject_mathematics",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_concept_irrational_numbers",
+      "target": "screen_subject_mathematics",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_subject_physics",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_subject_chemistry",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_ui_lives_bar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_ui_timer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_ui_streak_badge",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_ui_xp_earned",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_ui_progress_bar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_ui_check_answer_button",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_ui_sidebar_nav",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_ui_user_profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_quiz_irrational_numbers_screen",
+      "target": "screen_layout_2x2_answer_grid",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_layout_2x2_answer_grid",
+      "target": "screen_quiz_type_mcq",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.92,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.92
+    },
+    {
+      "source": "screen_answer_option_a_terminating_decimal",
+      "target": "screen_concept_irrational_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_answer_option_b_fraction",
+      "target": "screen_concept_irrational_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_answer_option_d_repeating_decimal",
+      "target": "screen_concept_irrational_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_ui_streak_badge",
+      "target": "screen_ui_xp_earned",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.88
+    },
+    {
+      "source": "screen_ui_lives_bar",
+      "target": "screen_ui_timer",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.80,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.80
+    },
+    {
+      "source": "screen_ui_check_answer_button",
+      "target": "screen_answer_option_c_non_terminating_non_repeating",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.90,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.90
+    },
+    {
+      "source": "screen_ui_progress_bar",
+      "target": "screen_ui_lives_bar",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "stitch (5)/stitch/quiz_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.75
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1024,
+  "output_tokens": 820
+}

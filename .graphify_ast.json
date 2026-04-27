@@ -1,0 +1,1621 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_eslint_config_js",
+      "label": "eslint.config.js",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\eslint.config.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_postcss_config_js",
+      "label": "postcss.config.js",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\postcss.config.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_tailwind_config_js",
+      "label": "tailwind.config.js",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\tailwind.config.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_vite_config_ts",
+      "label": "vite.config.ts",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\vite.config.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "app",
+      "label": "App.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "app_protectedroute",
+      "label": "ProtectedRoute()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L14"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_src_main_tsx",
+      "label": "main.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\main.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "coursebuilder",
+      "label": "CourseBuilder.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "coursebuilder_fetchtemplates",
+      "label": "fetchTemplates()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L27"
+    },
+    {
+      "id": "coursebuilder_addchapter",
+      "label": "addChapter()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L38"
+    },
+    {
+      "id": "coursebuilder_updatechaptertitle",
+      "label": "updateChapterTitle()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L43"
+    },
+    {
+      "id": "coursebuilder_addnodetochapter",
+      "label": "addNodeToChapter()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L49"
+    },
+    {
+      "id": "coursebuilder_handlereordernodes",
+      "label": "handleReorderNodes()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L62"
+    },
+    {
+      "id": "coursebuilder_handlepublish",
+      "label": "handlePublish()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L68"
+    },
+    {
+      "id": "flashcardmodal",
+      "label": "FlashcardModal.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "flashcardmodal_handlekeydown",
+      "label": "handleKeyDown()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L37"
+    },
+    {
+      "id": "flashcardmodal_markseen",
+      "label": "markSeen()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L46"
+    },
+    {
+      "id": "flashcardmodal_handlenext",
+      "label": "handleNext()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L50"
+    },
+    {
+      "id": "flashcardmodal_handleprev",
+      "label": "handlePrev()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L61"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_livesbar_tsx",
+      "label": "LivesBar.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\LivesBar.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "navbar",
+      "label": "Navbar.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\Navbar.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_nodecard_tsx",
+      "label": "NodeCard.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\NodeCard.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "nodecard_nodecard",
+      "label": "NodeCard()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\NodeCard.tsx",
+      "source_location": "L7"
+    },
+    {
+      "id": "nodereorderlist",
+      "label": "NodeReorderList.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\NodeReorderList.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "nodereorderlist_nodereorderlist",
+      "label": "NodeReorderList()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\NodeReorderList.tsx",
+      "source_location": "L22"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_prerequisitemodal_tsx",
+      "label": "PrerequisiteModal.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\PrerequisiteModal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "prerequisitemodal_prerequisitemodal",
+      "label": "PrerequisiteModal()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\PrerequisiteModal.tsx",
+      "source_location": "L9"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_questioncard_tsx",
+      "label": "QuestionCard.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\QuestionCard.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "questioncard_handlesubmit",
+      "label": "handleSubmit()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\QuestionCard.tsx",
+      "source_location": "L15"
+    },
+    {
+      "id": "questioncard_getoptionclasses",
+      "label": "getOptionClasses()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\QuestionCard.tsx",
+      "source_location": "L25"
+    },
+    {
+      "id": "questioncard_getletterclasses",
+      "label": "getLetterClasses()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\QuestionCard.tsx",
+      "source_location": "L41"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_revisionnodecard_tsx",
+      "label": "RevisionNodeCard.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\RevisionNodeCard.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "revisionnodecard_revisionnodecard",
+      "label": "RevisionNodeCard()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\RevisionNodeCard.tsx",
+      "source_location": "L6"
+    },
+    {
+      "id": "statsbar",
+      "label": "StatsBar.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\StatsBar.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "statsbar_statsbar",
+      "label": "StatsBar()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\StatsBar.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "authcontext",
+      "label": "AuthContext.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\context\\AuthContext.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "authcontext_useauth",
+      "label": "useAuth()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\context\\AuthContext.tsx",
+      "source_location": "L63"
+    },
+    {
+      "id": "courseviewer",
+      "label": "CourseViewer.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\CourseViewer.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "courseviewer_load",
+      "label": "load()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\CourseViewer.tsx",
+      "source_location": "L30"
+    },
+    {
+      "id": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "label": "LearningMap.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "learningmap_loadmap",
+      "label": "loadMap()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L23"
+    },
+    {
+      "id": "learningmap_handlereviewfoundations",
+      "label": "handleReviewFoundations()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L37"
+    },
+    {
+      "id": "learningmap_handlerevisionclick",
+      "label": "handleRevisionClick()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L50"
+    },
+    {
+      "id": "learningmap_handlerevisioncomplete",
+      "label": "handleRevisionComplete()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L57"
+    },
+    {
+      "id": "login",
+      "label": "Login.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\Login.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "login_handlesubmit",
+      "label": "handleSubmit()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\Login.tsx",
+      "source_location": "L20"
+    },
+    {
+      "id": "nodepage",
+      "label": "NodePage.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "nodepage_loadnode",
+      "label": "loadNode()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L33"
+    },
+    {
+      "id": "nodepage_loadpracticequestions",
+      "label": "loadPracticeQuestions()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L49"
+    },
+    {
+      "id": "nodepage_loadtestquestions",
+      "label": "loadTestQuestions()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L57"
+    },
+    {
+      "id": "nodepage_handlevideocomplete",
+      "label": "handleVideoComplete()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L66"
+    },
+    {
+      "id": "nodepage_handleanswersubmit",
+      "label": "handleAnswerSubmit()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L73"
+    },
+    {
+      "id": "nodepage_handlenextquestion",
+      "label": "handleNextQuestion()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L93"
+    },
+    {
+      "id": "nodepage_handleretry",
+      "label": "handleRetry()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L125"
+    },
+    {
+      "id": "nodepage_finishnode",
+      "label": "finishNode()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L131"
+    },
+    {
+      "id": "studentdashboard",
+      "label": "StudentDashboard.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "studentdashboard_getgreeting",
+      "label": "getGreeting()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "studentdashboard_handleunitselect",
+      "label": "handleUnitSelect()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L52"
+    },
+    {
+      "id": "studentdashboard_handleprereqcomplete",
+      "label": "handlePrereqComplete()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L67"
+    },
+    {
+      "id": "studentdashboard_handlecontinuelearning",
+      "label": "handleContinueLearning()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L75"
+    },
+    {
+      "id": "teacherpanel",
+      "label": "TeacherPanel.tsx",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "teacherpanel_getpaperdistribution",
+      "label": "getPaperDistribution()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L12"
+    },
+    {
+      "id": "teacherpanel_getpaperstructureprompt",
+      "label": "getPaperStructurePrompt()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L99"
+    },
+    {
+      "id": "teacherpanel_fetchpapers",
+      "label": "fetchPapers()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L247"
+    },
+    {
+      "id": "teacherpanel_fetchlibrary",
+      "label": "fetchLibrary()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L266"
+    },
+    {
+      "id": "teacherpanel_addtobin",
+      "label": "addToBin()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L275"
+    },
+    {
+      "id": "teacherpanel_removefrombin",
+      "label": "removeFromBin()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L285"
+    },
+    {
+      "id": "teacherpanel_moveitem",
+      "label": "moveItem()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L298"
+    },
+    {
+      "id": "teacherpanel_handleaddcustom",
+      "label": "handleAddCustom()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L311"
+    },
+    {
+      "id": "teacherpanel_handlecompilemanual",
+      "label": "handleCompileManual()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L321"
+    },
+    {
+      "id": "teacherpanel_handleaigenerate",
+      "label": "handleAIGenerate()",
+      "file_type": "code",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L352"
+    }
+  ],
+  "edges": [
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_eslint_config_js",
+      "target": "js",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\eslint.config.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_eslint_config_js",
+      "target": "globals",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\eslint.config.js",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_eslint_config_js",
+      "target": "eslint_plugin_react_hooks",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\eslint.config.js",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_eslint_config_js",
+      "target": "eslint_plugin_react_refresh",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\eslint.config.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_eslint_config_js",
+      "target": "typescript_eslint",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\eslint.config.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_eslint_config_js",
+      "target": "config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\eslint.config.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_vite_config_ts",
+      "target": "vite",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\vite.config.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_vite_config_ts",
+      "target": "plugin_react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\vite.config.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "react_router_dom",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "login",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "studentdashboard",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "teacherpanel",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "courseviewer",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "navbar",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "learningmap",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "nodepage",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "aitutor",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "admindashboard",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "app",
+      "target": "app_protectedroute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\App.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_main_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\main.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_main_tsx",
+      "target": "client",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\main.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_main_tsx",
+      "target": "index_css",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\main.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_main_tsx",
+      "target": "app_tsx",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\main.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "coursebuilder",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "coursebuilder",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "coursebuilder",
+      "target": "nodereorderlist",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "coursebuilder",
+      "target": "coursebuilder_fetchtemplates",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "coursebuilder",
+      "target": "coursebuilder_addchapter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "coursebuilder",
+      "target": "coursebuilder_updatechaptertitle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "coursebuilder",
+      "target": "coursebuilder_addnodetochapter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "coursebuilder",
+      "target": "coursebuilder_handlereordernodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "coursebuilder",
+      "target": "coursebuilder_handlepublish",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\CourseBuilder.tsx",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "flashcardmodal",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "flashcardmodal",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "flashcardmodal",
+      "target": "flashcardmodal_handlekeydown",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "flashcardmodal",
+      "target": "flashcardmodal_markseen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "flashcardmodal",
+      "target": "flashcardmodal_handlenext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "flashcardmodal",
+      "target": "flashcardmodal_handleprev",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "flashcardmodal_handlekeydown",
+      "target": "flashcardmodal_handlenext",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "flashcardmodal_handlekeydown",
+      "target": "flashcardmodal_handleprev",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "flashcardmodal_handlenext",
+      "target": "flashcardmodal_markseen",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\FlashcardModal.tsx",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_livesbar_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\LivesBar.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "navbar",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\Navbar.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "navbar",
+      "target": "react_router_dom",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\Navbar.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_nodecard_tsx",
+      "target": "react_router_dom",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\NodeCard.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_nodecard_tsx",
+      "target": "nodecard_nodecard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\NodeCard.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "nodereorderlist",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\NodeReorderList.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "nodereorderlist",
+      "target": "nodereorderlist_nodereorderlist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\NodeReorderList.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_prerequisitemodal_tsx",
+      "target": "flashcardmodal",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\PrerequisiteModal.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_prerequisitemodal_tsx",
+      "target": "prerequisitemodal_prerequisitemodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\PrerequisiteModal.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_questioncard_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\QuestionCard.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_questioncard_tsx",
+      "target": "questioncard_handlesubmit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\QuestionCard.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_questioncard_tsx",
+      "target": "questioncard_getoptionclasses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\QuestionCard.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_questioncard_tsx",
+      "target": "questioncard_getletterclasses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\QuestionCard.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_components_revisionnodecard_tsx",
+      "target": "revisionnodecard_revisionnodecard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\RevisionNodeCard.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "statsbar",
+      "target": "statsbar_statsbar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\components\\StatsBar.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "authcontext",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\context\\AuthContext.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "authcontext",
+      "target": "axios",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\context\\AuthContext.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "authcontext",
+      "target": "authcontext_useauth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\context\\AuthContext.tsx",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "courseviewer",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\CourseViewer.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "courseviewer",
+      "target": "react_router_dom",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\CourseViewer.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "courseviewer",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\CourseViewer.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "courseviewer",
+      "target": "courseviewer_load",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\CourseViewer.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "react_router_dom",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "nodecard",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "revisionnodecard",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "flashcardmodal",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "learningmap_loadmap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "learningmap_handlereviewfoundations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "learningmap_handlerevisionclick",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "c_users_abhi1_downloads_envirr_lms_frontend_src_pages_learningmap_tsx",
+      "target": "learningmap_handlerevisioncomplete",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "learningmap_handlerevisioncomplete",
+      "target": "learningmap_loadmap",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\LearningMap.tsx",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "login",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\Login.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "login",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\Login.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "login",
+      "target": "react_router_dom",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\Login.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "login",
+      "target": "login_handlesubmit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\Login.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "react_router_dom",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "questioncard",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "flashcardmodal",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "flashcard_css",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "nodepage_loadnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "nodepage_loadpracticequestions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "nodepage_loadtestquestions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "nodepage_handlevideocomplete",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "nodepage_handleanswersubmit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "nodepage_handlenextquestion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "nodepage_handleretry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage",
+      "target": "nodepage_finishnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage_loadnode",
+      "target": "nodepage_loadtestquestions",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "nodepage_handlevideocomplete",
+      "target": "nodepage_loadpracticequestions",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\NodePage.tsx",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard",
+      "target": "react_router_dom",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard",
+      "target": "prerequisitemodal",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard",
+      "target": "hero_png",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard",
+      "target": "studentdashboard_getgreeting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard",
+      "target": "studentdashboard_handleunitselect",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard",
+      "target": "studentdashboard_handleprereqcomplete",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard",
+      "target": "studentdashboard_handlecontinuelearning",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "studentdashboard_handlecontinuelearning",
+      "target": "studentdashboard_handleunitselect",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\StudentDashboard.tsx",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "authcontext",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "coursebuilder",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_getpaperdistribution",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_getpaperstructureprompt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_fetchpapers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L247",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_fetchlibrary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_addtobin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L275",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_removefrombin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L285",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_moveitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L298",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_handleaddcustom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L311",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_handlecompilemanual",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L321",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel",
+      "target": "teacherpanel_handleaigenerate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L352",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel_getpaperstructureprompt",
+      "target": "teacherpanel_getpaperdistribution",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel_handleaddcustom",
+      "target": "teacherpanel_addtobin",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L317",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel_handlecompilemanual",
+      "target": "teacherpanel_fetchpapers",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L341",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel_handleaigenerate",
+      "target": "teacherpanel_getpaperstructureprompt",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L356",
+      "weight": 1.0
+    },
+    {
+      "source": "teacherpanel_handleaigenerate",
+      "target": "teacherpanel_fetchpapers",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "c:\\Users\\Abhi1\\Downloads\\Envirr_LMS\\frontend\\src\\pages\\TeacherPanel.tsx",
+      "source_location": "L360",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

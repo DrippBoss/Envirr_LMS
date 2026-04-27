@@ -11,6 +11,7 @@ class QuestionType(models.TextChoices):
     SHORT            = "SHORT",            "Short Answer"
     LONG             = "LONG",             "Long Answer"
     CASE             = "CASE",             "Case Study"
+    REARRANGE        = "REARRANGE",        "Rearrange"
 
 class Difficulty(models.TextChoices):
     EASY   = "easy",   "Easy"
@@ -68,8 +69,9 @@ class QuestionBank(models.Model):
 
     question_text = models.TextField()
     answer_text   = models.TextField()
-    has_image     = models.BooleanField(default=False)
-    image         = models.ImageField(upload_to="question_images/", null=True, blank=True)
+    has_image         = models.BooleanField(default=False)
+    image             = models.ImageField(upload_to="question_images/", null=True, blank=True)
+    image_description = models.TextField(blank=True, help_text="Alt text or AI-generated description of the figure")
 
     tags            = models.JSONField(default=list, blank=True)
     question_hash   = models.CharField(max_length=64, unique=True)
@@ -147,6 +149,9 @@ class CaseStudyPart(models.Model):
     marks = models.PositiveIntegerField(
                 validators=[MinValueValidator(1), MaxValueValidator(10)]
             )
+    has_image         = models.BooleanField(default=False)
+    image             = models.ImageField(upload_to="question_images/case_parts/", null=True, blank=True)
+    image_description = models.TextField(blank=True, help_text="Alt text or AI-generated description of the figure")
 
     class Meta:
         ordering = ["part_number"]

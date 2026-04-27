@@ -8,10 +8,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False)
 )
-environ.Env.read_env(BASE_DIR / '.env')
+environ.Env.read_env(BASE_DIR / '.env', overwrite=True)
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-replace-me')
 DEBUG = env('DEBUG')
+GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
 
 ALLOWED_HOSTS = ['*'] # Change in prod
 
@@ -105,7 +106,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 # Django Rest Framework & SimpleJWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'users.authentication.CookieJWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -116,6 +117,11 @@ from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+    'AUTH_COOKIE': 'access_token',
+    'AUTH_COOKIE_REFRESH': 'refresh_token',
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_SECURE': not DEBUG,
+    'AUTH_COOKIE_SAMESITE': 'Lax',
 }
 
 # Celery Configuration
@@ -127,3 +133,4 @@ CELERY_TASK_SERIALIZER = 'json'
 
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True # Restrict in production
+CORS_ALLOW_CREDENTIALS = True

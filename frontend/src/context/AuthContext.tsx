@@ -7,26 +7,23 @@ type StudentProfile = {
     avatar_url: string;
 };
 
-type User = { id: number; username: string; email: string; role: string; profile?: StudentProfile };
-type AuthContextType = { user: User | null; isAuthenticated: boolean; loading: boolean; login: (t: string) => void; logout: () => void; };
+type User = { id: number; username: string; email: string; role: string; can_build_courses: boolean; profile?: StudentProfile };
+type AuthContextType = { user: User | null; isAuthenticated: boolean; loading: boolean; login: () => void; logout: () => void; };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-// Expose Axios Globally
-export const api = axios.create({ baseURL: 'http://localhost:8000/api/' });
+// Expose Axios Globally — withCredentials enables sending cookies
+export const api = axios.create({
+    baseURL: `${import.meta.env.VITE_API_URL}/api/`,
+    withCredentials: true,
+});
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('access_token');
-        if (token) {
-            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            fetchUser();
-        } else {
-            setLoading(false);
-        }
+        fetchUser();
     }, []);
 
     const fetchUser = async () => {
@@ -34,24 +31,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const res = await api.get('auth/me/');
             setUser(res.data);
-        } catch { 
-            logout(); 
+        } catch {
+            setUser(null);
         } finally {
             setLoading(false);
         }
     };
 
-    const login = (token: string) => {
-        localStorage.setItem('access_token', token);
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    const login = () => {
+        // Token is set by httpOnly cookie from the backend
+        // Just trigger a user fetch — the cookie is already set
         fetchUser();
     };
 
-    const logout = () => {
-        localStorage.removeItem('access_token');
-        delete api.defaults.headers.common['Authorization'];
+    const logout = async () => {
+        try {
+            await api.post('auth/logout/');
+        } catch {
+            // ignore
+        }
         setUser(null);
-        setLoading(false);
     };
 
     return (

@@ -1,0 +1,673 @@
+{
+  "nodes": [
+    {
+      "id": "screen_LoginScreen",
+      "label": "Envirr Login Screen",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_LeftPanel",
+      "label": "Left Hero Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_RightPanel",
+      "label": "Right Login Form Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_EnvirrBrand",
+      "label": "Envirr Brand / Logo",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_HeroHeadline",
+      "label": "Hero Headline: Master Every Concept. Level Up Every Day.",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_HeroSubtext",
+      "label": "Hero Subtext: Join the next generation of learners...",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_IdentifyProtocol",
+      "label": "Identify Protocol Role Selector",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_RoleStudent",
+      "label": "Role Tab: Student",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_RoleTeacher",
+      "label": "Role Tab: Teacher",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_RoleAdmin",
+      "label": "Role Tab: Admin",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_MissionControlHeading",
+      "label": "Form Heading: Mission Control",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_FormSubtitle",
+      "label": "Form Subtitle: Enter your credentials to resume your journey",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_EmailField",
+      "label": "Universal Email Input Field",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_PasswordField",
+      "label": "Access Key (Password) Input Field",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ForgotPassword",
+      "label": "Forgot Password Link",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ContinueButton",
+      "label": "Continue Submit Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_OAuthDivider",
+      "label": "OR BRIDGE WITH Divider",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_GoogleOAuth",
+      "label": "Google OAuth Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_SSOButton",
+      "label": "SSO Login Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ApplyForAdmission",
+      "label": "Apply for Admission Link",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_StatusBar",
+      "label": "Bottom Status Bar: All Systems Nominal / Privacy / Help",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_DarkTheme",
+      "label": "Dark Theme Design System",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_GamifiedLanguage",
+      "label": "Gamified / Space-themed UX Language",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_TwoColumnLayout",
+      "label": "Two-Column Split Layout",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_LoginScreen",
+      "target": "screen_LeftPanel",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_LoginScreen",
+      "target": "screen_RightPanel",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_LoginScreen",
+      "target": "screen_TwoColumnLayout",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_LoginScreen",
+      "target": "screen_DarkTheme",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_LoginScreen",
+      "target": "screen_GamifiedLanguage",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_LeftPanel",
+      "target": "screen_EnvirrBrand",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_LeftPanel",
+      "target": "screen_HeroHeadline",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_LeftPanel",
+      "target": "screen_HeroSubtext",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_LeftPanel",
+      "target": "screen_IdentifyProtocol",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_IdentifyProtocol",
+      "target": "screen_RoleStudent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_IdentifyProtocol",
+      "target": "screen_RoleTeacher",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_IdentifyProtocol",
+      "target": "screen_RoleAdmin",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_MissionControlHeading",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_FormSubtitle",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_EmailField",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_PasswordField",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_ForgotPassword",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_ContinueButton",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_OAuthDivider",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_GoogleOAuth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_SSOButton",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_RightPanel",
+      "target": "screen_ApplyForAdmission",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_LoginScreen",
+      "target": "screen_StatusBar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_GamifiedLanguage",
+      "target": "screen_MissionControlHeading",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_GamifiedLanguage",
+      "target": "screen_HeroHeadline",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_RoleStudent",
+      "target": "screen_RoleTeacher",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_RoleTeacher",
+      "target": "screen_RoleAdmin",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_RoleStudent",
+      "target": "screen_RoleAdmin",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_ContinueButton",
+      "target": "screen_EmailField",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ContinueButton",
+      "target": "screen_PasswordField",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_ContinueButton",
+      "target": "screen_IdentifyProtocol",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_GoogleOAuth",
+      "target": "screen_ContinueButton",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_SSOButton",
+      "target": "screen_ContinueButton",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_ApplyForAdmission",
+      "target": "screen_RoleStudent",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.7
+    },
+    {
+      "source": "screen_DarkTheme",
+      "target": "screen_GamifiedLanguage",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_IdentifyProtocol",
+      "target": "screen_ContinueButton",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_RoleStudent",
+      "target": "screen_GamifiedLanguage",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.7
+    },
+    {
+      "source": "screen_StatusBar",
+      "target": "screen_DarkTheme",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.6
+    },
+    {
+      "source": "screen_PasswordField",
+      "target": "screen_ForgotPassword",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_EnvirrBrand",
+      "target": "screen_GamifiedLanguage",
+      "relation": "conceptually_related_to",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.2,
+      "source_file": "stitch (5)/stitch/envirr_login/screen.png",
+      "source_location": null,
+      "weight": 0.4
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

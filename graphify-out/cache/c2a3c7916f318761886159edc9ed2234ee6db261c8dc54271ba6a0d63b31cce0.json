@@ -1,0 +1,1 @@
+{"nodes": [{"id": "scaffold_frontend", "label": "scaffold_frontend.py", "file_type": "code", "source_file": "scaffold_frontend.py", "source_location": "L1"}], "edges": [{"source": "scaffold_frontend", "target": "os", "relation": "imports", "confidence": "EXTRACTED", "source_file": "scaffold_frontend.py", "source_location": "L1", "weight": 1.0}]}

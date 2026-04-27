@@ -4,11 +4,18 @@ from .views import (
     NodeStartView, NodeVideoCompleteView, NodePracticeView,
     NodePracticeAnswerView, NodePracticeRetryView, NodePracticeCompleteView,
     NodeRevisionCardsView, FlashcardMarkSeenView, RevisionNodeDetailView,
-    ChapterTestStartView, ChapterTestCompleteView
+    ChapterTestStartView, ChapterTestCompleteView,
+    WeakConceptsView, ActivityFeedView,
+    MockTestQuestionsView, MockTestCheckView, StudyGroupsView,
 )
 
 urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
+    path('weak-concepts/', WeakConceptsView.as_view(), name='weak-concepts'),
+    path('activity/', ActivityFeedView.as_view(), name='activity-feed'),
+    path('mock-test/questions/', MockTestQuestionsView.as_view(), name='mock-test-questions'),
+    path('mock-test/check/', MockTestCheckView.as_view(), name='mock-test-check'),
+    path('study-groups/', StudyGroupsView.as_view(), name='study-groups'),
     path('units/<int:unit_id>/prerequisites/', UnitPrerequisitesView.as_view(), name='unit-prerequisites'),
     path('paths/<int:path_id>/map/', MapDataView.as_view(), name='map-data'),
     

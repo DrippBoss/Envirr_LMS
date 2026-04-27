@@ -1,0 +1,526 @@
+{
+  "communities": {
+    "0": [
+      "models",
+      "models_bloomlevel",
+      "models_completionstatus",
+      "models_course",
+      "models_course_str",
+      "models_create_student_profile",
+      "models_deckpurpose",
+      "models_difficulty",
+      "models_flashcardtype",
+      "models_ingestionstatus",
+      "models_meta",
+      "models_nodestep",
+      "models_nodetype",
+      "models_questiontype",
+      "models_quiz",
+      "models_quiz_str",
+      "models_quizquestion",
+      "models_quizquestion_str",
+      "models_quizsubmission",
+      "models_quizsubmission_str",
+      "models_section_marks",
+      "models_studentenrollment",
+      "models_studentenrollment_str",
+      "models_studentperformance",
+      "models_studentperformance_str",
+      "models_studentprofile",
+      "models_studentprofile_str",
+      "models_subject",
+      "models_subject_str",
+      "models_unit",
+      "models_unit_str",
+      "models_unitcompletion",
+      "models_unitcompletion_str",
+      "models_unitprerequisite",
+      "models_unitprerequisite_str",
+      "models_weakconcepttracking",
+      "models_weakconcepttracking_str",
+      "seed_chapter1",
+      "seed_chapter1_command",
+      "seed_chapter1_command_handle",
+      "serializers_courseserializer",
+      "serializers_lessonserializer",
+      "serializers_meta",
+      "serializers_quizsubmissionresponseserializer",
+      "serializers_quizsubmitserializer",
+      "serializers_unitserializer",
+      "services_rationale_12",
+      "services_rationale_41",
+      "services_rationale_8",
+      "views_courseviewset",
+      "views_courseviewset_get_queryset",
+      "views_courseviewset_perform_create",
+      "views_isteacherorreadonly",
+      "views_isteacherorreadonly_has_permission",
+      "views_rationale_15",
+      "views_submitquizview",
+      "views_submitquizview_post"
+    ],
+    "1": [
+      "admin_paperquestioninline",
+      "admin_papersectionadmin",
+      "admin_questionbankadmin",
+      "admin_questionpaperadmin",
+      "basecommand",
+      "import_questions",
+      "import_questions_command",
+      "import_questions_command_add_arguments",
+      "import_questions_command_handle",
+      "models_casestudypart",
+      "models_casestudypart_str",
+      "models_doubtresponse",
+      "models_doubtresponse_str",
+      "models_doubtticket",
+      "models_doubtticket_str",
+      "models_failedingestion",
+      "models_failedingestion_str",
+      "models_lesson",
+      "models_lesson_str",
+      "models_mcqoption",
+      "models_mcqoption_str",
+      "models_paperquestion",
+      "models_paperquestion_save",
+      "models_paperquestion_str",
+      "models_papersection",
+      "models_papersection_str",
+      "models_questionbank",
+      "models_questionbank_save",
+      "models_questionbank_str",
+      "models_questionpaper",
+      "models_questionpaper_str",
+      "models_sourcedocument",
+      "models_sourcedocument_str",
+      "serializers",
+      "serializers_casestudypartserializer",
+      "serializers_customquestionserializer",
+      "serializers_generatepaperserializer",
+      "serializers_manualpapercreateserializer",
+      "serializers_manualsectionserializer",
+      "serializers_mcqoptionserializer",
+      "serializers_questionbankserializer",
+      "views_generatepaperapiview",
+      "views_generatepaperapiview_get",
+      "views_generatepaperapiview_post",
+      "views_manualpapercreateview",
+      "views_manualpapercreateview_post",
+      "views_questionbanklistview",
+      "views_questionbanklistview_get_queryset"
+    ],
+    "2": [
+      "models_courseunit",
+      "models_courseunit_str",
+      "models_flashcard",
+      "models_flashcard_str",
+      "models_learningnode",
+      "models_learningnode_str",
+      "models_revisionnode",
+      "models_revisionnode_str",
+      "serializers_courseunitserializer",
+      "serializers_courseunitserializer_get_paths",
+      "serializers_courseunitserializer_get_progress_percentage",
+      "serializers_flashcarddeckserializer",
+      "serializers_flashcardserializer",
+      "serializers_fulllearningnodeserializer",
+      "serializers_lessonquestionserializer",
+      "urls",
+      "views",
+      "views_chaptertestcompleteview",
+      "views_chapterteststartview",
+      "views_chapterteststartview_post",
+      "views_dashboardview",
+      "views_dashboardview_get_queryset",
+      "views_flashcardmarkseenview",
+      "views_mapdataview",
+      "views_mapdataview_get",
+      "views_nodepracticeanswerview",
+      "views_nodepracticecompleteview",
+      "views_nodepracticecompleteview_post",
+      "views_nodepracticeretryview",
+      "views_nodepracticeretryview_post",
+      "views_nodepracticeview",
+      "views_nodepracticeview_get",
+      "views_noderevisioncardsview",
+      "views_noderevisioncardsview_get",
+      "views_nodestartview",
+      "views_nodestartview_post",
+      "views_nodevideocompleteview",
+      "views_nodevideocompleteview_post"
+    ],
+    "3": [
+      "admin",
+      "admin_contenttemplateadmin",
+      "admin_courseunitadmin",
+      "admin_deckcardinline",
+      "admin_flashcardadmin",
+      "admin_flashcarddeckadmin",
+      "admin_learningnodeadmin",
+      "admin_learningpathadmin",
+      "admin_lessonquestioninline",
+      "admin_nodeprogressadmin",
+      "admin_revisionnodeadmin",
+      "admin_weakspotadmin",
+      "models_contenttemplate",
+      "models_contenttemplate_str",
+      "models_deckcard",
+      "models_flashcardprogress",
+      "models_revisionnodeprogress",
+      "models_sessionanswer",
+      "models_sessionanswer_save",
+      "models_unitprerequisiteseen",
+      "models_weakspot",
+      "models_weakspot_str"
+    ],
+    "4": [
+      "apiview",
+      "models_streak",
+      "models_streak_str",
+      "models_studentxp",
+      "models_studentxp_str",
+      "services",
+      "services_award_node_xp",
+      "services_calculate_stars",
+      "services_can_unlock_unit",
+      "services_check_enrollment_access",
+      "services_complete_unit_if_eligible",
+      "services_evaluate_quiz",
+      "services_get_fresh_questions",
+      "services_get_personalised_revision_deck",
+      "services_get_post_node_cards",
+      "services_get_prioritized_cards",
+      "services_rationale_14",
+      "services_rationale_6",
+      "services_unlock_next_nodes",
+      "services_update_streak_and_xp",
+      "views_usergamificationstatsview",
+      "views_usergamificationstatsview_get"
+    ],
+    "5": [
+      "models_learningpath",
+      "models_learningpath_str",
+      "teacher_urls",
+      "wizard_views",
+      "wizard_views_adminwizardbaseview",
+      "wizard_views_post",
+      "wizard_views_rationale_9",
+      "wizard_views_wizardbulkuploadview",
+      "wizard_views_wizardbulkuploadview_post",
+      "wizard_views_wizardcoursecreateview",
+      "wizard_views_wizardreorderview",
+      "wizard_views_wizardtemplatelistview",
+      "wizard_views_wizardtemplatelistview_get"
+    ],
+    "6": [
+      "models_nodeprogress",
+      "models_nodeprogress_str",
+      "serializers_learningpathserializer",
+      "serializers_learningpathserializer_get_nodes",
+      "serializers_learningpathserializer_get_revision_nodes",
+      "serializers_revisionnodeserializer",
+      "serializers_revisionnodeserializer_get_cards_for_you",
+      "serializers_revisionnodeserializer_get_status",
+      "serializers_simplelearningnodeserializer",
+      "serializers_simplelearningnodeserializer_get_progress",
+      "serializers_simplelearningnodeserializer_get_status"
+    ],
+    "7": [
+      "abstractuser",
+      "models_customuser",
+      "models_customuser_str",
+      "serializers_registerserializer",
+      "serializers_registerserializer_create",
+      "serializers_studentprofileserializer",
+      "serializers_userserializer",
+      "views_registerview",
+      "views_userdetailview",
+      "views_userdetailview_get_object"
+    ],
+    "8": [
+      "celery",
+      "init",
+      "tasks",
+      "tasks_build_prompt",
+      "tasks_calculate_marks_distribution",
+      "tasks_compile_manual_paper_task",
+      "tasks_construct_latex",
+      "tasks_generate_paper_task",
+      "tasks_process_latex_text"
+    ],
+    "9": [
+      "appconfig",
+      "apps",
+      "apps_activityconfig",
+      "apps_aiengineconfig",
+      "apps_coursesconfig",
+      "apps_gamificationconfig",
+      "apps_learningconfig",
+      "apps_usersconfig"
+    ],
+    "10": [
+      "basemodel",
+      "validators",
+      "validators_casestudypartschema",
+      "validators_extractedquestion",
+      "validators_mcq_must_have_options",
+      "validators_mcqoptionschema"
+    ],
+    "11": [
+      "models_lessonquestion",
+      "models_lessonquestion_str",
+      "views_unitprerequisitesview",
+      "views_unitprerequisitesview_get",
+      "views_unitprerequisitesview_post"
+    ],
+    "12": [
+      "models_flashcarddeck",
+      "models_flashcarddeck_str",
+      "views_revisionnodedetailview",
+      "views_revisionnodedetailview_post"
+    ],
+    "13": [
+      "views_chaptertestcompleteview_post",
+      "views_flashcardmarkseenview_post",
+      "views_nodepracticeanswerview_post",
+      "views_revisionnodedetailview_get"
+    ],
+    "14": [
+      "manage",
+      "manage_main",
+      "manage_rationale_8"
+    ],
+    "15": [
+      "scaffold_drf",
+      "scaffold_drf_rationale_144"
+    ],
+    "16": [
+      "seed_final_test",
+      "seed_final_test_seed_final_test"
+    ],
+    "17": [
+      "test_ollama",
+      "test_ollama_test_ollama"
+    ],
+    "18": [
+      "test_ollama_json",
+      "test_ollama_json_test_ollama_json"
+    ],
+    "19": [
+      "0001_initial",
+      "0001_initial_migration"
+    ],
+    "20": [
+      "asgi",
+      "asgi_rationale_1"
+    ],
+    "21": [
+      "wsgi",
+      "wsgi_rationale_1"
+    ],
+    "22": [
+      "0002_contenttemplate",
+      "0002_contenttemplate_migration"
+    ],
+    "23": [
+      "0002_studentprofile",
+      "0002_studentprofile_migration"
+    ],
+    "24": [
+      "reset_progress"
+    ],
+    "25": [
+      "scaffold_celery"
+    ],
+    "26": [
+      "scaffold_frontend"
+    ],
+    "27": [
+      "scaffold_llama_logic"
+    ],
+    "28": [
+      "tests"
+    ],
+    "29": [
+      "settings"
+    ]
+  },
+  "cohesion": {
+    "0": 0.08,
+    "1": 0.11,
+    "2": 0.22,
+    "3": 0.39,
+    "4": 0.11,
+    "5": 0.29,
+    "6": 0.22,
+    "7": 0.29,
+    "8": 0.39,
+    "9": 0.43,
+    "10": 0.47,
+    "11": 0.4,
+    "12": 0.5,
+    "13": 0.5,
+    "14": 0.67,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0
+  },
+  "gods": [
+    {
+      "id": "models_courseunit",
+      "label": "CourseUnit",
+      "edges": 44
+    },
+    {
+      "id": "models_learningpath",
+      "label": "LearningPath",
+      "edges": 44
+    },
+    {
+      "id": "models_learningnode",
+      "label": "LearningNode",
+      "edges": 44
+    },
+    {
+      "id": "models_lessonquestion",
+      "label": "LessonQuestion",
+      "edges": 38
+    },
+    {
+      "id": "models_flashcard",
+      "label": "Flashcard",
+      "edges": 38
+    },
+    {
+      "id": "models_revisionnode",
+      "label": "RevisionNode",
+      "edges": 38
+    },
+    {
+      "id": "models_flashcarddeck",
+      "label": "FlashcardDeck",
+      "edges": 38
+    },
+    {
+      "id": "models_nodeprogress",
+      "label": "NodeProgress",
+      "edges": 37
+    },
+    {
+      "id": "models_revisionnodeprogress",
+      "label": "RevisionNodeProgress",
+      "edges": 36
+    },
+    {
+      "id": "models_flashcardprogress",
+      "label": "FlashcardProgress",
+      "edges": 36
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Difficulty",
+      "target": "Lesson",
+      "source_files": [
+        "ai_engine\\models.py",
+        "courses\\models.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `Difficulty` unexpectedly reaches hub `Lesson`"
+    },
+    {
+      "source": "BloomLevel",
+      "target": "Lesson",
+      "source_files": [
+        "ai_engine\\models.py",
+        "courses\\models.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `BloomLevel` unexpectedly reaches hub `Lesson`"
+    },
+    {
+      "source": "IngestionStatus",
+      "target": "Lesson",
+      "source_files": [
+        "ai_engine\\models.py",
+        "courses\\models.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `IngestionStatus` unexpectedly reaches hub `Lesson`"
+    },
+    {
+      "source": "Verify strictly if a user possesses the rights to consume course contents.",
+      "target": "StudentEnrollment",
+      "source_files": [
+        "courses\\services.py",
+        "activity\\models.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "Meta",
+      "target": "Lesson",
+      "source_files": [
+        "learning\\models.py",
+        "courses\\models.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `QuestionBank` connect `Community 1` to `Community 0`, `Community 2`, `Community 4`, `Community 11`, `Community 12`?",
+      "why": "High betweenness centrality (0.097) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Command` connect `Community 1` to `Community 10`?",
+      "why": "High betweenness centrality (0.054) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Meta` connect `Community 0` to `Community 1`, `Community 2`, `Community 3`, `Community 5`, `Community 6`, `Community 7`, `Community 11`, `Community 12`?",
+      "why": "High betweenness centrality (0.036) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 42 inferred relationships involving `CourseUnit` (e.g. with `DeckCardInline` and `LessonQuestionInline`) actually correct?",
+      "why": "`CourseUnit` has 42 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 42 inferred relationships involving `LearningPath` (e.g. with `DeckCardInline` and `LessonQuestionInline`) actually correct?",
+      "why": "`LearningPath` has 42 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 42 inferred relationships involving `LearningNode` (e.g. with `DeckCardInline` and `LessonQuestionInline`) actually correct?",
+      "why": "`LearningNode` has 42 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 36 inferred relationships involving `LessonQuestion` (e.g. with `DeckCardInline` and `LessonQuestionInline`) actually correct?",
+      "why": "`LessonQuestion` has 36 INFERRED edges - model-reasoned connections that need verification."
+    }
+  ]
+}

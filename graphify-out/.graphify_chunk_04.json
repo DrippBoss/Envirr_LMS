@@ -1,0 +1,499 @@
+{
+  "nodes": [
+    {
+      "id": "screen_lesson4_irrational_numbers",
+      "label": "Lesson 4 – Irrational Numbers (Screen)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_envirr_lms_platform",
+      "label": "Envirr LMS Platform",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_video_player",
+      "label": "Video Player (4K Ultra HD, 12:45 / 15:00)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_lesson_objectives",
+      "label": "Lesson Objectives Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_objective_definition",
+      "label": "Objective: Definition of Irrational Numbers",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_objective_decimal",
+      "label": "Objective: Decimal Representation Properties",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_objective_sqrt2",
+      "label": "Objective: Proof of Irrationality for √2",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_objective_sqrt3_numberline",
+      "label": "Objective: Locating √3 on Number Line",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_your_notes",
+      "label": "Your Notes Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_ask_ai_doubt",
+      "label": "Ask AI Doubt Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_mark_as_watched",
+      "label": "Mark as Watched Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_navigation",
+      "label": "Previous / Next Lesson Navigation",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_bottom_tabs",
+      "label": "Bottom Tab Bar (Curriculum, Resources, Discussions, Free Quiz, Watch Video to Unlock Quiz)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_breadcrumb",
+      "label": "Breadcrumb: Math > Grade 10 > Real Numbers > Lesson 4",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_about_section",
+      "label": "About This Lesson Description",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_top_nav",
+      "label": "Top Navigation Bar (Curriculum, Resources, Discussions, Home, Trophy, Heart, Profile)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_hearts_icon",
+      "label": "Lives / Hearts Icon (Top Nav)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_concept_irrational_numbers",
+      "label": "Concept: Irrational Numbers",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_concept_real_numbers",
+      "label": "Concept: Real Numbers (Grade 10 Curriculum)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_lesson4_quiz_gate",
+      "label": "Quiz Gate: Watch Video to Unlock Quiz",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_envirr_lms_platform",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_video_player",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_lesson_objectives",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_lesson_objectives",
+      "target": "screen_lesson4_objective_definition",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_lesson_objectives",
+      "target": "screen_lesson4_objective_decimal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_lesson_objectives",
+      "target": "screen_lesson4_objective_sqrt2",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_lesson4_lesson_objectives",
+      "target": "screen_lesson4_objective_sqrt3_numberline",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_your_notes",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_ask_ai_doubt",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_mark_as_watched",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_navigation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_bottom_tabs",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_breadcrumb",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_about_section",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_top_nav",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_top_nav",
+      "target": "screen_lesson4_hearts_icon",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_irrational_numbers",
+      "target": "screen_lesson4_concept_irrational_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_concept_irrational_numbers",
+      "target": "screen_lesson4_concept_real_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_breadcrumb",
+      "target": "screen_lesson4_concept_real_numbers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_quiz_gate",
+      "target": "screen_lesson4_mark_as_watched",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_lesson4_bottom_tabs",
+      "target": "screen_lesson4_quiz_gate",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_video_player",
+      "target": "screen_lesson4_quiz_gate",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_lesson4_ask_ai_doubt",
+      "target": "screen_lesson4_your_notes",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "screen_lesson4_objective_sqrt2",
+      "target": "screen_lesson4_concept_irrational_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_lesson4_objective_sqrt3_numberline",
+      "target": "screen_lesson4_concept_irrational_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_lesson4_objective_definition",
+      "target": "screen_lesson4_concept_irrational_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_lesson4_objective_decimal",
+      "target": "screen_lesson4_concept_irrational_numbers",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/lesson_4_irrational_numbers/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

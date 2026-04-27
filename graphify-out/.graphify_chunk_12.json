@@ -1,0 +1,737 @@
+{
+  "nodes": [
+    {
+      "id": "screen_SmartExamGenerator",
+      "label": "Smart Exam Generator",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_AcademicOrbitPlatform",
+      "label": "Academic Orbit Platform",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_PaperConfigurationPanel",
+      "label": "Paper Configuration Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_BoardSelector",
+      "label": "Board Selector (CBSE)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_GradeSelector",
+      "label": "Grade Selector (10th)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_DifficultySelector",
+      "label": "Difficulty Selector (Medium)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_SubjectSelector",
+      "label": "Subject Selector (Mathematics)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ChapterSelector",
+      "label": "Chapter Selector (Real Numbers, Polynomials)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_TotalMarksInput",
+      "label": "Total Marks Input (100)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_CustomInstructionsBox",
+      "label": "Custom Instructions Text Box",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_AIAutoFillToggle",
+      "label": "AI Auto-Fill Toggle (if bank insufficient)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_MarksDistributionPanel",
+      "label": "Marks Distribution Panel",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_MCQRow",
+      "label": "MCQ Question Type Row",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_AssertionReasonRow",
+      "label": "Assertion-Reason Question Type Row",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_VeryShortAnswerRow",
+      "label": "Very Short Answer Question Type Row",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_ShortAnswerRow",
+      "label": "Short Answer Question Type Row",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_LongAnswerRow",
+      "label": "Long Answer Question Type Row",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_DataInsightWidget",
+      "label": "Data Insight Widget (Difficulty Profile)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_CompileSmartTestButton",
+      "label": "Compile Smart Test Array Button",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_WorkflowProgressBar",
+      "label": "Workflow Progress Bar (3 Steps)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Step1FetchQuestionBank",
+      "label": "Step 1: Fetching from Question Bank",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Step2AIGenerateMissing",
+      "label": "Step 2: AI Generating Missing Questions",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Step3CompileLatexPDF",
+      "label": "Step 3: Compiling LaTeX PDF",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_SidebarNavigation",
+      "label": "Sidebar Navigation (Exam Lab, Question Bank, Auto-Gen, Templates, Archive)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_QuestionBank",
+      "label": "Question Bank (Manual Source)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_AIEngine",
+      "label": "AI Intelligence Engine (Gap-Fill Source)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_HybridExamOutput",
+      "label": "Hybrid Exam Output (LaTeX PDF)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_FacultyPortal",
+      "label": "Faculty Portal (Level 43 Educator)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_SmartExamGenerator",
+      "target": "screen_AcademicOrbitPlatform",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SmartExamGenerator",
+      "target": "screen_PaperConfigurationPanel",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SmartExamGenerator",
+      "target": "screen_MarksDistributionPanel",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SmartExamGenerator",
+      "target": "screen_CompileSmartTestButton",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SmartExamGenerator",
+      "target": "screen_WorkflowProgressBar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PaperConfigurationPanel",
+      "target": "screen_BoardSelector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PaperConfigurationPanel",
+      "target": "screen_GradeSelector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PaperConfigurationPanel",
+      "target": "screen_DifficultySelector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PaperConfigurationPanel",
+      "target": "screen_SubjectSelector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PaperConfigurationPanel",
+      "target": "screen_ChapterSelector",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PaperConfigurationPanel",
+      "target": "screen_TotalMarksInput",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PaperConfigurationPanel",
+      "target": "screen_CustomInstructionsBox",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_PaperConfigurationPanel",
+      "target": "screen_AIAutoFillToggle",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionPanel",
+      "target": "screen_MCQRow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionPanel",
+      "target": "screen_AssertionReasonRow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionPanel",
+      "target": "screen_VeryShortAnswerRow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionPanel",
+      "target": "screen_ShortAnswerRow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionPanel",
+      "target": "screen_LongAnswerRow",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_MarksDistributionPanel",
+      "target": "screen_DataInsightWidget",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_WorkflowProgressBar",
+      "target": "screen_Step1FetchQuestionBank",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WorkflowProgressBar",
+      "target": "screen_Step2AIGenerateMissing",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_WorkflowProgressBar",
+      "target": "screen_Step3CompileLatexPDF",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Step1FetchQuestionBank",
+      "target": "screen_QuestionBank",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Step2AIGenerateMissing",
+      "target": "screen_AIEngine",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Step3CompileLatexPDF",
+      "target": "screen_HybridExamOutput",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIAutoFillToggle",
+      "target": "screen_AIEngine",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AIAutoFillToggle",
+      "target": "screen_QuestionBank",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_QuestionBank",
+      "target": "screen_AIEngine",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_QuestionBank",
+      "target": "screen_HybridExamOutput",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.92,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.92
+    },
+    {
+      "source": "screen_AIEngine",
+      "target": "screen_HybridExamOutput",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.92,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.92
+    },
+    {
+      "source": "screen_AcademicOrbitPlatform",
+      "target": "screen_SidebarNavigation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_AcademicOrbitPlatform",
+      "target": "screen_FacultyPortal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SidebarNavigation",
+      "target": "screen_QuestionBank",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_SidebarNavigation",
+      "target": "screen_SmartExamGenerator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_DataInsightWidget",
+      "target": "screen_MarksDistributionPanel",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_DataInsightWidget",
+      "target": "screen_PaperConfigurationPanel",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.80,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.80
+    },
+    {
+      "source": "screen_TotalMarksInput",
+      "target": "screen_MarksDistributionPanel",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.90,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.90
+    },
+    {
+      "source": "screen_CompileSmartTestButton",
+      "target": "screen_WorkflowProgressBar",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.97,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.97
+    },
+    {
+      "source": "screen_FacultyPortal",
+      "target": "screen_SmartExamGenerator",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.88
+    },
+    {
+      "source": "screen_SubjectSelector",
+      "target": "screen_ChapterSelector",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.93,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.93
+    },
+    {
+      "source": "screen_BoardSelector",
+      "target": "screen_GradeSelector",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.90,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.90
+    },
+    {
+      "source": "screen_CustomInstructionsBox",
+      "target": "screen_AIEngine",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.82,
+      "source_file": "stitch (5)/stitch/smart_hybrid_exam_generator/screen.png",
+      "source_location": null,
+      "weight": 0.82
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1180,
+  "output_tokens": 980
+}

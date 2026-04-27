@@ -1,0 +1,654 @@
+{
+  "nodes": [
+    {
+      "id": "screen_OverviewDashboard",
+      "label": "Overview Dashboard (Admin Analytics)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_KPI_TotalStudents",
+      "label": "KPI: Total Students (1.28M)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_KPI_TotalQuestions",
+      "label": "KPI: Total Questions (42,910)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_KPI_TotalCourses",
+      "label": "KPI: Total Courses (18,204)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_KPI_ActiveTeachers",
+      "label": "KPI: Active Teachers (8,192)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_KPI_StorageUsed",
+      "label": "KPI: Storage Used (8 TB)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_KPI_PlatformHealth",
+      "label": "KPI: Platform Health (78%)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Chart_DailyActiveStudents",
+      "label": "Chart: Daily Active Students (Bar Chart)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Chart_SubjectAvgScore",
+      "label": "Chart: Subject-wise Average Quiz Score (Horizontal Bar Chart)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Table_QuestionBankHealth",
+      "label": "Table: Question Bank Health",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Widget_AIReviewQueue",
+      "label": "Widget: AI Review Queue",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Chart_WeakConceptTrends",
+      "label": "Chart: Weak Concept Trends (Line/Trend Chart)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Table_PaperDatabase",
+      "label": "Table: Paper Database",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Table_UserManagement",
+      "label": "Table: User Management",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Nav_Sidebar",
+      "label": "Navigation Sidebar",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Nav_Overview",
+      "label": "Sidebar Nav: Overview",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Nav_Cases",
+      "label": "Sidebar Nav: Cases",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Nav_QuestionBank",
+      "label": "Sidebar Nav: Question Bank",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Nav_PaperDatabase",
+      "label": "Sidebar Nav: Paper Database",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Nav_WeakConcepts",
+      "label": "Sidebar Nav: Weak Concepts",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Nav_SystemLog",
+      "label": "Sidebar Nav: System Log",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Filter_DateRange",
+      "label": "Filter: Date Range (Last 90 Days)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_Button_GenerateReport",
+      "label": "Button: Generate Report",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_UserProfile_AlexChen",
+      "label": "Logged-in User: Alex Chen (Admin)",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "screen_DesignTheme_DarkMode",
+      "label": "Design Theme: Dark Mode UI",
+      "file_type": "image",
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_KPI_TotalStudents",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_KPI_TotalQuestions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_KPI_TotalCourses",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_KPI_ActiveTeachers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_KPI_StorageUsed",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_KPI_PlatformHealth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_Chart_DailyActiveStudents",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_Chart_SubjectAvgScore",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_Table_QuestionBankHealth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_Widget_AIReviewQueue",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_Chart_WeakConceptTrends",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_Table_PaperDatabase",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_Table_UserManagement",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_Nav_Sidebar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Nav_Sidebar",
+      "target": "screen_Nav_Overview",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Nav_Sidebar",
+      "target": "screen_Nav_Cases",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Nav_Sidebar",
+      "target": "screen_Nav_QuestionBank",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Nav_Sidebar",
+      "target": "screen_Nav_PaperDatabase",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Nav_Sidebar",
+      "target": "screen_Nav_WeakConcepts",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Nav_Sidebar",
+      "target": "screen_Nav_SystemLog",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Nav_Overview",
+      "target": "screen_OverviewDashboard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Nav_QuestionBank",
+      "target": "screen_Table_QuestionBankHealth",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_Nav_PaperDatabase",
+      "target": "screen_Table_PaperDatabase",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_Nav_WeakConcepts",
+      "target": "screen_Chart_WeakConceptTrends",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "screen_Filter_DateRange",
+      "target": "screen_Chart_DailyActiveStudents",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_Filter_DateRange",
+      "target": "screen_OverviewDashboard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_Button_GenerateReport",
+      "target": "screen_OverviewDashboard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "screen_Chart_DailyActiveStudents",
+      "target": "screen_KPI_TotalStudents",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_Table_UserManagement",
+      "target": "screen_KPI_TotalStudents",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_Table_UserManagement",
+      "target": "screen_KPI_ActiveTeachers",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_Table_QuestionBankHealth",
+      "target": "screen_KPI_TotalQuestions",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "screen_Widget_AIReviewQueue",
+      "target": "screen_Table_QuestionBankHealth",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "screen_Chart_SubjectAvgScore",
+      "target": "screen_Chart_WeakConceptTrends",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "screen_OverviewDashboard",
+      "target": "screen_DesignTheme_DarkMode",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Nav_Sidebar",
+      "target": "screen_UserProfile_AlexChen",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "screen_Table_PaperDatabase",
+      "target": "screen_KPI_TotalCourses",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.7
+    },
+    {
+      "source": "screen_KPI_PlatformHealth",
+      "target": "screen_KPI_StorageUsed",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "stitch (5)/stitch/admin_analytics_dashboard/screen.png",
+      "source_location": null,
+      "weight": 0.7
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 1250,
+  "output_tokens": 820
+}

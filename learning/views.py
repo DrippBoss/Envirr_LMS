@@ -1,6 +1,18 @@
 from rest_framework import generics, status, views
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
+
+
+class IsStudent(BasePermission):
+    """Allows access only to users with a StudentProfile (i.e. role=student)."""
+    message = 'A student profile is required to access this resource.'
+
+    def has_permission(self, request, _view):
+        return bool(
+            request.user and
+            request.user.is_authenticated and
+            hasattr(request.user, 'profile')
+        )
 from .models import (
     CourseUnit, LearningPath, LearningNode, LessonQuestion, NodeProgress, 
     FlashcardDeck, FlashcardProgress, SessionAnswer, RevisionNode, RevisionNodeProgress, UnitPrerequisiteSeen,
@@ -20,7 +32,7 @@ from ai_engine.models import QuestionBank
 
 class DashboardView(generics.ListAPIView):
     serializer_class = CourseUnitSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
 
     def get_queryset(self):
         user = self.request.user
@@ -28,7 +40,7 @@ class DashboardView(generics.ListAPIView):
         return CourseUnit.objects.filter(class_grade=user.profile.class_grade, is_published=True)
 
 class UnitPrerequisitesView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
 
     def get(self, request, unit_id):
         unit = get_object_or_404(CourseUnit, pk=unit_id)
@@ -59,12 +71,12 @@ class UnitPrerequisitesView(views.APIView):
         return Response({'status': 'success'})
 
 class MapDataView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def get(self, request, path_id):
         path = get_object_or_404(LearningPath, pk=path_id)
         unit = path.unit
-        
+
         # Check prerequisites
         if unit and not UnitPrerequisiteSeen.objects.filter(student=request.user.profile, course_unit=unit).exists():
             # If there are NO prereq decks at all, we can allow it
@@ -83,7 +95,7 @@ class MapDataView(views.APIView):
         return Response(LearningPathSerializer(path, context={'request': request}).data)
 
 class NodeStartView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
@@ -95,24 +107,39 @@ class NodeStartView(views.APIView):
         if prog.status == 'UNLOCKED':
             prog.status = 'IN_PROGRESS'
         
+        path = node.path
+        unit = path.unit if path else None
+        breadcrumb = {
+            'title': node.title,
+            'path_title': path.title if path else '',
+            'path_id': path.id if path else None,
+            'subject': unit.subject if unit else 'Mathematics',
+            'grade': f"Grade {path.class_grade or (unit.class_grade if unit else '')}",
+        }
+
         if node.node_type == 'CHAPTER_TEST':
             prog.current_step = 'PRACTICE'
             prog.save()
-            return Response({'step': 'PRACTICE', 'node_type': 'CHAPTER_TEST'})
-            
-        # Keep it at NOT_STARTED so they see the video first
-        prog.save()
-        
-        # If it was already completed, we still let them review
+            return Response({'step': 'PRACTICE', 'node_type': 'CHAPTER_TEST', **breadcrumb})
+
+        # If no video exists, advance straight to practice so NodePracticeView won't block
         video_url = node.youtube_url or (node.video_file.url if node.video_file else None)
+        if not video_url and prog.current_step in ('NOT_STARTED', 'VIDEO_DONE'):
+            prog.current_step = 'PRACTICE'
+            if prog.lives_remaining == 0:
+                prog.lives_remaining = node.starting_lives
+        prog.save()
         return Response({
             'step': prog.current_step,
             'node_type': 'LESSON',
             'video_url': video_url,
+            'description': node.description,
+            'objectives': node.objectives_json,
+            **breadcrumb,
         })
 
 class NodeVideoCompleteView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
@@ -126,7 +153,7 @@ class NodeVideoCompleteView(views.APIView):
         return Response({'step': 'PRACTICE', 'lives': prog.lives_remaining})
 
 class NodePracticeView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def get(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
@@ -142,7 +169,7 @@ class NodePracticeView(views.APIView):
         return Response(LessonQuestionSerializer(questions, many=True).data)
 
 class NodePracticeAnswerView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
@@ -155,7 +182,49 @@ class NodePracticeAnswerView(views.APIView):
         given_answer = request.data.get('given_answer')
         q = get_object_or_404(LessonQuestion, pk=q_id, node=node)
         
-        is_correct = str(given_answer).lower().strip() == str(q.correct_answer).lower().strip()
+        if q.question_type == 'MULTI_SELECT':
+            # given_answer is comma-separated selected IDs e.g. "3,1,5,7"
+            # correct_answer is sorted comma-separated IDs e.g. "1,3,5,7"
+            given_ids = sorted(int(x) for x in str(given_answer).strip().split(',') if x.strip().isdigit())
+            correct_ids = sorted(int(x) for x in str(q.correct_answer).strip().split(',') if x.strip().isdigit())
+            is_correct = given_ids == correct_ids
+        elif q.question_type == 'PROOF_PUZZLE':
+            # given_answer is "0,1,2,3" — compare to correct order stored in correct_answer
+            is_correct = str(given_answer).strip() == str(q.correct_answer).strip()
+        elif q.question_type == 'REARRANGE':
+            # Remove all whitespace for robust math/text comparison
+            given = "".join(str(given_answer).split()).lower()
+            
+            # Accommodate AI generating multiple possible valid sequences separated by '|'
+            possible_corrects = [ "".join(c.split()).lower() for c in str(q.correct_answer).split('|') ]
+            is_correct = given in possible_corrects
+            
+            # Fallback for commutative binomial factors: (x-2)(x-3) should be identical to (x-3)(x-2)
+            if not is_correct:
+                import re
+                given_factors = re.findall(r'\(([^)]+)\)', given)
+                # Ensure the entire string is just these factors (no loose variables outside)
+                if given_factors and "".join(f"({f})" for f in given_factors) == given:
+                    for pc in possible_corrects:
+                        pc_factors = re.findall(r'\(([^)]+)\)', pc)
+                        if pc_factors and "".join(f"({f})" for f in pc_factors) == pc:
+                            if sorted(given_factors) == sorted(pc_factors):
+                                is_correct = True
+                                break
+        elif q.question_type in ('MCQ', 'ASSERTION_REASON') and q.options_json:
+            # Frontend always sends the option KEY (e.g. 'C').
+            # correct_answer may be stored as a KEY ('C') or as option TEXT ('a³b²') — handle both.
+            given = str(given_answer).strip().upper()
+            stored = str(q.correct_answer).strip()
+            is_correct = (
+                given == stored.upper()                                   # key vs key
+                or q.options_json.get(given, '').lower() == stored.lower()  # resolve key → text vs text
+            )
+        else:
+            # Normalize all whitespace so "a × b", "a×b", "a  ×  b" all match
+            given_norm = "".join(str(given_answer).lower().split())
+            correct_norm = "".join(str(q.correct_answer).lower().split())
+            is_correct = given_norm == correct_norm
         
         SessionAnswer.objects.create(
             student=request.user.profile,
@@ -185,7 +254,7 @@ class NodePracticeAnswerView(views.APIView):
         })
 
 class NodePracticeRetryView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
@@ -197,7 +266,7 @@ class NodePracticeRetryView(views.APIView):
         return Response({'status': 'reset'})
 
 class NodePracticeCompleteView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
@@ -246,7 +315,7 @@ class NodePracticeCompleteView(views.APIView):
         return Response({'status': 'success', 'stars': prog.stars, 'xp': prog.xp_earned})
 
 class NodeRevisionCardsView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def get(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
@@ -257,7 +326,7 @@ class NodeRevisionCardsView(views.APIView):
         return Response(FlashcardSerializer(cards, many=True).data)
 
 class FlashcardMarkSeenView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def post(self, request, card_id):
         card = get_object_or_404(Flashcard, pk=card_id)
@@ -273,7 +342,7 @@ class FlashcardMarkSeenView(views.APIView):
         return Response({'status': 'success'})
 
 class RevisionNodeDetailView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def get(self, request, rev_id):
         rnode = get_object_or_404(RevisionNode, pk=rev_id)
@@ -291,7 +360,7 @@ class RevisionNodeDetailView(views.APIView):
         return Response({'status': 'success', 'xp_earned': prog.xp_earned})
 
 class ChapterTestStartView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id, node_type='CHAPTER_TEST')
@@ -310,7 +379,7 @@ class ChapterTestStartView(views.APIView):
         return Response(data)
 
 class ChapterTestCompleteView(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStudent]
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
@@ -328,3 +397,189 @@ class ChapterTestCompleteView(views.APIView):
             unlock_next_nodes(request.user.profile, node)
         
         return Response({'passed': passed})
+
+
+class WeakConceptsView(views.APIView):
+    permission_classes = [IsStudent]
+
+    def get(self, request):
+        spots = (
+            request.user.profile.weak_spots
+            .filter(is_resolved=False)
+            .order_by('-wrong_count')[:8]
+        )
+        data = [
+            {
+                'id': s.id,
+                'concept': s.concept,
+                'subject': s.subject,
+                'chapter': s.chapter,
+                'wrong_count': s.wrong_count,
+            }
+            for s in spots
+        ]
+        return Response(data)
+
+
+class ActivityFeedView(views.APIView):
+    permission_classes = [IsStudent]
+
+    def get(self, request):
+        answers = (
+            SessionAnswer.objects
+            .filter(student=request.user.profile)
+            .select_related('node', 'question')
+            .order_by('-answered_at')[:20]
+        )
+        seen_nodes = set()
+        feed = []
+        for a in answers:
+            node_id = a.node_id
+            if node_id in seen_nodes:
+                continue
+            seen_nodes.add(node_id)
+            feed.append({
+                'type': 'lesson',
+                'title': f"Practiced: {a.node.title}",
+                'node_id': node_id,
+                'is_correct': a.is_correct,
+                'answered_at': a.answered_at,
+            })
+            if len(feed) >= 6:
+                break
+        return Response(feed)
+
+
+class MockTestQuestionsView(views.APIView):
+    permission_classes = [IsStudent]
+
+    def get(self, request):
+        import random
+        from ai_engine.models import QuestionBank
+
+        student = request.user.profile
+
+        # Priority 1: chapters from unresolved weak spots
+        weak_chapters = list(
+            WeakSpot.objects.filter(student=student, is_resolved=False)
+            .values_list('chapter', flat=True).distinct()[:4]
+        )
+
+        # Priority 2: chapters from nodes the student has practiced
+        if not weak_chapters:
+            weak_chapters = list(
+                SessionAnswer.objects.filter(student=student)
+                .select_related('question')
+                .values_list('question__concept', flat=True)
+                .distinct()[:4]
+            )
+            weak_chapters = [c for c in weak_chapters if c]
+
+        if weak_chapters:
+            bank_qs = list(QuestionBank.objects.filter(chapter__in=weak_chapters))
+        else:
+            # No history yet — pull from any published chapter
+            bank_qs = list(QuestionBank.objects.all())
+
+        random.shuffle(bank_qs)
+        bank_qs = bank_qs[:10]
+
+        result = []
+        for bq in bank_qs:
+            if bq.question_type in ('MCQ', 'ASSERTION_REASON'):
+                opts = bq.options.all().order_by('order')
+                options_json = {o.option_label: o.option_text for o in opts}
+            else:
+                options_json = {}
+
+            result.append({
+                'id': bq.id,
+                'question_type': bq.question_type,
+                'question_text': bq.question_text,
+                'options_json': options_json,
+                'chapter': bq.chapter,
+                'subject': bq.subject,
+            })
+
+        return Response(result)
+
+
+class MockTestCheckView(views.APIView):
+    permission_classes = [IsStudent]
+
+    def post(self, request):
+        from ai_engine.models import QuestionBank
+        from django.utils import timezone
+
+        question_id = request.data.get('question_id')
+        given_answer = str(request.data.get('given_answer', '')).strip()
+
+        bq = get_object_or_404(QuestionBank, pk=question_id)
+
+        if bq.question_type in ('MCQ', 'ASSERTION_REASON'):
+            opts = bq.options.all().order_by('order')
+            options_json = {o.option_label: o.option_text for o in opts}
+            correct_opt = opts.filter(is_correct=True).first()
+            correct_key = correct_opt.option_label if correct_opt else ''
+            correct_text = options_json.get(correct_key, '')
+
+            given_up = given_answer.upper()
+            is_correct = (
+                given_up == correct_key.upper()
+                or options_json.get(given_up, '').lower() == correct_text.lower()
+            )
+            correct_display = f"{correct_key}: {correct_text}" if correct_key else ''
+        else:
+            correct_display = (bq.answer_text or '')[:500]
+            is_correct = given_answer.lower() == correct_display.lower()
+
+        # Update WeakSpot on wrong answer
+        if not is_correct:
+            spot, _ = WeakSpot.objects.get_or_create(
+                student=request.user.profile,
+                chapter=bq.chapter,
+                concept=bq.concept or bq.chapter,
+                defaults={'subject': bq.subject, 'wrong_count': 0}
+            )
+            spot.wrong_count += 1
+            spot.last_wrong_at = timezone.now()
+            spot.save()
+
+        return Response({
+            'is_correct': is_correct,
+            'correct_answer': correct_display,
+            'explanation': (bq.answer_text or '')[:600],
+            'hint': '',
+        })
+
+
+class StudyGroupsView(views.APIView):
+    permission_classes = [IsStudent]
+
+    def get(self, request):
+        from django.db.models import Count
+        active = (
+            NodeProgress.objects
+            .filter(status='IN_PROGRESS')
+            .exclude(student=request.user.profile)
+            .select_related('node__path__unit')
+            .values(
+                'node__path__id',
+                'node__path__title',
+                'node__path__unit__subject',
+                'node__path__unit__class_grade',
+            )
+            .annotate(count=Count('student', distinct=True))
+            .order_by('-count')[:6]
+        )
+
+        return Response([
+            {
+                'path_id': item['node__path__id'],
+                'path_title': item['node__path__title'],
+                'subject': item['node__path__unit__subject'] or 'Mathematics',
+                'grade': item['node__path__unit__class_grade'] or '',
+                'active_count': item['count'],
+            }
+            for item in active
+        ])
