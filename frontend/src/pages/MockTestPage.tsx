@@ -32,6 +32,7 @@ interface ResultEntry {
   given: string;
   correct_display: string;
   is_correct: boolean | null;
+  self_marked: boolean | null;
   image_url: string | null;
 }
 
@@ -231,22 +232,25 @@ function QuizScreen({
     setSubmitting(true);
     const timeTaken = Math.round((Date.now() - startTs.current) / 1000);
     const allAnswers: Record<string, string> = {};
-    // merge self-mark into answers for non-auto questions
+    const selfMarks: Record<string, boolean> = {};
+    // Send the student's real answer text, and report self-marks separately so
+    // the backend keeps them out of the auto-graded score (no inflation).
     questions.forEach(bq => {
       if (AUTO_GRADED.includes(bq.question_type)) {
         if (answers[bq.id] !== undefined) allAnswers[String(bq.id)] = answers[bq.id];
       } else {
-        allAnswers[String(bq.id)] = selfMark[bq.id] ? '__SELF_CORRECT__' : (answers[bq.id] || '');
+        allAnswers[String(bq.id)] = answers[bq.id] || '';
+        if (selfMark[bq.id] !== undefined) selfMarks[String(bq.id)] = selfMark[bq.id];
       }
     });
     try {
-      const res = await api.post(`student/mock-test/${attemptId}/submit/`, { answers: allAnswers, time_taken: timeTaken });
+      const res = await api.post(`student/mock-test/${attemptId}/submit/`, { answers: allAnswers, self_marks: selfMarks, time_taken: timeTaken });
       onComplete(res.data);
     } catch { setSubmitting(false); }
   };
 
   const progress = ((idx + 1) / questions.length) * 100;
-  const answeredCount = Object.keys(answers).length;
+  const answeredCount = new Set([...Object.keys(answers), ...Object.keys(selfMark)]).size;
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary-container/30">
@@ -390,11 +394,11 @@ function QuizScreen({
                 )}
                 <div className="flex items-center gap-3 pt-1">
                   <p className="text-xs text-outline flex-1">Mark yourself:</p>
-                  <button onClick={() => { setSelfMark(p => ({ ...p, [q.id]: true })); setAnswer('__SELF_CORRECT__'); }}
+                  <button onClick={() => setSelfMark(p => ({ ...p, [q.id]: true }))}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${selfMark[q.id] === true ? 'bg-secondary/15 border-secondary/40 text-secondary' : 'border-outline-variant/20 text-outline'}`}>
                     ✓ Correct
                   </button>
-                  <button onClick={() => { setSelfMark(p => ({ ...p, [q.id]: false })); setAnswer('__SELF_WRONG__'); }}
+                  <button onClick={() => setSelfMark(p => ({ ...p, [q.id]: false }))}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${selfMark[q.id] === false ? 'bg-error/15 border-error/40 text-error' : 'border-outline-variant/20 text-outline'}`}>
                     ✗ Wrong
                   </button>
@@ -502,7 +506,9 @@ function ResultsScreen({ resp, onRetry, onDashboard }: {
                     <p className="text-xs text-secondary mt-1">Answer: <MathText text={r.correct_display} /></p>
                   )}
                   {r.is_correct === null && (
-                    <p className="text-xs text-tertiary mt-1">Self-marked · see model answer in review</p>
+                    <p className="text-xs text-tertiary mt-1">
+                      Self-marked{r.self_marked === true ? ' correct' : r.self_marked === false ? ' wrong' : ''} · not counted in score · see model answer
+                    </p>
                   )}
                 </div>
               </div>

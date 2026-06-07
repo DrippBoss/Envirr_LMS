@@ -42,6 +42,12 @@ def _serialize_bank_question(bq):
     }
 
 
+# Legacy sentinels the old frontend injected into the answer field for
+# self-marked questions. Stripped server-side so they never become answer
+# text and can never be mistaken for a real (auto-gradeable) answer.
+SELF_MARK_SENTINELS = ('__SELF_CORRECT__', '__SELF_WRONG__')
+
+
 def _grade(bq, given: str):
     """Return (is_correct, correct_display). is_correct=None means self-mark."""
     given = (given or '').strip()
@@ -110,6 +116,7 @@ class MockTestSubmitView(views.APIView):
             return Response({'detail': 'Already submitted.'}, status=400)
 
         answers    = request.data.get('answers', {})
+        self_marks = request.data.get('self_marks', {}) or {}
         time_taken = request.data.get('time_taken')
 
         questions = {
@@ -124,7 +131,21 @@ class MockTestSubmitView(views.APIView):
             if not bq:
                 continue
             given = str(answers.get(str(qid), '')).strip()
+            # Discard any legacy self-mark sentinel so it is never stored as the
+            # student's answer nor evaluated by the grader.
+            if given in SELF_MARK_SENTINELS:
+                given = ''
+
             is_correct, correct_display = _grade(bq, given)
+
+            # The student's own claim for non-auto-gradeable answers. It is
+            # recorded for transparency / teacher review only and deliberately
+            # never feeds is_correct, so it cannot inflate the score.
+            self_marked = None
+            if is_correct is None:
+                raw = self_marks.get(str(qid))
+                if isinstance(raw, bool):
+                    self_marked = raw
 
             results.append({
                 'id':              qid,
@@ -135,6 +156,7 @@ class MockTestSubmitView(views.APIView):
                 'given':           given,
                 'correct_display': correct_display,
                 'is_correct':      is_correct,
+                'self_marked':     self_marked,
                 'image_url':       bq.image.url if bq.has_image and bq.image else None,
             })
 
