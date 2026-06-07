@@ -433,9 +433,11 @@ def calculate_marks_distribution(total_marks):
 
 @shared_task(bind=True, max_retries=3)
 def generate_paper_task(self, config_data, user_id, paper_id):
+    from celery.exceptions import MaxRetriesExceededError
     try:
         user = CustomUser.objects.get(id=user_id)
         paper = QuestionPaper.objects.get(id=paper_id)
+        QuestionPaper.objects.filter(id=paper_id).update(status='processing')
         max_marks = config_data.get('max_marks', 80)
         
         distribution = calculate_marks_distribution(max_marks)
@@ -661,9 +663,17 @@ def generate_paper_task(self, config_data, user_id, paper_id):
             junk_file = os.path.join(temp_dir, f"{unique_id}{ext}")
             if os.path.exists(junk_file): os.remove(junk_file)
 
+        QuestionPaper.objects.filter(id=paper_id).update(status='done')
         return paper.id
     except Exception as exc:
-        raise self.retry(exc=exc, countdown=30)
+        try:
+            raise self.retry(exc=exc, countdown=30)
+        except MaxRetriesExceededError:
+            QuestionPaper.objects.filter(id=paper_id).update(
+                status='failed',
+                error_message=str(exc)[:1000],
+            )
+            raise
 
 @shared_task(bind=True, max_retries=3)
 def compile_ingest_paper_task(self, paper_config, sections_with_questions, user_id, paper_id):
@@ -674,10 +684,12 @@ def compile_ingest_paper_task(self, paper_config, sections_with_questions, user_
     """
     import hashlib as _hashlib
     from ai_engine.models import MCQOption
+    from celery.exceptions import MaxRetriesExceededError
     OPTION_LABELS = ['A', 'B', 'C', 'D', 'E']
 
     try:
         paper = QuestionPaper.objects.get(id=paper_id)
+        QuestionPaper.objects.filter(id=paper_id).update(status='processing')
         subject = paper_config.get('subject', 'General')
         chapter = paper_config.get('chapter', 'General')
         total_marks = 0
@@ -763,17 +775,27 @@ def compile_ingest_paper_task(self, paper_config, sections_with_questions, user_
             if os.path.exists(junk):
                 os.remove(junk)
 
+        QuestionPaper.objects.filter(id=paper_id).update(status='done')
         return paper.id
 
     except Exception as exc:
-        raise self.retry(exc=exc, countdown=30)
+        try:
+            raise self.retry(exc=exc, countdown=30)
+        except MaxRetriesExceededError:
+            QuestionPaper.objects.filter(id=paper_id).update(
+                status='failed',
+                error_message=str(exc)[:1000],
+            )
+            raise
 
 
 @shared_task(bind=True, max_retries=3)
 def compile_manual_paper_task(self, config_data, user_id, paper_id):
+    from celery.exceptions import MaxRetriesExceededError
     try:
         user = CustomUser.objects.get(id=user_id)
         paper = QuestionPaper.objects.get(id=paper_id)
+        QuestionPaper.objects.filter(id=paper_id).update(status='processing')
         
         # Phase 1: Save Custom Questions
         custom_qs = config_data.get('custom_questions', [])
@@ -857,6 +879,14 @@ def compile_manual_paper_task(self, config_data, user_id, paper_id):
             junk_file = os.path.join(temp_dir, f"{unique_id}{ext}")
             if os.path.exists(junk_file): os.remove(junk_file)
 
+        QuestionPaper.objects.filter(id=paper_id).update(status='done')
         return paper.id
     except Exception as exc:
-        raise self.retry(exc=exc, countdown=30)
+        try:
+            raise self.retry(exc=exc, countdown=30)
+        except MaxRetriesExceededError:
+            QuestionPaper.objects.filter(id=paper_id).update(
+                status='failed',
+                error_message=str(exc)[:1000],
+            )
+            raise

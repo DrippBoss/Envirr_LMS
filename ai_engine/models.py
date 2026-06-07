@@ -32,6 +32,12 @@ class IngestionStatus(models.TextChoices):
     DONE       = "done",       "Done"
     FAILED     = "failed",     "Failed"
 
+class PaperStatus(models.TextChoices):
+    PENDING    = "pending",    "Pending"
+    PROCESSING = "processing", "Processing"
+    DONE       = "done",       "Done"
+    FAILED     = "failed",     "Failed"
+
 class SourceDocument(models.Model):
     title        = models.CharField(max_length=255)
     subject      = models.CharField(max_length=100)
@@ -178,6 +184,15 @@ class QuestionPaper(models.Model):
     instructions  = models.TextField(blank=True)
     is_template   = models.BooleanField(default=False, db_index=True)
     created_at    = models.DateTimeField(auto_now_add=True)
+
+    # Generation lifecycle tracking
+    status        = models.CharField(
+                        max_length=20,
+                        choices=PaperStatus.choices,
+                        default=PaperStatus.PENDING,
+                        db_index=True,
+                    )
+    error_message = models.TextField(blank=True)
 
     class Meta:
         ordering = ["-created_at"]

@@ -35,7 +35,9 @@ class GeneratePaperAPIView(views.APIView):
                 "title": p.title,
                 "created_at": p.created_at,
                 "config": p.config,
-                "pdf_url": p.secure_pdf_path.url if p.secure_pdf_path else None
+                "pdf_url": p.secure_pdf_path.url if p.secure_pdf_path else None,
+                "status": p.status,
+                "error_message": p.error_message or None,
             })
         return response.Response(data)
 
