@@ -433,7 +433,6 @@ def calculate_marks_distribution(total_marks):
 
 @shared_task(bind=True, max_retries=3)
 def generate_paper_task(self, config_data, user_id, paper_id):
-    from celery.exceptions import MaxRetriesExceededError
     try:
         user = CustomUser.objects.get(id=user_id)
         paper = QuestionPaper.objects.get(id=paper_id)
@@ -666,14 +665,17 @@ def generate_paper_task(self, config_data, user_id, paper_id):
         QuestionPaper.objects.filter(id=paper_id).update(status='done')
         return paper.id
     except Exception as exc:
-        try:
-            raise self.retry(exc=exc, countdown=30)
-        except MaxRetriesExceededError:
+        # On the final attempt, record the failure before re-raising. Celery's
+        # self.retry(exc=exc) re-raises the ORIGINAL exception (not
+        # MaxRetriesExceededError) once retries are exhausted, so the failure
+        # must be persisted here instead of in an except MaxRetriesExceededError.
+        if self.request.retries >= self.max_retries:
             QuestionPaper.objects.filter(id=paper_id).update(
                 status='failed',
                 error_message=str(exc)[:1000],
             )
             raise
+        raise self.retry(exc=exc, countdown=30)
 
 @shared_task(bind=True, max_retries=3)
 def compile_ingest_paper_task(self, paper_config, sections_with_questions, user_id, paper_id):
@@ -684,7 +686,6 @@ def compile_ingest_paper_task(self, paper_config, sections_with_questions, user_
     """
     import hashlib as _hashlib
     from ai_engine.models import MCQOption
-    from celery.exceptions import MaxRetriesExceededError
     OPTION_LABELS = ['A', 'B', 'C', 'D', 'E']
 
     try:
@@ -779,19 +780,21 @@ def compile_ingest_paper_task(self, paper_config, sections_with_questions, user_
         return paper.id
 
     except Exception as exc:
-        try:
-            raise self.retry(exc=exc, countdown=30)
-        except MaxRetriesExceededError:
+        # On the final attempt, record the failure before re-raising. Celery's
+        # self.retry(exc=exc) re-raises the ORIGINAL exception (not
+        # MaxRetriesExceededError) once retries are exhausted, so the failure
+        # must be persisted here instead of in an except MaxRetriesExceededError.
+        if self.request.retries >= self.max_retries:
             QuestionPaper.objects.filter(id=paper_id).update(
                 status='failed',
                 error_message=str(exc)[:1000],
             )
             raise
+        raise self.retry(exc=exc, countdown=30)
 
 
 @shared_task(bind=True, max_retries=3)
 def compile_manual_paper_task(self, config_data, user_id, paper_id):
-    from celery.exceptions import MaxRetriesExceededError
     try:
         user = CustomUser.objects.get(id=user_id)
         paper = QuestionPaper.objects.get(id=paper_id)
@@ -882,11 +885,14 @@ def compile_manual_paper_task(self, config_data, user_id, paper_id):
         QuestionPaper.objects.filter(id=paper_id).update(status='done')
         return paper.id
     except Exception as exc:
-        try:
-            raise self.retry(exc=exc, countdown=30)
-        except MaxRetriesExceededError:
+        # On the final attempt, record the failure before re-raising. Celery's
+        # self.retry(exc=exc) re-raises the ORIGINAL exception (not
+        # MaxRetriesExceededError) once retries are exhausted, so the failure
+        # must be persisted here instead of in an except MaxRetriesExceededError.
+        if self.request.retries >= self.max_retries:
             QuestionPaper.objects.filter(id=paper_id).update(
                 status='failed',
                 error_message=str(exc)[:1000],
             )
             raise
+        raise self.retry(exc=exc, countdown=30)
