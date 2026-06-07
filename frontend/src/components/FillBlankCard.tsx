@@ -43,8 +43,8 @@ export default function FillBlankCard({ question, onSubmit, result, onSkip, onNe
                         close
                     </button>
                     <div className="leading-none">
-                        <span className="font-black text-base text-white font-headline">Envirr</span>
-                        <p className="text-[9px] uppercase tracking-[0.15em] text-outline font-bold">Fill in the Blank</p>
+                        <span className="font-black text-base text-on-surface font-headline">Envirr</span>
+                        <p className="text-[9px] uppercase tracking-[0.15em] text-outline font-bold">Repair the Equation</p>
                     </div>
                 </div>
 
@@ -73,7 +73,7 @@ export default function FillBlankCard({ question, onSubmit, result, onSkip, onNe
                             </div>
                             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-full border border-primary/20">
                                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>text_fields</span>
-                                <span className="text-xs font-black uppercase tracking-wider">Fill Blank</span>
+                                <span className="text-xs font-black uppercase tracking-wider">Repair</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container rounded-full border border-outline-variant/10">

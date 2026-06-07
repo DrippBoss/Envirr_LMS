@@ -35,7 +35,9 @@ class SimpleLearningNodeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = LearningNode
-        fields = ('id', 'title', 'node_type', 'order', 'xp_reward', 'is_bonus', 'status', 'progress')
+        fields = ('id', 'title', 'node_type', 'order', 'xp_reward', 'is_bonus',
+                  'unlock_min_stars', 'lab_type', 'lab_category', 'lab_required_completions',
+                  'status', 'progress')
         
     def get_status(self, obj):
         user = self.context['request'].user

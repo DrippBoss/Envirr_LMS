@@ -14,9 +14,9 @@ class IsStudent(BasePermission):
             hasattr(request.user, 'profile')
         )
 from .models import (
-    CourseUnit, LearningPath, LearningNode, LessonQuestion, NodeProgress, 
+    CourseUnit, LearningPath, LearningNode, LessonQuestion, NodeProgress,
     FlashcardDeck, FlashcardProgress, SessionAnswer, RevisionNode, RevisionNodeProgress, UnitPrerequisiteSeen,
-    Flashcard
+    Flashcard, NodeType
 )
 from .serializers import (
     CourseUnitSerializer, LearningPathSerializer, FlashcardDeckSerializer, 
@@ -29,6 +29,14 @@ from .services import (
 from django.shortcuts import get_object_or_404
 import random
 from ai_engine.models import QuestionBank
+
+
+def _grade_check(path, profile):
+    """Return a 403 Response if the path's grade doesn't match the student's grade, else None."""
+    path_grade = getattr(path, 'class_grade', None)
+    if path_grade and path_grade != profile.class_grade:
+        return Response({'error': 'Access denied: grade mismatch'}, status=403)
+    return None
 
 class DashboardView(generics.ListAPIView):
     serializer_class = CourseUnitSerializer
@@ -75,6 +83,9 @@ class MapDataView(views.APIView):
     
     def get(self, request, path_id):
         path = get_object_or_404(LearningPath, pk=path_id)
+        err = _grade_check(path, request.user.profile)
+        if err:
+            return err
         unit = path.unit
 
         # Check prerequisites
@@ -99,8 +110,11 @@ class NodeStartView(views.APIView):
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
+        err = _grade_check(node.path, request.user.profile)
+        if err:
+            return err
         prog, _ = NodeProgress.objects.get_or_create(student=request.user.profile, node=node)
-        
+
         if prog.status == 'LOCKED':
             return Response({'error': 'Node is locked'}, status=403)
             
@@ -116,6 +130,17 @@ class NodeStartView(views.APIView):
             'subject': unit.subject if unit else 'Mathematics',
             'grade': f"Grade {path.class_grade or (unit.class_grade if unit else '')}",
         }
+
+        if node.node_type == NodeType.LAB:
+            prog.status = 'IN_PROGRESS'
+            prog.save()
+            return Response({
+                'step': 'LAB',
+                'node_type': NodeType.LAB,
+                'lab_type': node.lab_type,
+                'lab_category': node.lab_category,
+                **breadcrumb,
+            })
 
         if node.node_type == 'CHAPTER_TEST':
             prog.current_step = 'PRACTICE'
@@ -272,6 +297,7 @@ class NodePracticeCompleteView(views.APIView):
         node = get_object_or_404(LearningNode, pk=node_id)
         prog = get_object_or_404(NodeProgress, student=request.user.profile, node=node)
         
+        new_badge = None
         if prog.status != 'COMPLETED':
             if node.node_type == 'CHAPTER_TEST':
                 # Check pass percentage
@@ -289,11 +315,11 @@ class NodePracticeCompleteView(views.APIView):
                     from django.utils import timezone
                     prog.completed_at = timezone.now()
                     prog.save()
-                    award_node_xp(request.user.profile, node, node.xp_reward, is_test=True)
+                    new_badge = award_node_xp(request.user.profile, node, node.xp_reward, is_test=True)
                     unlock_next_nodes(request.user.profile, node)
                 else:
                     prog.status = 'IN_PROGRESS'
-                    prog.current_step = 'NOT_STARTED'  # Force retry
+                    prog.current_step = 'NOT_STARTED'
                     prog.attempts += 1
                     prog.save()
                     return Response({'status': 'failed', 'score': score_pct})
@@ -304,15 +330,20 @@ class NodePracticeCompleteView(views.APIView):
                 prog.stars = calculate_stars(wrong_answers, node.practice_question_count)
                 prog.xp_earned = node.xp_reward
                 prog.save()
-                
+
                 from django.utils import timezone
                 prog.completed_at = timezone.now()
                 prog.save()
-                
-                award_node_xp(request.user.profile, node, node.xp_reward)
+
+                new_badge = award_node_xp(request.user.profile, node, node.xp_reward)
                 unlock_next_nodes(request.user.profile, node)
-            
-        return Response({'status': 'success', 'stars': prog.stars, 'xp': prog.xp_earned})
+
+        return Response({
+            'status': 'success',
+            'stars': prog.stars,
+            'xp': prog.xp_earned,
+            'new_badge': new_badge,
+        })
 
 class NodeRevisionCardsView(views.APIView):
     permission_classes = [IsStudent]
@@ -364,6 +395,9 @@ class ChapterTestStartView(views.APIView):
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id, node_type='CHAPTER_TEST')
+        err = _grade_check(node.path, request.user.profile)
+        if err:
+            return err
         # Pull from QuestionBank
         count = node.test_question_count
         qs = QuestionBank.objects.filter(**node.question_filter).order_by('?')[:count]
@@ -383,20 +417,58 @@ class ChapterTestCompleteView(views.APIView):
     
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
-        score_pct = request.data.get('score', 0)
-        
+        prog = get_object_or_404(NodeProgress, student=request.user.profile, node=node)
+
+        # Calculate score server-side from recorded SessionAnswer rows
+        total = node.test_question_count or 1
+        answers = SessionAnswer.objects.filter(
+            student=request.user.profile, node=node
+        ).order_by('-answered_at')[:total]
+        correct = sum(1 for a in answers if a.is_correct)
+        score_pct = round(correct / total * 100, 1)
+
         passed = score_pct >= node.test_pass_percentage
-        if passed:
-            prog = get_object_or_404(NodeProgress, student=request.user.profile, node=node)
+        if passed and prog.status != 'COMPLETED':
+            from django.utils import timezone
             prog.status = 'COMPLETED'
             prog.current_step = 'COMPLETED'
             prog.stars = 3
             prog.xp_earned = node.xp_reward
+            prog.completed_at = timezone.now()
             prog.save()
             award_node_xp(request.user.profile, node, node.xp_reward, is_test=True)
             unlock_next_nodes(request.user.profile, node)
-        
-        return Response({'passed': passed})
+
+        return Response({'passed': passed, 'score': score_pct})
+
+
+class LabCompleteView(views.APIView):
+    permission_classes = [IsStudent]
+
+    def post(self, request, node_id):
+        node = get_object_or_404(LearningNode, pk=node_id, node_type=NodeType.LAB)
+        err = _grade_check(node.path, request.user.profile)
+        if err:
+            return err
+        prog, _ = NodeProgress.objects.get_or_create(student=request.user.profile, node=node)
+
+        artifact = request.data.get('artifact')
+        if not artifact:
+            return Response({'error': 'Lab artifact is required to complete this lab.'}, status=400)
+
+        if prog.status != 'COMPLETED':
+            from django.utils import timezone
+            prog.status = 'COMPLETED'
+            prog.current_step = 'COMPLETED'
+            prog.stars = 3
+            prog.xp_earned = node.xp_reward
+            prog.completed_at = timezone.now()
+            prog.lab_artifact = artifact
+            prog.save()
+            award_node_xp(request.user.profile, node, node.xp_reward)
+            unlock_next_nodes(request.user.profile, node)
+
+        return Response({'status': 'success', 'xp': prog.xp_earned})
 
 
 class WeakConceptsView(views.APIView):

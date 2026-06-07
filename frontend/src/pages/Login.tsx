@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { useAuth, api } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 
 type Role = "student" | "teacher";
 
 export default function Login() {
+  const { theme, toggleTheme } = useTheme();
   const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
+  const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("student");
@@ -15,6 +19,8 @@ export default function Login() {
   const [showPw, setShowPw] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showResend, setShowResend] = useState(false);
+  const [resendStatus, setResendStatus] = useState("");
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -22,27 +28,33 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
+    setShowResend(false);
+    setResendStatus("");
     setIsSubmitting(true);
     try {
       if (isLogin) {
         await api.post("auth/login/", { username, password });
-        login();
-        navigate("/");
+        window.location.href = "/";
       } else {
-        const payload: any = { username, password, email, role };
+        const payload: any = { name, username, mobile, password, email, role };
         if (role === "student") {
           payload.class_grade = classGrade;
           payload.board = board;
         }
         await api.post("auth/register/", payload);
-        await api.post("auth/login/", { username, password });
-        login();
-        navigate("/");
+        // Account created but inactive — prompt user to check email
+        setErrorMsg("");
+        setShowResend(false);
+        setResendStatus("✓ Account created! Check your inbox for a verification link before logging in.");
       }
     } catch (err: any) {
       const data = err.response?.data;
-      if (data?.detail) {
-        setErrorMsg(data.detail);
+      const detail = data?.detail ?? "";
+      if (detail.includes("verify your email")) {
+        setErrorMsg(detail);
+        setShowResend(true);
+      } else if (detail) {
+        setErrorMsg(detail);
       } else if (data?.non_field_errors?.length) {
         setErrorMsg(data.non_field_errors[0]);
       } else if (data?.error) {
@@ -59,8 +71,37 @@ export default function Login() {
     }
   };
 
+  const handleResendVerification = async () => {
+    setResendStatus("Sending...");
+    try {
+      // Temporarily log in with credentials to call the send endpoint
+      const tokenRes = await api.post("auth/login/", { username, password }).catch(() => null);
+      if (!tokenRes) {
+        // Can't authenticate — just tell user to re-register or contact support
+        setResendStatus("Could not resend. Please contact support.");
+        return;
+      }
+      await api.post("auth/send-verification/");
+      setResendStatus("Verification email resent! Check your inbox.");
+      setShowResend(false);
+    } catch {
+      setResendStatus("Failed to resend. Try again in a moment.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex animate-fade-in selection:bg-primary/30 selection:text-primary overflow-hidden">
+      {/* Theme toggle — fixed top-right, visible before auth */}
+      <button
+        onClick={toggleTheme}
+        className="fixed top-4 right-4 z-50 flex items-center justify-center w-9 h-9 rounded-full border border-outline-variant/20 bg-surface-container text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all"
+        aria-label="Toggle theme"
+        title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        <span className="material-symbols-outlined text-base">
+          {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+        </span>
+      </button>
       {/* ── Left Half: Branding & Role Selection ─────────────────── */}
       <section className="hidden lg:flex relative w-1/2 flex-col justify-center px-12 xl:px-24 overflow-hidden bg-surface-dim">
         {/* Ambient Background */}
@@ -109,7 +150,7 @@ export default function Login() {
                 className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
                   role === "student"
                     ? "bg-primary/10 text-primary border-r-2 border-primary"
-                    : "bg-surface-container-low text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                    : "bg-surface-container-low text-slate-500 hover:text-on-surface hover:bg-surface-container"
                 }`}
               >
                 <span className="material-symbols-outlined text-lg">school</span>
@@ -120,7 +161,7 @@ export default function Login() {
                 className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
                   role === "teacher"
                     ? "bg-primary/10 text-primary border-r-2 border-primary"
-                    : "bg-surface-container-low text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                    : "bg-surface-container-low text-slate-500 hover:text-on-surface hover:bg-surface-container"
                 }`}
               >
                 <span className="material-symbols-outlined text-lg">co_present</span>
@@ -193,7 +234,7 @@ export default function Login() {
                         className={`py-3 px-4 rounded-lg text-sm font-bold capitalize flex items-center justify-center gap-2 transition-all ${
                           role === r
                             ? "bg-primary/10 text-primary border border-primary/40"
-                            : "bg-surface-container-lowest text-slate-500 border border-white/5 hover:border-primary/30"
+                            : "bg-surface-container-lowest text-slate-500 border border-outline-variant/15 hover:border-primary/30"
                         }`}
                       >
                         <span className="material-symbols-outlined text-lg">
@@ -202,6 +243,46 @@ export default function Login() {
                         {r}
                       </button>
                     ))}
+                  </div>
+                </div>
+
+                {/* Full Name */}
+                <div className="space-y-2">
+                  <label className="text-xs font-label text-outline uppercase tracking-wider ml-1">Full Name</label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+                      <span className="material-symbols-outlined text-xl">badge</span>
+                    </div>
+                    <input
+                      className="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-lg text-on-surface placeholder:text-outline/50 focus:ring-0 focus:outline-none transition-all"
+                      placeholder="e.g. Rahul Sharma"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+                    <div className="absolute bottom-0 left-0 h-0.5 bg-primary w-0 group-focus-within:w-full transition-all duration-300" />
+                  </div>
+                </div>
+
+                {/* Mobile Number */}
+                <div className="space-y-2">
+                  <label className="text-xs font-label text-outline uppercase tracking-wider ml-1">Mobile Number</label>
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+                      <span className="material-symbols-outlined text-xl">phone</span>
+                    </div>
+                    <div className="absolute inset-y-0 left-12 flex items-center pointer-events-none">
+                      <span className="text-sm text-slate-500 font-bold pr-2 border-r border-outline-variant/20">+91</span>
+                    </div>
+                    <input
+                      className="w-full pl-24 pr-4 py-4 bg-surface-container-lowest border-none rounded-lg text-on-surface placeholder:text-outline/50 focus:ring-0 focus:outline-none transition-all"
+                      placeholder="9876543210"
+                      value={mobile}
+                      onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                      inputMode="numeric"
+                      maxLength={10}
+                    />
+                    <div className="absolute bottom-0 left-0 h-0.5 bg-primary w-0 group-focus-within:w-full transition-all duration-300" />
                   </div>
                 </div>
 
@@ -226,7 +307,7 @@ export default function Login() {
 
                 {/* Student-only fields */}
                 {role === "student" && (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-2">
                       <label className="text-xs font-label text-outline uppercase tracking-wider ml-1">Class</label>
                       <select
@@ -262,7 +343,7 @@ export default function Login() {
             {/* Username */}
             <div className="space-y-2">
               <label className="text-xs font-label text-outline uppercase tracking-wider ml-1">
-                {isLogin ? "Universal Email" : "Username"}
+                {isLogin ? "Username" : "Username (unique login ID)"}
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
@@ -316,14 +397,37 @@ export default function Login() {
               </div>
             </div>
 
+            {/* Success / info banner */}
+            {resendStatus && !errorMsg && (
+              <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-secondary/10 border border-secondary/30 text-secondary text-sm">
+                <span className="material-symbols-outlined text-base shrink-0 mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>mark_email_read</span>
+                <span className="flex-1 leading-snug">{resendStatus}</span>
+              </div>
+            )}
+
             {/* Inline Error Banner */}
             {errorMsg && (
-              <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-error text-sm">
-                <span className="material-symbols-outlined text-base shrink-0 mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>error</span>
-                <span className="flex-1 leading-snug">{errorMsg}</span>
-                <button type="button" onClick={() => setErrorMsg("")} className="shrink-0 hover:opacity-70 transition-opacity">
-                  <span className="material-symbols-outlined text-base">close</span>
-                </button>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-error/10 border border-error/30 text-error text-sm">
+                  <span className="material-symbols-outlined text-base shrink-0 mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>error</span>
+                  <span className="flex-1 leading-snug">{errorMsg}</span>
+                  <button type="button" onClick={() => { setErrorMsg(""); setShowResend(false); }} className="shrink-0 hover:opacity-70 transition-opacity">
+                    <span className="material-symbols-outlined text-base">close</span>
+                  </button>
+                </div>
+                {showResend && (
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant/20 text-on-surface-variant hover:border-primary/40 hover:text-primary text-xs font-bold transition-all"
+                  >
+                    <span className="material-symbols-outlined text-sm">send</span>
+                    Resend verification email
+                  </button>
+                )}
+                {resendStatus && showResend === false && (
+                  <p className="text-xs text-center text-secondary">{resendStatus}</p>
+                )}
               </div>
             )}
 
@@ -343,7 +447,7 @@ export default function Login() {
           {/* Divider */}
           <div className="relative py-2">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/5" />
+              <div className="w-full border-t border-outline-variant/15" />
             </div>
             <div className="relative flex justify-center text-xs">
               <span className="px-4 bg-surface-container text-outline uppercase tracking-widest">Or Bridge With</span>
@@ -352,7 +456,7 @@ export default function Login() {
 
           {/* OAuth Buttons — 2 column grid */}
           <div className="grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center gap-2 py-3 bg-surface-container-high rounded-lg hover:bg-surface-variant transition-colors border border-white/5">
+            <button className="flex items-center justify-center gap-2 py-3 bg-surface-container-high rounded-lg hover:bg-surface-variant transition-colors border border-outline-variant/15">
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -361,7 +465,7 @@ export default function Login() {
               </svg>
               <span className="text-xs font-label text-on-surface-variant">Google</span>
             </button>
-            <button className="flex items-center justify-center gap-2 py-3 bg-surface-container-high rounded-lg hover:bg-surface-variant transition-colors border border-white/5">
+            <button className="flex items-center justify-center gap-2 py-3 bg-surface-container-high rounded-lg hover:bg-surface-variant transition-colors border border-outline-variant/15">
               <span className="material-symbols-outlined text-lg text-on-surface-variant">terminal</span>
               <span className="text-xs font-label text-on-surface-variant">SSO</span>
             </button>

@@ -5,11 +5,25 @@ from .models import (
     DoubtTicket, DoubtResponse
 )
 
+class MCQOptionInline(admin.TabularInline):
+    model = MCQOption
+    extra = 0
+    fields = ('option_label', 'option_text', 'is_correct', 'order')
+
+class CaseStudyPartInline(admin.TabularInline):
+    model = CaseStudyPart
+    extra = 0
+    fields = ('part_number', 'part_text', 'part_answer', 'question_type', 'marks')
+
 @admin.register(QuestionBank)
 class QuestionBankAdmin(admin.ModelAdmin):
-    list_display = ('subject', 'chapter', 'question_type', 'marks', 'difficulty', 'is_ai_generated')
-    list_filter = ('subject', 'question_type', 'difficulty', 'is_ai_generated')
-    search_fields = ('question_text', 'chapter', 'subject')
+    list_display  = ('id', 'subject', 'chapter', 'question_type', 'marks', 'difficulty', 'is_verified', 'is_ai_generated')
+    list_filter   = ('subject', 'chapter', 'question_type', 'marks', 'difficulty', 'is_verified', 'is_ai_generated')
+    search_fields = ('question_text', 'answer_text', 'chapter', 'subject')
+    list_editable = ('chapter', 'question_type', 'marks', 'difficulty', 'is_verified')
+    list_per_page = 50
+    inlines       = [MCQOptionInline, CaseStudyPartInline]
+    readonly_fields = ('question_hash', 'source_document', 'source_page', 'created_at')
 
 @admin.register(QuestionPaper)
 class QuestionPaperAdmin(admin.ModelAdmin):

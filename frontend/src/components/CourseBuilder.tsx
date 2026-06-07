@@ -581,14 +581,14 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                     <div className="flex flex-wrap gap-2 pb-3 border-b border-outline-variant/10">
                         {templates.map(t => (
                             <button key={t.id}
-                                className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-slate-300 hover:border-primary/30 hover:text-primary transition-all"
+                                className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all"
                                 onClick={() => addNodeToChapter(activeChapter, t)}
                             >
                                 + {t.name}
                             </button>
                         ))}
                         <button
-                            className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-slate-300 hover:border-primary/30 hover:text-primary transition-all"
+                            className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all"
                             onClick={() => addNodeToChapter(activeChapter, { name: 'Video Lesson', template_type: 'LESSON' })}
                         >
                             + Blank Lesson
@@ -625,7 +625,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                     </div>
 
                     <div className="flex justify-between pt-3 border-t border-outline-variant/10">
-                        <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-white text-sm font-bold transition-all" onClick={() => setStep(1)}>
+                        <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface text-sm font-bold transition-all" onClick={() => setStep(1)}>
                             <span className="material-symbols-outlined text-base">arrow_back</span>
                             Back
                         </button>
@@ -697,7 +697,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                             {/* Header */}
                             <div className="flex items-center justify-between gap-3">
                                 <input
-                                    className="flex-1 bg-transparent border-none outline-none text-sm font-black text-white font-headline placeholder:text-outline/40 min-w-0"
+                                    className="flex-1 bg-transparent border-none outline-none text-sm font-black text-on-surface font-headline placeholder:text-outline/40 min-w-0"
                                     value={activeNode.title}
                                     onChange={e => updateNode(activeNodeKey!, { title: e.target.value })}
                                     placeholder="Node title..."
@@ -973,7 +973,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
             </div>
 
             <div className="flex justify-between pt-2">
-                <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-white text-sm font-bold transition-all" onClick={() => setStep(2)}>
+                <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface text-sm font-bold transition-all" onClick={() => setStep(2)}>
                     <span className="material-symbols-outlined text-base">arrow_back</span>
                     Back
                 </button>
@@ -1125,7 +1125,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
             </div>
 
             <div className="flex justify-between pt-2">
-                <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-white text-sm font-bold transition-all" onClick={() => setStep(3)}>
+                <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface text-sm font-bold transition-all" onClick={() => setStep(3)}>
                     <span className="material-symbols-outlined text-base">arrow_back</span>
                     Back
                 </button>
@@ -1148,7 +1148,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
             <div>
                 <h2 className="text-2xl font-black font-headline text-on-surface mb-2">Ready to Launch</h2>
                 <p className="text-slate-500 text-sm max-w-md">
-                    <strong className="text-white">{title}</strong> · {subject} · Grade {grade} · {board}
+                    <strong className="text-on-surface">{title}</strong> · {subject} · Grade {grade} · {board}
                 </p>
             </div>
 
@@ -1161,7 +1161,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                 ].map(s => (
                     <div key={s.label} className="bg-surface-container rounded-xl p-3 border border-outline-variant/10 text-center">
                         <span className="material-symbols-outlined text-primary text-xl block mb-1">{s.icon}</span>
-                        <p className="text-lg font-black text-white font-headline">{s.value}</p>
+                        <p className="text-lg font-black text-on-surface font-headline">{s.value}</p>
                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{s.label}</p>
                     </div>
                 ))}
@@ -1171,7 +1171,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                 {chapters.map((ch, ci) => (
                     <div key={ch.tempId} className="bg-surface-container rounded-xl border border-outline-variant/10 overflow-hidden">
                         <div className="flex items-center justify-between px-4 py-2.5 bg-surface-container-high">
-                            <span className="text-sm font-bold text-white">{ch.title}</span>
+                            <span className="text-sm font-bold text-on-surface">{ch.title}</span>
                             <span className="text-[10px] text-outline font-bold">{ch.nodes.length} node(s)</span>
                         </div>
                         {ch.nodes.map((n, ni) => {
@@ -1223,7 +1223,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
             )}
 
             <div className="flex gap-3">
-                <button className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-white font-bold text-sm transition-all" onClick={() => setStep(4)}>
+                <button className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface font-bold text-sm transition-all" onClick={() => setStep(4)}>
                     <span className="material-symbols-outlined text-base">arrow_back</span>
                     Back
                 </button>

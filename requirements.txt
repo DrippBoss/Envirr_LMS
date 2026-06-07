@@ -11,3 +11,6 @@ tzdata
 requests
 Pillow
 pydantic>=2.0
+PyMuPDF>=1.24.0
+google-genai>=1.0.0
+groq>=0.11.0

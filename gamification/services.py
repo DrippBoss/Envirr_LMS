@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.utils import timezone
-from gamification.models import Streak, StudentXP
+from gamification.models import Streak, StudentXP, Badge, StudentBadge
 from datetime import timedelta
 
 XP_REWARDS = {
@@ -58,3 +58,42 @@ def update_streak_and_xp(student, activity_type: str):
         })
         student_xp.xp_history = current_history
         student_xp.save()
+
+
+def check_and_award_badges(student_profile, node) -> dict | None:
+    """
+    Check if completing this node earns the student any badge.
+    Returns the newly earned badge dict or None.
+    Currently checks: Scholar (complete every node in a course).
+    """
+    from learning.models import LearningNode, NodeProgress
+
+    unit = getattr(getattr(node, 'path', None), 'unit', None)
+    if not unit:
+        return None
+
+    total_nodes = LearningNode.objects.filter(path__unit=unit).count()
+    if total_nodes == 0:
+        return None
+
+    completed_nodes = NodeProgress.objects.filter(
+        student=student_profile,
+        node__path__unit=unit,
+        status='COMPLETED',
+    ).count()
+
+    if completed_nodes < total_nodes:
+        return None
+
+    try:
+        scholar = Badge.objects.get(criteria='complete_course')
+    except Badge.DoesNotExist:
+        return None
+
+    _, created = StudentBadge.objects.get_or_create(
+        student=student_profile,
+        badge=scholar,
+    )
+    if created:
+        return {'name': scholar.name, 'description': scholar.description, 'icon': scholar.icon}
+    return None

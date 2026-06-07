@@ -7,9 +7,10 @@ import ProofPuzzleCard from "../components/ProofPuzzleCard";
 import MultiSelectCard from "../components/MultiSelectCard";
 import ResultBottomSheet from "../components/ResultBottomSheet";
 import FlashcardModal, { type Flashcard } from "../components/FlashcardModal";
+import LabDispatcher from "../labs/LabDispatcher";
 import "../components/Flashcard.css";
 
-type NodeState = "loading" | "video" | "practice" | "failed" | "complete";
+type NodeState = "loading" | "video" | "practice" | "failed" | "complete" | "lab";
 
 export default function NodePage() {
   const { nodeId } = useParams();
@@ -33,6 +34,8 @@ export default function NodePage() {
   const { user } = useAuth();
   const [breadcrumb, setBreadcrumb] = useState({ subject: "Mathematics", grade: "Grade 10", unit: "" });
   const [xpBurst, setXpBurst] = useState(false);
+  const [xpToast, setXpToast] = useState<{ xp: number; stars: number } | null>(null);
+  const [badgeToast, setBadgeToast] = useState<{ name: string; icon: string } | null>(null);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [incorrectQuestions, setIncorrectQuestions] = useState<{ question: string; correct_answer: string }[]>([]);
   const [showMistakes, setShowMistakes] = useState(false);
@@ -40,6 +43,7 @@ export default function NodePage() {
   const [nodeObjectives, setNodeObjectives] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
   const [pathId, setPathId] = useState<number | null>(null);
+  const [labType, setLabType] = useState("");
 
   useEffect(() => {
     if (result?.is_correct) {
@@ -69,7 +73,10 @@ export default function NodePage() {
         unit: res.data.path_title || "",
       });
 
-      if (res.data.node_type === "CHAPTER_TEST") {
+      if (res.data.node_type === "LAB") {
+        setLabType(res.data.lab_type || "");
+        setState("lab");
+      } else if (res.data.node_type === "CHAPTER_TEST") {
         await loadTestQuestions();
       } else {
         setState("video");
@@ -174,6 +181,19 @@ export default function NodePage() {
         setXpEarned(comp.data.xp || 0);
         setTimeSpent(practiceStartTime ? Math.round((Date.now() - practiceStartTime) / 1000) : 0);
 
+        // +XP toast
+        if (comp.data.xp) {
+          setXpToast({ xp: comp.data.xp, stars: comp.data.stars || 0 });
+          setTimeout(() => setXpToast(null), 2500);
+        }
+        // Badge unlock toast — fires after XP toast clears
+        if (comp.data.new_badge) {
+          setTimeout(() => {
+            setBadgeToast(comp.data.new_badge);
+            setTimeout(() => setBadgeToast(null), 3500);
+          }, 900);
+        }
+
         const revRes = await api.get(`student/nodes/${nodeId}/revision-cards/`);
         setRevisionCards(revRes.data);
 
@@ -196,6 +216,22 @@ export default function NodePage() {
 
   const finishNode = () => navigate(pathId ? `/map/${pathId}` : -1 as any);
 
+  // ─── Lab ────────────────────────────────────────────────────
+  if (state === "lab") {
+    const handleLabComplete = async (artifact?: unknown) => {
+      await api.post(`student/nodes/${nodeId}/lab/complete/`, { artifact: artifact ?? null });
+      finishNode();
+    };
+    return (
+      <LabDispatcher
+        labType={labType}
+        nodeTitle={nodeTitle}
+        xpReward={xpEarned || 15}
+        onComplete={handleLabComplete}
+      />
+    );
+  }
+
   // ─── Loading ────────────────────────────────────────────────
   if (state === "loading") {
     return (
@@ -203,18 +239,18 @@ export default function NodePage() {
         <div className="flex flex-col items-center gap-4">
           <div className="w-14 h-14 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
           <p className="text-outline text-xs font-bold uppercase tracking-[0.2em] font-label">
-            Initializing orbit...
+            Loading mission...
           </p>
         </div>
       </div>
     );
   }
 
-  // ─── Video / Lesson Player ──────────────────────────────────
+  // ─── Mission Briefing (Video) ───────────────────────────────
   if (state === "video") {
     return (
       <div className="min-h-screen bg-background">
-        <main className="max-w-[1920px] mx-auto px-6 pt-20 pb-32">
+        <main className="max-w-[1920px] mx-auto px-4 md:px-6 pt-20 pb-32">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-2 text-xs font-medium text-outline mb-6 tracking-wide uppercase font-label">
             <span>{breadcrumb.subject}</span>
@@ -223,10 +259,10 @@ export default function NodePage() {
             <span className="material-symbols-outlined text-sm">chevron_right</span>
             <span>{breadcrumb.unit}</span>
             <span className="material-symbols-outlined text-sm">chevron_right</span>
-            <span className="text-primary-fixed-dim">Now Playing</span>
+            <span className="text-primary-fixed-dim">Mission Briefing</span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {/* Left — Video Player */}
             <div className="lg:col-span-2 space-y-6">
               <div className="relative group aspect-video rounded-2xl overflow-hidden bg-surface-container-lowest shadow-2xl">
@@ -249,7 +285,7 @@ export default function NodePage() {
                       <div className="w-20 h-20 rounded-full bg-surface-container flex items-center justify-center">
                         <span className="material-symbols-outlined text-on-surface-variant text-4xl">videocam_off</span>
                       </div>
-                      <h3 className="text-lg font-bold text-on-surface font-headline">Video Lesson Coming Soon</h3>
+                      <h3 className="text-lg font-bold text-on-surface font-headline">Briefing Incoming</h3>
                       <p className="text-sm text-on-surface-variant max-w-sm">
                         Our instructors are recording a high-quality video for this topic. Skip ahead to start the practice challenge!
                       </p>
@@ -332,7 +368,7 @@ export default function NodePage() {
 
         {/* Bottom Nav */}
         <nav className="bg-background/90 backdrop-blur-2xl fixed bottom-0 left-0 w-full z-50 border-t border-outline-variant/10 shadow-[0_-8px_32px_rgba(0,0,0,0.4)]">
-          <div className="flex justify-between items-center px-8 py-3 max-w-[1920px] mx-auto">
+          <div className="flex justify-between items-center px-4 md:px-8 py-3 max-w-[1920px] mx-auto">
             {/* Navigation Controls */}
             <div className="flex gap-2">
               <button
@@ -376,7 +412,7 @@ export default function NodePage() {
                 >
                   <span className="material-symbols-outlined">rocket_launch</span>
                   <span className="font-label text-[10px] font-semibold uppercase tracking-widest mt-1">
-                    {videoUrl ? "Take Quiz" : "Start Practice"}
+                    {videoUrl ? "Start Challenge" : "Begin Challenge"}
                   </span>
                 </button>
               </div>
@@ -447,9 +483,9 @@ export default function NodePage() {
       <div className="min-h-screen bg-background selection:bg-primary-container/30">
 
         {/* ── Top bar (overlays global Navbar) ──────────────────── */}
-        <header className="fixed top-0 left-0 w-full z-[60] flex items-center justify-between px-5 h-14 bg-background border-b border-outline-variant/10 backdrop-blur-xl">
+        <header className="fixed top-0 left-0 w-full z-[60] flex items-center justify-between px-3 sm:px-5 h-14 bg-background border-b border-outline-variant/10 backdrop-blur-xl">
           {/* Left: close + brand */}
-          <div className="flex items-center gap-3 w-52 shrink-0">
+          <div className="flex items-center gap-3 sm:w-52 shrink-0">
             <button
               className="material-symbols-outlined text-outline hover:text-on-surface transition-colors"
               onClick={() => navigate(-1)}
@@ -457,7 +493,7 @@ export default function NodePage() {
               close
             </button>
             <div className="leading-none">
-              <span className="font-black text-base text-white font-headline">Envirr</span>
+              <span className="font-black text-base text-on-surface font-headline">Envirr</span>
               <p className="text-[9px] uppercase tracking-[0.15em] text-outline font-bold truncate max-w-[140px]">
                 {nodeTitle}
               </p>
@@ -496,14 +532,14 @@ export default function NodePage() {
         </header>
 
         {/* ── Left sidebar (below top bar) ─────────────────────── */}
-        <aside className="fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-52 bg-surface-container border-r border-outline-variant/10 z-[55] hidden md:flex flex-col py-5 px-3">
+        <aside className="fixed left-0 top-14 h-[calc(100vh-3.5rem)] w-52 bg-surface-container border-r border-outline-variant/10 z-[55] hidden sm:flex flex-col py-5 px-3">
           {/* Commander identity */}
           <div className="flex items-center gap-2.5 px-2 mb-6">
             <div className="w-8 h-8 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-primary text-sm">rocket_launch</span>
             </div>
             <div className="min-w-0">
-              <p className="text-white text-xs font-bold leading-none truncate">{user?.username || "Student"}</p>
+              <p className="text-on-surface text-xs font-bold leading-none truncate">{user?.username || "Student"}</p>
               <p className="text-outline text-[9px] mt-0.5 capitalize">{user?.role || "student"}</p>
             </div>
           </div>
@@ -533,8 +569,8 @@ export default function NodePage() {
         </aside>
 
         {/* ── Main content ─────────────────────────────────────── */}
-        <main className="md:ml-52 pt-14 pb-24 min-h-screen flex flex-col">
-          <div className="flex-1 flex flex-col justify-center max-w-3xl mx-auto w-full px-6 py-8">
+        <main className="sm:ml-52 pt-14 pb-24 min-h-screen flex flex-col">
+          <div className="flex-1 flex flex-col justify-center max-w-3xl mx-auto w-full px-4 md:px-6 py-8">
 
             {/* Streak + XP + question # row */}
             <div className="flex items-center justify-between mb-6">
@@ -592,7 +628,7 @@ export default function NodePage() {
             />
           </div>
 
-          <div className="md:pl-52 flex items-center justify-between px-6 py-3 gap-4">
+          <div className="sm:pl-52 flex items-center justify-between px-4 md:px-6 py-3 gap-4">
             {/* Report button */}
             <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-outline hover:text-on-surface hover:bg-surface-container transition-all font-bold text-sm">
               <span className="material-symbols-outlined text-base">flag</span>
@@ -785,12 +821,12 @@ export default function NodePage() {
             {stars >= 3 && (
               <div className="relative z-10 inline-flex items-center gap-2 bg-tertiary-container text-on-tertiary-container px-6 py-2 rounded-full font-headline font-extrabold tracking-widest text-sm uppercase mb-8 shadow-lg shadow-tertiary-container/20">
                 <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>workspace_premium</span>
-                Perfect Score!
+                Ability Unlocked!
               </div>
             )}
 
             <h1 className="relative z-10 text-4xl md:text-5xl font-headline font-black mb-10 tracking-tight text-on-surface">
-              Lesson Mastered
+              Mission Complete!
             </h1>
 
             {/* Stats Grid — Asymmetrical per stitch */}
@@ -881,7 +917,7 @@ export default function NodePage() {
             <div className="w-full px-4 mt-6 mb-4">
               <div className="bg-surface-container rounded-2xl border border-outline-variant/10 overflow-hidden">
                 <div className="flex items-center justify-between px-5 py-4 border-b border-outline-variant/10">
-                  <h3 className="text-sm font-black text-white">Mistakes Review</h3>
+                  <h3 className="text-sm font-black text-on-surface">Mistakes Review</h3>
                   <button onClick={() => setShowMistakes(false)} className="material-symbols-outlined text-outline hover:text-on-surface text-lg">close</button>
                 </div>
                 <div className="divide-y divide-outline-variant/10">
@@ -906,6 +942,31 @@ export default function NodePage() {
             onComplete={() => setShowRevisionModal(false)}
             finalButtonText="Done"
           />
+        )}
+
+        {/* ── +XP Toast ─────────────────────────────────────────────── */}
+        {xpToast && (
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-bounce">
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-primary rounded-full shadow-xp-glow text-on-surface font-black text-sm whitespace-nowrap">
+              <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>grade</span>
+              +{xpToast.xp} XP
+              {xpToast.stars > 0 && (
+                <span className="flex items-center gap-0.5 ml-1">
+                  {'⭐'.repeat(xpToast.stars)}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── Badge Unlock Toast ────────────────────────────────────── */}
+        {badgeToast && (
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50">
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-yellow-500 to-amber-400 rounded-full shadow-lg text-on-surface font-black text-sm whitespace-nowrap">
+              <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>{badgeToast.icon}</span>
+              🏅 Badge Unlocked: {badgeToast.name}!
+            </div>
+          </div>
         )}
       </div>
     );

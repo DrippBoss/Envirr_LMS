@@ -137,7 +137,7 @@ export default function AiTutor() {
                         <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>psychology</span>
                     </div>
                     <div>
-                        <p className="text-white font-black font-headline leading-none text-base">Envirr</p>
+                        <p className="text-on-surface font-black font-headline leading-none text-base">Envirr</p>
                         <p className="text-slate-500 text-[10px] uppercase tracking-widest mt-0.5">Academic Orbit</p>
                     </div>
                 </div>
@@ -150,7 +150,7 @@ export default function AiTutor() {
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
                             link.active
                                 ? 'bg-primary/10 text-primary'
-                                : 'text-slate-400 hover:text-white hover:bg-surface-container-high'
+                                : 'text-slate-400 hover:text-on-surface hover:bg-surface-container-high'
                         }`}
                     >
                         <span
@@ -170,7 +170,7 @@ export default function AiTutor() {
                         <span className="material-symbols-outlined text-tertiary-container text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                             local_fire_department
                         </span>
-                        <span className="text-xl font-black font-headline text-white">
+                        <span className="text-xl font-black font-headline text-on-surface">
                             {streak} {streak === 1 ? 'Day' : 'Days'}
                         </span>
                     </div>
@@ -190,7 +190,7 @@ export default function AiTutor() {
                                 <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>psychology</span>
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black font-headline text-white mb-2">Envirr AI Tutor</h2>
+                                <h2 className="text-2xl font-black font-headline text-on-surface mb-2">Envirr AI Tutor</h2>
                                 <p className="text-slate-500 text-sm max-w-sm leading-relaxed">
                                     Ask anything from your syllabus. I'll guide you through it step by step — no direct answers, just the right nudges.
                                 </p>
@@ -200,7 +200,7 @@ export default function AiTutor() {
                                     <button
                                         key={s}
                                         onClick={() => { setInput(s); inputRef.current?.focus(); }}
-                                        className="px-4 py-2 bg-surface-container rounded-xl border border-outline-variant/10 text-sm text-slate-400 hover:text-white hover:border-primary/20 transition-all"
+                                        className="px-4 py-2 bg-surface-container rounded-xl border border-outline-variant/10 text-sm text-slate-400 hover:text-on-surface hover:border-primary/20 transition-all"
                                     >
                                         {s}
                                     </button>
@@ -241,7 +241,7 @@ export default function AiTutor() {
                                         {/* Text card */}
                                         <div className="bg-surface-container text-on-surface px-5 py-4 rounded-2xl rounded-tl-none border border-outline-variant/10 relative overflow-hidden">
                                             <div className="absolute top-0 left-0 w-0.5 h-full bg-primary/40 rounded-full" />
-                                            <p className="text-[15px] leading-relaxed whitespace-pre-wrap pl-1">{msg.content}</p>
+                                            <p className="text-[15px] leading-relaxed whitespace-pre-wrap break-words pl-1">{msg.content}</p>
                                         </div>
 
                                         {/* Concept Key bento card */}
@@ -253,7 +253,7 @@ export default function AiTutor() {
                                                         <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
                                                         Concept Key
                                                     </div>
-                                                    <h3 className="text-white font-headline font-bold text-base">{msg.concept_key.title}</h3>
+                                                    <h3 className="text-on-surface font-headline font-bold text-base">{msg.concept_key.title}</h3>
                                                     <p className="text-slate-400 text-sm leading-snug">{msg.concept_key.body}</p>
                                                 </div>
                                                 <div className="bg-surface-container-highest rounded-xl p-4 flex items-center justify-center border border-outline-variant/10">
@@ -306,17 +306,17 @@ export default function AiTutor() {
 
                         {/* Quick action pills */}
                         <div className="flex flex-wrap items-center gap-2">
-                            <button className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-full border border-outline-variant/10 text-slate-300 text-xs font-bold hover:bg-surface-container-highest transition-all active:scale-95">
+                            <button className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-full border border-outline-variant/10 text-on-surface-variant text-xs font-bold hover:bg-surface-container-highest transition-all active:scale-95">
                                 <span className="material-symbols-outlined text-sm">photo_camera</span>
                                 Upload Photo of Problem
                             </button>
-                            <button className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-full border border-outline-variant/10 text-slate-300 text-xs font-bold hover:bg-surface-container-highest transition-all active:scale-95">
+                            <button className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-full border border-outline-variant/10 text-on-surface-variant text-xs font-bold hover:bg-surface-container-highest transition-all active:scale-95">
                                 <span className="material-symbols-outlined text-sm">mic</span>
                                 Voice Ask
                             </button>
                             <div className="h-4 w-px bg-outline-variant/20 hidden md:block" />
                             <button
-                                className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low rounded-full border border-outline-variant/10 text-slate-400 text-xs font-bold hover:text-white hover:bg-surface-container transition-all"
+                                className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low rounded-full border border-outline-variant/10 text-slate-400 text-xs font-bold hover:text-on-surface hover:bg-surface-container transition-all"
                                 onClick={() => {
                                     setMessages([]);
                                     localStorage.removeItem(`${CACHE_KEY}_${user?.id ?? 'guest'}`);
@@ -353,7 +353,7 @@ export default function AiTutor() {
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                                 AI is active
                             </span>
-                            <button className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400 hover:text-white uppercase tracking-wider px-3 py-1.5 border border-outline-variant/10 rounded-lg hover:border-outline-variant/25 transition-all active:scale-95">
+                            <button className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400 hover:text-on-surface uppercase tracking-wider px-3 py-1.5 border border-outline-variant/10 rounded-lg hover:border-outline-variant/25 transition-all active:scale-95">
                                 <span className="material-symbols-outlined text-sm">record_voice_over</span>
                                 Escalate to Teacher
                             </button>

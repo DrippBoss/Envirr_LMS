@@ -21,3 +21,25 @@ class StudentXP(models.Model):
 
     def __str__(self):
         return f"{self.student} - {self.total_xp} XP (Level {self.current_level})"
+
+
+class Badge(models.Model):
+    name        = models.CharField(max_length=100, unique=True)
+    description = models.TextField()
+    icon        = models.CharField(max_length=50, help_text='Material Symbols icon name')
+    criteria    = models.CharField(max_length=50, help_text='e.g. complete_course')
+
+    def __str__(self):
+        return self.name
+
+
+class StudentBadge(models.Model):
+    student   = models.ForeignKey('users.StudentProfile', on_delete=models.CASCADE, related_name='badges')
+    badge     = models.ForeignKey(Badge, on_delete=models.CASCADE, related_name='holders')
+    earned_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('student', 'badge')
+
+    def __str__(self):
+        return f"{self.student} — {self.badge.name}"

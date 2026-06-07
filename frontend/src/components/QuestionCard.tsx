@@ -75,13 +75,29 @@ export default function QuestionCard({ question, onSubmit, result }: QuestionCar
         return 'bg-surface-container-highest text-outline group-hover:bg-primary-fixed-dim group-hover:text-on-primary-fixed';
     };
 
+    const challengeLabel: Record<string, { icon: string; label: string }> = {
+        MCQ: { icon: 'fork_right', label: 'Choose the Path' },
+        ASSERTION_REASON: { icon: 'fork_right', label: 'Choose the Path' },
+        TRUE_FALSE: { icon: 'balance', label: 'True or False?' },
+        REARRANGE: { icon: 'swap_vert', label: 'Rebuild the Sequence' },
+    };
+    const badge = challengeLabel[question.question_type];
+
     return (
         <div className="w-full space-y-8">
             {/* Question Canvas — Bento card with decorative background icon */}
-            <div className="bg-surface-container-lowest p-10 rounded-[2rem] border border-outline-variant/10 shadow-2xl relative overflow-hidden">
+            <div className="bg-surface-container-lowest p-4 md:p-10 rounded-[2rem] border border-outline-variant/10 shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-5">
-                    <span className="material-symbols-outlined" style={{ fontSize: '9rem' }}>functions</span>
+                    <span className="material-symbols-outlined" style={{ fontSize: 'clamp(5rem, 15vw, 9rem)' }}>functions</span>
                 </div>
+                {badge && (
+                    <div className="flex items-center gap-2 mb-4 relative z-10">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-full border border-primary/20">
+                            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{badge.icon}</span>
+                            <span className="text-xs font-black uppercase tracking-wider">{badge.label}</span>
+                        </div>
+                    </div>
+                )}
                 <h2 className="text-2xl md:text-3xl font-bold font-headline text-on-surface leading-tight relative z-10">
                     <MathText text={question.question_text} />
                 </h2>

@@ -50,8 +50,8 @@ export default function MultiSelectCard({ question, onSubmit, result, onSkip, on
                         close
                     </button>
                     <div className="leading-none">
-                        <span className="font-black text-base text-white font-headline">Envirr</span>
-                        <p className="text-[9px] uppercase tracking-[0.15em] text-outline font-bold">Select All That Apply</p>
+                        <span className="font-black text-base text-on-surface font-headline">Envirr</span>
+                        <p className="text-[9px] uppercase tracking-[0.15em] text-outline font-bold">Identify the Agents</p>
                     </div>
                 </div>
 
@@ -80,7 +80,7 @@ export default function MultiSelectCard({ question, onSubmit, result, onSkip, on
                             </div>
                             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-secondary/10 text-secondary rounded-full border border-secondary/20">
                                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>checklist</span>
-                                <span className="text-xs font-black uppercase tracking-wider">Select All Correct</span>
+                                <span className="text-xs font-black uppercase tracking-wider">Identify All Agents</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container rounded-full border border-outline-variant/10">

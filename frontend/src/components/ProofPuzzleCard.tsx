@@ -13,9 +13,18 @@ interface ProofPuzzleCardProps {
     total: number;
 }
 
+function shuffle<T>(arr: T[]): T[] {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
 export default function ProofPuzzleCard({ question, onSubmit, result, onSkip, onNext, qIndex, total }: ProofPuzzleCardProps) {
     const rawSteps: Step[] = question.options_json?.steps ?? [];
-    const [steps, setSteps] = useState<Step[]>(rawSteps);
+    const [steps, setSteps] = useState<Step[]>(() => shuffle(rawSteps));
     const [status, setStatus] = useState<'idle' | 'checking' | 'correct' | 'wrong'>('idle');
     const dragIndex = useRef<number | null>(null);
     const progress = Math.round(((qIndex + 1) / total) * 100);
@@ -80,8 +89,8 @@ export default function ProofPuzzleCard({ question, onSubmit, result, onSkip, on
                         close
                     </button>
                     <div className="leading-none">
-                        <span className="font-black text-base text-white font-headline">Envirr</span>
-                        <p className="text-[9px] uppercase tracking-[0.15em] text-outline font-bold">Proof Puzzle</p>
+                        <span className="font-black text-base text-on-surface font-headline">Envirr</span>
+                        <p className="text-[9px] uppercase tracking-[0.15em] text-outline font-bold">Reconstruct the Proof</p>
                     </div>
                 </div>
 
@@ -93,7 +102,7 @@ export default function ProofPuzzleCard({ question, onSubmit, result, onSkip, on
                     <span className="text-xs font-bold text-outline font-label">{qIndex + 1} / {total}</span>
                     <div className="flex items-center gap-1.5 bg-surface-container px-3 py-1 rounded-full border border-outline-variant/10">
                         <span className="material-symbols-outlined text-outline text-sm">reorder</span>
-                        <span className="text-sm font-bold text-on-surface font-headline">Puzzle</span>
+                        <span className="text-sm font-bold text-on-surface font-headline">Reconstruct</span>
                     </div>
                 </div>
             </header>
@@ -110,7 +119,7 @@ export default function ProofPuzzleCard({ question, onSubmit, result, onSkip, on
                             </div>
                             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-tertiary/10 text-tertiary rounded-full border border-tertiary/20">
                                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>puzzle</span>
-                                <span className="text-xs font-black uppercase tracking-wider">Proof Puzzle</span>
+                                <span className="text-xs font-black uppercase tracking-wider">Reconstruct the Proof</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container rounded-full border border-outline-variant/10">
@@ -132,7 +141,7 @@ export default function ProofPuzzleCard({ question, onSubmit, result, onSkip, on
                     {/* Instruction */}
                     <div className="flex items-center gap-2 text-outline text-xs font-medium mb-5 px-1">
                         <span className="material-symbols-outlined text-sm">drag_indicator</span>
-                        Drag to arrange the steps in the correct logical order
+                        Drag the pieces into the correct order to reconstruct the proof
                     </div>
 
                     {/* Draggable steps */}
@@ -155,13 +164,11 @@ export default function ProofPuzzleCard({ question, onSubmit, result, onSkip, on
                                         : 'bg-surface-container-low border-outline-variant/20 cursor-default'
                                 }`}
                             >
-                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm mr-4 shrink-0 transition-colors ${
-                                    status === 'correct'
-                                        ? 'bg-secondary-container text-on-secondary-container'
-                                        : 'bg-surface-container-highest text-outline'
-                                }`}>
-                                    {i + 1}
-                                </div>
+                                {status === 'correct' && (
+                                    <div className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm mr-4 shrink-0 bg-secondary-container text-on-secondary-container">
+                                        {step.id}
+                                    </div>
+                                )}
                                 <p className="flex-1 text-sm font-medium text-on-surface-variant leading-relaxed">{step.text}</p>
                                 {status === 'idle' && (
                                     <span className="material-symbols-outlined text-outline-variant/50 ml-3 shrink-0">drag_indicator</span>
