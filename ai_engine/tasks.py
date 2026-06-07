@@ -436,6 +436,7 @@ def generate_paper_task(self, config_data, user_id, paper_id):
     try:
         user = CustomUser.objects.get(id=user_id)
         paper = QuestionPaper.objects.get(id=paper_id)
+        QuestionPaper.objects.filter(id=paper_id).update(status='processing')
         max_marks = config_data.get('max_marks', 80)
         
         distribution = calculate_marks_distribution(max_marks)
@@ -661,8 +662,19 @@ def generate_paper_task(self, config_data, user_id, paper_id):
             junk_file = os.path.join(temp_dir, f"{unique_id}{ext}")
             if os.path.exists(junk_file): os.remove(junk_file)
 
+        QuestionPaper.objects.filter(id=paper_id).update(status='done')
         return paper.id
     except Exception as exc:
+        # On the final attempt, record the failure before re-raising. Celery's
+        # self.retry(exc=exc) re-raises the ORIGINAL exception (not
+        # MaxRetriesExceededError) once retries are exhausted, so the failure
+        # must be persisted here instead of in an except MaxRetriesExceededError.
+        if self.request.retries >= self.max_retries:
+            QuestionPaper.objects.filter(id=paper_id).update(
+                status='failed',
+                error_message=str(exc)[:1000],
+            )
+            raise
         raise self.retry(exc=exc, countdown=30)
 
 @shared_task(bind=True, max_retries=3)
@@ -678,6 +690,7 @@ def compile_ingest_paper_task(self, paper_config, sections_with_questions, user_
 
     try:
         paper = QuestionPaper.objects.get(id=paper_id)
+        QuestionPaper.objects.filter(id=paper_id).update(status='processing')
         subject = paper_config.get('subject', 'General')
         chapter = paper_config.get('chapter', 'General')
         total_marks = 0
@@ -763,9 +776,20 @@ def compile_ingest_paper_task(self, paper_config, sections_with_questions, user_
             if os.path.exists(junk):
                 os.remove(junk)
 
+        QuestionPaper.objects.filter(id=paper_id).update(status='done')
         return paper.id
 
     except Exception as exc:
+        # On the final attempt, record the failure before re-raising. Celery's
+        # self.retry(exc=exc) re-raises the ORIGINAL exception (not
+        # MaxRetriesExceededError) once retries are exhausted, so the failure
+        # must be persisted here instead of in an except MaxRetriesExceededError.
+        if self.request.retries >= self.max_retries:
+            QuestionPaper.objects.filter(id=paper_id).update(
+                status='failed',
+                error_message=str(exc)[:1000],
+            )
+            raise
         raise self.retry(exc=exc, countdown=30)
 
 
@@ -774,6 +798,7 @@ def compile_manual_paper_task(self, config_data, user_id, paper_id):
     try:
         user = CustomUser.objects.get(id=user_id)
         paper = QuestionPaper.objects.get(id=paper_id)
+        QuestionPaper.objects.filter(id=paper_id).update(status='processing')
         
         # Phase 1: Save Custom Questions
         custom_qs = config_data.get('custom_questions', [])
@@ -857,6 +882,17 @@ def compile_manual_paper_task(self, config_data, user_id, paper_id):
             junk_file = os.path.join(temp_dir, f"{unique_id}{ext}")
             if os.path.exists(junk_file): os.remove(junk_file)
 
+        QuestionPaper.objects.filter(id=paper_id).update(status='done')
         return paper.id
     except Exception as exc:
+        # On the final attempt, record the failure before re-raising. Celery's
+        # self.retry(exc=exc) re-raises the ORIGINAL exception (not
+        # MaxRetriesExceededError) once retries are exhausted, so the failure
+        # must be persisted here instead of in an except MaxRetriesExceededError.
+        if self.request.retries >= self.max_retries:
+            QuestionPaper.objects.filter(id=paper_id).update(
+                status='failed',
+                error_message=str(exc)[:1000],
+            )
+            raise
         raise self.retry(exc=exc, countdown=30)
