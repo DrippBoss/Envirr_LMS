@@ -193,9 +193,25 @@ class NodePracticeView(views.APIView):
         questions = questions[:count]
         return Response(LessonQuestionSerializer(questions, many=True).data)
 
+# REARRANGE answer contract (U5):
+#   Frontend (QuestionCard.tsx) submits the chip *texts* concatenated in the
+#   student's chosen order — e.g. ['3x²','−','4x'] -> "3x²−4x". The backend
+#   compares whitespace-insensitively against correct_answer (which may hold
+#   several '|'-separated valid sequences). Cosmetic flow arrows ("→") that
+#   authors sometimes place between steps in correct_answer but NOT in the chips
+#   are also stripped, so such a question can't become silently ungradeable.
+#   Stripping arrows is symmetric (applied to both sides) and therefore safe
+#   even for questions where "→" is itself a chip.
+_REARRANGE_CONNECTORS = str.maketrans('', '', '→⟶⇒➜')
+
+
+def _normalize_rearrange(value):
+    return ''.join(str(value).split()).translate(_REARRANGE_CONNECTORS).lower()
+
+
 class NodePracticeAnswerView(views.APIView):
     permission_classes = [IsStudent]
-    
+
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
         prog = get_object_or_404(NodeProgress, student=request.user.profile, node=node)
@@ -217,11 +233,11 @@ class NodePracticeAnswerView(views.APIView):
             # given_answer is "0,1,2,3" — compare to correct order stored in correct_answer
             is_correct = str(given_answer).strip() == str(q.correct_answer).strip()
         elif q.question_type == 'REARRANGE':
-            # Remove all whitespace for robust math/text comparison
-            given = "".join(str(given_answer).split()).lower()
-            
+            # Whitespace- and connector-insensitive comparison (see contract note above)
+            given = _normalize_rearrange(given_answer)
+
             # Accommodate AI generating multiple possible valid sequences separated by '|'
-            possible_corrects = [ "".join(c.split()).lower() for c in str(q.correct_answer).split('|') ]
+            possible_corrects = [_normalize_rearrange(c) for c in str(q.correct_answer).split('|')]
             is_correct = given in possible_corrects
             
             # Fallback for commutative binomial factors: (x-2)(x-3) should be identical to (x-3)(x-2)
