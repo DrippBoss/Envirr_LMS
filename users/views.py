@@ -460,12 +460,72 @@ class AdminAnalyticsView(APIView):
             return Response({'error': 'Admin only.'}, status=403)
 
         from ai_engine.models import QuestionBank, QuestionPaper
-        from django.db.models import Count
+        from learning.models import SessionAnswer, MockTestAttempt
+        from django.db.models import Count, Q, Avg, F, FloatField, ExpressionWrapper
+        from django.db.models.functions import TruncDate
+        from django.utils import timezone
+        from datetime import timedelta
 
         # User counts
         role_counts = CustomUser.objects.values('role').annotate(n=Count('id'))
         counts_by_role = {r['role']: r['n'] for r in role_counts}
         total_users = sum(counts_by_role.values())
+
+        # ── Daily active students (last 30 days) ──────────────────────
+        # A student is "active" on a day if they answered a lesson question
+        # or started a mock test that day. Counted as distinct StudentProfiles.
+        start = timezone.localdate() - timedelta(days=29)
+        active_pairs = set()
+        for source, ts_field in (
+            (SessionAnswer.objects, 'answered_at'),
+            (MockTestAttempt.objects, 'created_at'),
+        ):
+            rows = (
+                source.filter(**{f'{ts_field}__date__gte': start})
+                .annotate(day=TruncDate(ts_field))
+                .values_list('day', 'student_id')
+                .distinct()
+            )
+            active_pairs.update(rows)
+        per_day = {}
+        for day, _sid in active_pairs:
+            per_day[day] = per_day.get(day, 0) + 1
+        day_bars = [per_day.get(start + timedelta(days=i), 0) for i in range(30)]
+
+        # ── Subject-wise average mock-test score ──────────────────────
+        subject_scores = [
+            {'label': r['subject'], 'pct': round(r['avg_pct'] or 0)}
+            for r in (
+                MockTestAttempt.objects
+                .filter(completed=True, total__gt=0)
+                .values('subject')
+                .annotate(avg_pct=Avg(ExpressionWrapper(
+                    F('score') * 100.0 / F('total'), output_field=FloatField())))
+                .order_by('-avg_pct')[:6]
+            )
+        ]
+
+        # ── Weak concepts (highest error rate from lesson answers) ─────
+        weak_rows = (
+            SessionAnswer.objects
+            .exclude(question__concept='')
+            .values('question__concept', 'node__path__unit__subject')
+            .annotate(total=Count('id'), wrong=Count('id', filter=Q(is_correct=False)))
+            .filter(total__gte=3, wrong__gt=0)
+        )
+        weak_concepts = sorted(
+            (
+                {
+                    'name': r['question__concept'],
+                    'subject': r['node__path__unit__subject'] or 'General',
+                    'error_rate': round(r['wrong'] / r['total'] * 100),
+                    'wrong': r['wrong'],
+                }
+                for r in weak_rows
+            ),
+            key=lambda c: (c['error_rate'], c['wrong']),
+            reverse=True,
+        )[:5]
 
         # Question bank breakdown by subject
         qbank_by_subject = (
@@ -518,6 +578,9 @@ class AdminAnalyticsView(APIView):
                 'total_papers': QuestionPaper.objects.count(),
             },
             'qbank_by_subject': list(qbank_by_subject),
+            'day_bars': day_bars,
+            'subject_scores': subject_scores,
+            'weak_concepts': weak_concepts,
             'papers': paper_data,
             'users': user_data,
         })

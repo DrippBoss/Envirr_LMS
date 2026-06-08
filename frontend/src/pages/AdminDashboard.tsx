@@ -2,23 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, useAuth } from '../context/AuthContext';
 
-// ── Static mock data for chart visuals ───────────────────────────
-const DAY_BARS = [32, 41, 28, 47, 52, 44, 38, 55, 49, 36, 43, 58, 62, 51,
-    45, 39, 48, 54, 61, 57, 42, 38, 46, 53, 59, 64, 50, 44, 41, 67];
+// ── Chart helpers ────────────────────────────────────────────────
+const subjectBarColor = (pct: number) =>
+    pct >= 80 ? 'bg-secondary' : pct >= 60 ? 'bg-primary-container' : 'bg-error';
 
-const SUBJECT_SCORES = [
-    { label: 'Mathematics', pct: 82, color: 'bg-secondary' },
-    { label: 'Physics', pct: 74, color: 'bg-primary-container' },
-    { label: 'Biology', pct: 91, color: 'bg-secondary' },
-    { label: 'Chemistry', pct: 68, color: 'bg-error' },
-];
-
-const WEAK_CONCEPTS = [
-    { rank: '01', name: 'Irrational Proofs', meta: 'Mathematics • 42% Error Rate', severity: 'error' },
-    { rank: '02', name: 'Chemical Bonding', meta: 'Chemistry • 38% Error Rate', severity: 'tertiary' },
-    { rank: '03', name: 'Circular Motion', meta: 'Physics • 35% Error Rate', severity: 'tertiary' },
-    { rank: '04', name: 'Photosynthesis', meta: 'Biology • 29% Error Rate', severity: 'outline' },
-];
+const weakSeverity = (errorRate: number) =>
+    errorRate >= 40 ? 'error' : errorRate >= 30 ? 'tertiary' : 'outline';
 
 type AdminTab = 'overview' | 'approvals' | 'courses';
 
@@ -126,6 +115,9 @@ export default function AdminDashboard() {
     const kpi = data?.kpi ?? {};
     const papers: any[] = data?.papers ?? [];
     const qbank: any[] = data?.qbank_by_subject ?? [];
+    const dayBars: number[] = data?.day_bars ?? [];
+    const subjectScores: any[] = data?.subject_scores ?? [];
+    const weakConcepts: any[] = data?.weak_concepts ?? [];
 
     const handleDeleteUser = async () => {
         if (!confirmDelete) return;
@@ -200,7 +192,7 @@ export default function AdminDashboard() {
         u.email.toLowerCase().includes(userFilter.toLowerCase())
     );
 
-    const maxBar = Math.max(...DAY_BARS);
+    const maxBar = Math.max(1, ...dayBars);
 
     return (
         <div className="flex h-screen bg-background overflow-hidden">
@@ -568,38 +560,50 @@ export default function AdminDashboard() {
                                     <span className="w-2 h-2 rounded-full bg-primary inline-block" /> Current Period
                                 </span>
                             </div>
-                            <div className="h-40 flex items-end gap-0.5">
-                                {DAY_BARS.map((val, i) => (
-                                    <div
-                                        key={i}
-                                        className="flex-1 bg-gradient-to-t from-primary/30 to-primary/5 rounded-t hover:from-primary/50 transition-all cursor-default"
-                                        style={{ height: `${(val / maxBar) * 100}%` }}
-                                        title={`Day ${i + 1}: ${val}k`}
-                                    />
-                                ))}
-                            </div>
-                            <div className="flex justify-between text-[10px] text-slate-600 mt-3 px-1">
-                                <span>1 Oct</span><span>10 Oct</span><span>20 Oct</span><span>30 Oct</span>
-                            </div>
+                            {dayBars.some(v => v > 0) ? (
+                                <>
+                                    <div className="h-40 flex items-end gap-0.5">
+                                        {dayBars.map((val, i) => (
+                                            <div
+                                                key={i}
+                                                className="flex-1 bg-gradient-to-t from-primary/30 to-primary/5 rounded-t hover:from-primary/50 transition-all cursor-default"
+                                                style={{ height: `${(val / maxBar) * 100}%` }}
+                                                title={`${dayBars.length - 1 - i === 0 ? 'Today' : `${dayBars.length - 1 - i}d ago`}: ${val} active`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <div className="flex justify-between text-[10px] text-slate-600 mt-3 px-1">
+                                        <span>30 days ago</span><span>20d</span><span>10d</span><span>Today</span>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="h-40 flex items-center justify-center text-xs text-slate-500">
+                                    No student activity in the last 30 days.
+                                </div>
+                            )}
                         </div>
 
                         {/* Subject-wise scores */}
                         <div className="lg:col-span-2 bg-surface-container-low rounded-2xl p-6">
                             <h3 className="text-sm font-bold text-slate-200 mb-6">Subject-wise Average Quiz Score</h3>
-                            <div className="space-y-5">
-                                {SUBJECT_SCORES.map(s => (
-                                    <div key={s.label} className="space-y-2">
-                                        <div className="flex justify-between text-xs font-medium">
-                                            <span className="text-slate-400">{s.label}</span>
-                                            <span className="text-on-surface">{s.pct}%</span>
+                            {subjectScores.length ? (
+                                <div className="space-y-5">
+                                    {subjectScores.map(s => (
+                                        <div key={s.label} className="space-y-2">
+                                            <div className="flex justify-between text-xs font-medium">
+                                                <span className="text-slate-400">{s.label}</span>
+                                                <span className="text-on-surface">{s.pct}%</span>
+                                            </div>
+                                            <div className="h-2 bg-surface-container-highest rounded-full relative">
+                                                <div className={`h-full ${subjectBarColor(s.pct)} rounded-full transition-all`} style={{ width: `${s.pct}%` }} />
+                                                <div className="absolute top-0 h-full w-px bg-white/20" style={{ left: '75%' }} />
+                                            </div>
                                         </div>
-                                        <div className="h-2 bg-surface-container-highest rounded-full relative">
-                                            <div className={`h-full ${s.color} rounded-full transition-all`} style={{ width: `${s.pct}%` }} />
-                                            <div className="absolute top-0 h-full w-px bg-white/20" style={{ left: '75%' }} />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-xs text-slate-500 py-8 text-center">No completed mock tests yet.</p>
+                            )}
                         </div>
                     </div>
 
@@ -672,16 +676,18 @@ export default function AdminDashboard() {
                                 <h3 className="text-sm font-bold text-slate-200">Weak Concept Trends</h3>
                             </div>
                             <div className="p-3 space-y-1">
-                                {WEAK_CONCEPTS.map(c => (
-                                    <div key={c.rank} className="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-container-high rounded-xl transition-colors group">
-                                        <span className="text-xs font-black text-slate-600 w-5">{c.rank}</span>
+                                {weakConcepts.length ? weakConcepts.map((c, i) => (
+                                    <div key={`${c.name}-${i}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-container-high rounded-xl transition-colors group">
+                                        <span className="text-xs font-black text-slate-600 w-5">{String(i + 1).padStart(2, '0')}</span>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-xs font-bold text-slate-200 truncate">{c.name}</p>
-                                            <p className="text-[10px] text-slate-500">{c.meta}</p>
+                                            <p className="text-[10px] text-slate-500">{c.subject} • {c.error_rate}% Error Rate</p>
                                         </div>
-                                        <span className={`material-symbols-outlined text-${c.severity} text-base opacity-0 group-hover:opacity-100 transition-opacity`}>warning</span>
+                                        <span className={`material-symbols-outlined text-${weakSeverity(c.error_rate)} text-base opacity-0 group-hover:opacity-100 transition-opacity`}>warning</span>
                                     </div>
-                                ))}
+                                )) : (
+                                    <p className="text-xs text-slate-500 py-6 text-center">No weak concepts identified yet.</p>
+                                )}
                             </div>
                         </div>
                     </div>
