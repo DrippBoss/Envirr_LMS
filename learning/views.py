@@ -390,17 +390,62 @@ class RevisionNodeDetailView(views.APIView):
             award_node_xp(request.user.profile, rnode, rnode.xp_reward)
         return Response({'status': 'success', 'xp_earned': prog.xp_earned})
 
+# Fields on QuestionBank that a chapter-test filter is allowed to constrain.
+# Anything outside this set is rejected so a malformed or adversarial
+# question_filter cannot expand into arbitrary ORM kwargs / relation traversal (S3).
+_ALLOWED_QFILTER_FIELDS = frozenset({
+    'subject', 'chapter', 'concept', 'question_type',
+    'difficulty', 'bloom_level', 'marks', 'tags',
+    'is_verified', 'is_ai_generated',
+})
+# Lookup suffixes permitted on those fields (key form: "field" or "field__lookup").
+_ALLOWED_QFILTER_LOOKUPS = frozenset({
+    'exact', 'iexact', 'in', 'contains', 'icontains',
+    'gte', 'lte', 'gt', 'lt', 'isnull',
+})
+
+
+def _sanitize_question_filter(raw):
+    """Return a whitelisted copy of a question_filter dict, or raise ValueError.
+
+    Only base fields in _ALLOWED_QFILTER_FIELDS with an optional single
+    permitted lookup suffix survive; relational traversal (anything with extra
+    `__` segments) and unknown fields are rejected outright.
+    """
+    if not isinstance(raw, dict):
+        raise ValueError('question_filter must be an object')
+    clean = {}
+    for key, value in raw.items():
+        parts = key.split('__')
+        field = parts[0]
+        if field not in _ALLOWED_QFILTER_FIELDS:
+            raise ValueError(f'Disallowed filter field: {key}')
+        if len(parts) == 1:
+            pass
+        elif len(parts) == 2 and parts[1] in _ALLOWED_QFILTER_LOOKUPS:
+            pass
+        else:
+            raise ValueError(f'Disallowed filter lookup: {key}')
+        clean[key] = value
+    return clean
+
+
 class ChapterTestStartView(views.APIView):
     permission_classes = [IsStudent]
-    
+
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id, node_type='CHAPTER_TEST')
         err = _grade_check(node.path, request.user.profile)
         if err:
             return err
-        # Pull from QuestionBank
+        # Pull from QuestionBank — sanitize the stored filter before expanding it
+        # into ORM kwargs to prevent filter/relation injection (S3).
         count = node.test_question_count
-        qs = QuestionBank.objects.filter(**node.question_filter).order_by('?')[:count]
+        try:
+            safe_filter = _sanitize_question_filter(node.question_filter or {})
+        except ValueError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        qs = QuestionBank.objects.filter(**safe_filter).order_by('?')[:count]
         data = []
         for q in qs:
             data.append({
