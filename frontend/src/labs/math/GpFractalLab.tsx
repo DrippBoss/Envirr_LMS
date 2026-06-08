@@ -217,7 +217,7 @@ function TowerGame({ n }: { n: number }) {
       const toPeg = state[peg];
       const disc = fromPeg[fromPeg.length - 1];
       if (toPeg.length > 0 && toPeg[toPeg.length - 1] < disc) {
-        setError('Invalid! You can't place a larger disc on a smaller one.');
+        setError("Invalid! You can't place a larger disc on a smaller one.");
         setSelected(null);
         return;
       }

@@ -40,7 +40,7 @@ const CHALLENGES: Challenge[] = [
   },
   {
     id: 2,
-    context: 'Bela's pocket money (₹100, spends ₹5/day)',
+    context: "Bela's pocket money (₹100, spends ₹5/day)",
     sequence: [95, 90, 85, 80, 75],
     question: 'How much is left on Day 12?',
     nthTerm: '100 − 5n',
