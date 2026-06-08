@@ -8,27 +8,70 @@ from gamification.services import update_streak_and_xp
 
 @transaction.atomic
 def unlock_next_nodes(student_profile, completed_node):
-    # 1. Find the next sequential node
+    path = completed_node.path
+
+    # 1. Find the next sequential non-lab node
     next_node = LearningNode.objects.filter(
-        path=completed_node.path, 
+        path=path,
         order__gt=completed_node.order
-    ).order_by('order').first()
+    ).exclude(node_type='LAB').order_by('order').first()
 
     if next_node:
-        NodeProgress.objects.get_or_create(
-            student=student_profile,
-            node=next_node,
-            defaults={'status': CompletionStatus.UNLOCKED}
-        )
+        can_unlock = True
+
+        # 1a. Star-based mastery gate: check stars earned on the just-completed node
+        if next_node.unlock_min_stars > 0:
+            completed_prog = NodeProgress.objects.filter(
+                student=student_profile, node=completed_node
+            ).first()
+            if not completed_prog or completed_prog.stars < next_node.unlock_min_stars:
+                can_unlock = False
+
+        # 1b. Lab gate: any LAB node sitting between completed_node and next_node must be done
+        if can_unlock:
+            intervening_labs = LearningNode.objects.filter(
+                path=path, node_type='LAB',
+                order__gt=completed_node.order,
+                order__lt=next_node.order,
+            )
+            for lab in intervening_labs:
+                lab_done = NodeProgress.objects.filter(
+                    student=student_profile, node=lab, status=CompletionStatus.COMPLETED
+                ).exists()
+                if not lab_done:
+                    can_unlock = False
+                    break
+
+        if can_unlock:
+            NodeProgress.objects.get_or_create(
+                student=student_profile,
+                node=next_node,
+                defaults={'status': CompletionStatus.UNLOCKED}
+            )
 
     # 2. Find any RevisionNode branching off this node
     revision_nodes = RevisionNode.objects.filter(appears_after_node=completed_node)
     for rnode in revision_nodes:
-        # Just creating the progress row effectively unlocks it for the student
         RevisionNodeProgress.objects.get_or_create(
             student=student_profile,
             revision_node=rnode
         )
+
+    # 3. Unlock lab nodes based on completion threshold
+    completed_count = NodeProgress.objects.filter(
+        student=student_profile,
+        node__path=path,
+        status=CompletionStatus.COMPLETED,
+    ).exclude(node__node_type='LAB').count()
+
+    lab_nodes = LearningNode.objects.filter(path=path, node_type='LAB')
+    for lab in lab_nodes:
+        if lab.lab_required_completions > 0 and completed_count >= lab.lab_required_completions:
+            NodeProgress.objects.get_or_create(
+                student=student_profile,
+                node=lab,
+                defaults={'status': CompletionStatus.UNLOCKED}
+            )
 
 @transaction.atomic
 def award_node_xp(student_profile, node, xp_amount, is_test=False):
@@ -74,6 +117,10 @@ def award_node_xp(student_profile, node, xp_amount, is_test=False):
         })
         student_xp.xp_history = current_history
         student_xp.save()
+
+    # 3. Check and award badges
+    from gamification.services import check_and_award_badges
+    return check_and_award_badges(student_profile, node)
 
 def calculate_stars(wrong_count, total_questions):
     if wrong_count == 0:

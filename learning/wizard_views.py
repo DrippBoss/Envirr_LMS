@@ -291,6 +291,13 @@ class WizardReorderView(AdminWizardBaseView):
         return Response({'message': 'Reordered successfully'})
 
 
+def _is_valid_mp4(f) -> bool:
+    """Verify file is an MP4 by checking for the ISO Base Media 'ftyp' box in the header."""
+    header = f.read(12)
+    f.seek(0)
+    return b'ftyp' in header
+
+
 class WizardBulkUploadView(AdminWizardBaseView):
     def post(self, request):
         node_id = request.data.get('node_id')
@@ -305,10 +312,16 @@ class WizardBulkUploadView(AdminWizardBaseView):
         try:
             node = LearningNode.objects.get(id=node_id)
             for f in files:
-                if f.name.endswith('.mp4'):
-                    node.video_file = f
-                    node.save()
-                    break
+                if not f.name.lower().endswith('.mp4'):
+                    continue
+                if not _is_valid_mp4(f):
+                    return Response(
+                        {'error': f'"{f.name}" is not a valid MP4 file.'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                node.video_file = f
+                node.save()
+                break
             return Response({'message': 'Files uploaded successfully'})
         except LearningNode.DoesNotExist:
             return Response({'error': 'Node not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -482,28 +495,44 @@ class WizardCourseStructureView(APIView):
         unit.description = data.get('description', unit.description)
         unit.save()
 
-        # Wipe and recreate chapters/nodes (simplest safe approach)
-        unit.paths.all().delete()
-
         total_nodes = 0
         total_questions = 0
         lesson_node_map: dict = {}
-        revision_node_map: dict = {}
+        kept_path_ids: list = []
+        kept_node_ids: list = []
+        kept_revision_ids: list = []
 
         for ch_idx, chap_data in enumerate(data.get('chapters', [])):
-            path = LearningPath.objects.create(
-                unit=unit,
-                title=chap_data.get('title', f'Chapter {ch_idx + 1}'),
-                description=chap_data.get('description', ''),
-                class_grade=unit.class_grade,
-                is_active=True,
-            )
+            path_id = chap_data.get('id')
+
+            # Update existing path in-place; create only if no ID supplied
+            if path_id:
+                try:
+                    path = LearningPath.objects.get(id=path_id, unit=unit)
+                    path.title = chap_data.get('title', path.title)
+                    path.description = chap_data.get('description', path.description)
+                    path.class_grade = unit.class_grade
+                    path.save()
+                except LearningPath.DoesNotExist:
+                    path_id = None
+
+            if not path_id:
+                path = LearningPath.objects.create(
+                    unit=unit,
+                    title=chap_data.get('title', f'Chapter {ch_idx + 1}'),
+                    description=chap_data.get('description', ''),
+                    class_grade=unit.class_grade,
+                    is_active=True,
+                )
+
+            kept_path_ids.append(path.id)
             last_lesson_node = None
             lesson_node_order = 0
 
             for node_data in chap_data.get('nodes', []):
                 node_type = node_data.get('type', 'LESSON')
                 node_client_key = node_data.get('node_client_key', '')
+                node_id = node_data.get('id')
 
                 if node_type == 'REVISION':
                     parent_key = node_data.get('appears_after_node_key', '')
@@ -512,7 +541,22 @@ class WizardCourseStructureView(APIView):
                         if parent_key and parent_key in lesson_node_map
                         else last_lesson_node
                     )
-                    if parent_node:
+                    if not parent_node:
+                        continue
+
+                    if node_id:
+                        try:
+                            rn = RevisionNode.objects.get(id=node_id, path__unit=unit)
+                            rn.path = path
+                            rn.title = node_data.get('title', rn.title)
+                            rn.side = node_data.get('side', rn.side)
+                            rn.xp_reward = node_data.get('xp_reward', rn.xp_reward)
+                            rn.appears_after_node = parent_node
+                            rn.save()
+                        except RevisionNode.DoesNotExist:
+                            node_id = None
+
+                    if not node_id:
                         rn = RevisionNode.objects.create(
                             path=path,
                             title=node_data.get('title', 'Revision'),
@@ -520,35 +564,79 @@ class WizardCourseStructureView(APIView):
                             side=node_data.get('side', 'right'),
                             xp_reward=node_data.get('xp_reward', 15),
                         )
-                        revision_node_map[node_client_key] = rn
-                        total_nodes += 1
+
+                    kept_revision_ids.append(rn.id)
+                    total_nodes += 1
                     continue
 
                 lesson_node_order += 1
-                node = LearningNode.objects.create(
-                    path=path,
-                    title=node_data.get('title', f'Node {lesson_node_order}'),
-                    node_type=node_type,
-                    order=lesson_node_order,
-                    xp_reward=node_data.get('xp_reward', 10),
-                    is_bonus=bool(node_data.get('is_bonus', False)),
-                    starting_lives=node_data.get('starting_lives', 3),
-                    practice_question_count=node_data.get('practice_question_count', 5),
-                    test_question_count=node_data.get('test_question_count', 10),
-                    test_pass_percentage=node_data.get('test_pass_percentage', 70),
-                    youtube_url=node_data.get('youtube_url', ''),
-                )
+
+                # Update existing lesson node in-place to preserve NodeProgress/SessionAnswer PKs
+                if node_id:
+                    try:
+                        node = LearningNode.objects.get(id=node_id, path__unit=unit)
+                        node.path = path
+                        node.title = node_data.get('title', node.title)
+                        node.node_type = node_type
+                        node.order = lesson_node_order
+                        node.xp_reward = node_data.get('xp_reward', node.xp_reward)
+                        node.is_bonus = bool(node_data.get('is_bonus', node.is_bonus))
+                        node.starting_lives = node_data.get('starting_lives', node.starting_lives)
+                        node.practice_question_count = node_data.get('practice_question_count', node.practice_question_count)
+                        node.test_question_count = node_data.get('test_question_count', node.test_question_count)
+                        node.test_pass_percentage = node_data.get('test_pass_percentage', node.test_pass_percentage)
+                        node.youtube_url = node_data.get('youtube_url', node.youtube_url)
+                        node.save()
+                    except LearningNode.DoesNotExist:
+                        node_id = None
+
+                if not node_id:
+                    node = LearningNode.objects.create(
+                        path=path,
+                        title=node_data.get('title', f'Node {lesson_node_order}'),
+                        node_type=node_type,
+                        order=lesson_node_order,
+                        xp_reward=node_data.get('xp_reward', 10),
+                        is_bonus=bool(node_data.get('is_bonus', False)),
+                        starting_lives=node_data.get('starting_lives', 3),
+                        practice_question_count=node_data.get('practice_question_count', 5),
+                        test_question_count=node_data.get('test_question_count', 10),
+                        test_pass_percentage=node_data.get('test_pass_percentage', 70),
+                        youtube_url=node_data.get('youtube_url', ''),
+                    )
+
+                kept_node_ids.append(node.id)
                 last_lesson_node = node
                 lesson_node_map[node_client_key] = node
                 total_nodes += 1
 
+                # Differential question update — match by source QuestionBank ID so
+                # unchanged LessonQuestion PKs (and their SessionAnswer rows) are preserved
                 raw_questions = node_data.get('questions') or [
                     {'id': qid, 'hint': '', 'explanation': ''} for qid in node_data.get('question_ids', [])
                 ]
+                incoming_qb_ids = [
+                    (q_entry['id'] if isinstance(q_entry, dict) else q_entry)
+                    for q_entry in raw_questions
+                ]
+
+                node.questions.exclude(source_question_id__in=incoming_qb_ids).delete()
+                existing_qb_ids = set(node.questions.values_list('source_question_id', flat=True))
+
                 for q_entry in raw_questions:
                     qid = q_entry['id'] if isinstance(q_entry, dict) else q_entry
                     custom_hint = q_entry.get('hint', '') if isinstance(q_entry, dict) else ''
                     custom_explanation = q_entry.get('explanation', '') if isinstance(q_entry, dict) else ''
+
+                    if qid in existing_qb_ids:
+                        # Update hint/explanation only — preserves LessonQuestion PK
+                        node.questions.filter(source_question_id=qid).update(
+                            hint=custom_hint,
+                            explanation=custom_explanation,
+                        )
+                        total_questions += 1
+                        continue
+
                     try:
                         qb = QuestionBank.objects.get(id=qid)
                         if qb.question_type in ('MCQ', 'ASSERTION_REASON'):
@@ -572,6 +660,11 @@ class WizardCourseStructureView(APIView):
                         total_questions += 1
                     except QuestionBank.DoesNotExist:
                         pass
+
+        # Delete only what was actually removed from the payload
+        unit.paths.exclude(id__in=kept_path_ids).delete()
+        LearningNode.objects.filter(path__unit=unit).exclude(id__in=kept_node_ids).delete()
+        RevisionNode.objects.filter(path__unit=unit).exclude(id__in=kept_revision_ids).delete()
 
         return Response({
             'message': 'Course updated successfully',

@@ -7,8 +7,8 @@ type StudentProfile = {
     avatar_url: string;
 };
 
-type User = { id: number; username: string; email: string; role: string; can_build_courses: boolean; profile?: StudentProfile };
-type AuthContextType = { user: User | null; isAuthenticated: boolean; loading: boolean; login: () => void; logout: () => void; };
+type User = { id: number; username: string; name: string; mobile: string; email: string; pending_email: string; role: string; can_build_courses: boolean; can_edit_questions: boolean; email_verified: boolean; assigned_subjects: string[]; profile?: StudentProfile };
+type AuthContextType = { user: User | null; isAuthenticated: boolean; loading: boolean; login: () => void; logout: () => void; refreshUser: () => Promise<void>; };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -21,6 +21,32 @@ export const api = axios.create({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+
+    // Silent token refresh interceptor — retries once on 401, redirects to login if refresh fails
+    useEffect(() => {
+        const interceptor = api.interceptors.response.use(
+            res => res,
+            async error => {
+                const original = error.config;
+                const is401    = error.response?.status === 401;
+                const isAuthRoute = original.url?.includes('token/refresh') ||
+                                    original.url?.includes('auth/login') ||
+                                    original.url?.includes('auth/me');
+                if (is401 && !original._retry && !isAuthRoute) {
+                    original._retry = true;
+                    try {
+                        await api.post('auth/token/refresh/');
+                        return api(original);
+                    } catch {
+                        setUser(null);
+                        window.location.href = '/login';
+                    }
+                }
+                return Promise.reject(error);
+            }
+        );
+        return () => api.interceptors.response.eject(interceptor);
+    }, []);
 
     useEffect(() => {
         fetchUser();
@@ -39,8 +65,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const login = () => {
-        // Token is set by httpOnly cookie from the backend
-        // Just trigger a user fetch — the cookie is already set
         fetchUser();
     };
 
@@ -54,7 +78,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, login, logout }}>
+        <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, login, logout, refreshUser: fetchUser }}>
             {children}
         </AuthContext.Provider>
     );

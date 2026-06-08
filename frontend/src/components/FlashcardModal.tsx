@@ -71,7 +71,7 @@ export default function FlashcardModal({
             <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/90 backdrop-blur-xl">
                 <div className="bg-surface-container rounded-3xl border border-outline-variant/10 p-10 flex flex-col items-center text-center max-w-sm mx-4 shadow-2xl">
                     <span className="material-symbols-outlined text-4xl text-slate-500 mb-4">layers_clear</span>
-                    <h2 className="text-xl font-black font-headline text-white mb-2">No cards found</h2>
+                    <h2 className="text-xl font-black font-headline text-on-surface mb-2">No cards found</h2>
                     <p className="text-slate-500 text-sm mb-6">Nothing to review right now.</p>
                     <button
                         onClick={onComplete}
@@ -96,13 +96,13 @@ export default function FlashcardModal({
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">
                         Card {currentIndex + 1} of {cards.length}
                     </p>
-                    <h2 className="text-2xl font-black font-headline text-white leading-tight">{title}</h2>
+                    <h2 className="text-2xl font-black font-headline text-on-surface leading-tight">{title}</h2>
                     {subtitle && <p className="text-slate-400 text-sm mt-1">{subtitle}</p>}
                 </div>
                 {showSkip && (
                     <button
                         onClick={onSkip ?? onComplete}
-                        className="shrink-0 ml-4 flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/20 text-slate-400 text-sm hover:text-white hover:border-outline-variant/40 transition-all"
+                        className="shrink-0 ml-4 flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/20 text-slate-400 text-sm hover:text-on-surface hover:border-outline-variant/40 transition-all"
                     >
                         <span className="material-symbols-outlined text-base">close</span>
                         Skip
@@ -146,7 +146,7 @@ export default function FlashcardModal({
                         <span className="text-[10px] font-black uppercase tracking-widest text-primary mb-6 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
                             {currentCard.card_type || 'Concept'}
                         </span>
-                        <h3 className="text-2xl md:text-3xl font-black font-headline text-white text-center leading-tight mb-6">
+                        <h3 className="text-2xl md:text-3xl font-black font-headline text-on-surface text-center leading-tight mb-6">
                             {currentCard.title}
                         </h3>
                         <div className="flex items-center gap-2 text-slate-600 text-xs mt-auto">
@@ -212,7 +212,7 @@ export default function FlashcardModal({
                 <button
                     onClick={handlePrev}
                     disabled={currentIndex === 0}
-                    className="flex items-center gap-2 px-5 py-3 rounded-xl border border-outline-variant/20 text-slate-400 text-sm font-bold hover:text-white hover:border-outline-variant/40 transition-all disabled:opacity-0 disabled:pointer-events-none"
+                    className="flex items-center gap-2 px-5 py-3 rounded-xl border border-outline-variant/20 text-slate-400 text-sm font-bold hover:text-on-surface hover:border-outline-variant/40 transition-all disabled:opacity-0 disabled:pointer-events-none"
                 >
                     <span className="material-symbols-outlined text-base">arrow_back</span>
                     Prev

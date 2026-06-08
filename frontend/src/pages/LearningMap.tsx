@@ -45,8 +45,9 @@ function NodeRow({ node, index }: { node: any; index: number }) {
   }
 
   // ── Info card ──────────────────────────────────────────────
+  // Hidden on mobile (sm:block) to avoid overflowing narrow viewports
   const cardBase =
-    "absolute top-1/2 -translate-y-1/2 w-52 p-4 rounded-2xl bg-surface-container border border-outline-variant/15 shadow-lg pointer-events-none";
+    "hidden sm:block absolute top-1/2 -translate-y-1/2 w-48 md:w-52 p-4 rounded-2xl bg-surface-container border border-outline-variant/15 shadow-lg pointer-events-none";
   const cardCls = isLeft
     ? `${cardBase} left-[calc(100%+1.5rem)]`
     : `${cardBase} right-[calc(100%+1.5rem)]`;
@@ -56,7 +57,7 @@ function NodeRow({ node, index }: { node: any; index: number }) {
     : `Lesson ${node.order}`;
 
   return (
-    <div className="relative flex justify-center">
+    <div className="relative flex flex-col items-center">
       {/* Node circle */}
       <div className={circleCls} onClick={handleClick}>
         <span
@@ -72,12 +73,17 @@ function NodeRow({ node, index }: { node: any; index: number }) {
         )}
       </div>
 
-      {/* Always-visible floating info card */}
+      {/* Mobile label — shown only on phones where the side card is hidden */}
+      <p className="sm:hidden mt-1.5 text-center text-[10px] font-bold text-outline/70 max-w-[5rem] leading-tight truncate">
+        {node.title}
+      </p>
+
+      {/* Always-visible floating info card — hidden on mobile, see above */}
       <div className={cardCls} style={{ pointerEvents: isLocked ? "none" : "auto" }}>
         <span className="text-[9px] font-black uppercase tracking-[0.18em] text-outline/60 block mb-1">
           {labelTag}
         </span>
-        <h3 className="text-white font-bold text-sm leading-snug mb-2">{node.title}</h3>
+        <h3 className="text-on-surface font-bold text-sm leading-snug mb-2">{node.title}</h3>
 
         {/* Stars row for completed */}
         {isCompleted && (
@@ -122,7 +128,7 @@ function RevisionRow({ rnode, onClick }: { rnode: any; onClick: () => void }) {
   return (
     <div className="flex justify-center">
       <div
-        className={`w-72 p-5 rounded-2xl border text-center transition-all ${
+        className={`w-full max-w-xs p-5 rounded-2xl border text-center transition-all ${
           isLocked
             ? "bg-surface-container border-outline-variant/10 opacity-50 cursor-not-allowed"
             : "bg-primary/5 border-primary/20 cursor-pointer hover:bg-primary/10"
@@ -135,7 +141,7 @@ function RevisionRow({ rnode, onClick }: { rnode: any; onClick: () => void }) {
             Mid-Unit Review
           </span>
         </div>
-        <h4 className="text-white font-bold text-sm">{rnode.title || "Strengthen Your Knowledge"}</h4>
+        <h4 className="text-on-surface font-bold text-sm">{rnode.title || "Strengthen Your Knowledge"}</h4>
         {!isLocked && (
           <span className="text-[10px] text-primary font-bold mt-1 block">+{rnode.xp_reward} XP</span>
         )}
@@ -234,7 +240,7 @@ export default function LearningMap() {
             <span className="material-symbols-outlined text-primary text-base">rocket_launch</span>
           </div>
           <div className="min-w-0">
-            <p className="text-white text-sm font-bold leading-none truncate">{user?.username || "Student"}</p>
+            <p className="text-on-surface text-sm font-bold leading-none truncate">{user?.username || "Student"}</p>
             <p className="text-outline text-[10px] mt-0.5 capitalize">{user?.role || "student"}</p>
           </div>
         </div>
@@ -269,7 +275,7 @@ export default function LearningMap() {
 
       {/* Main content */}
       <main className="md:ml-60 pt-16 pb-20 min-h-screen">
-        <div className="max-w-3xl mx-auto px-8 pt-10">
+        <div className="max-w-3xl mx-auto px-4 md:px-8 pt-10">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-1.5 text-[11px] text-outline font-medium uppercase tracking-widest mb-3">
             <span>{pathData.subject || "Mathematics"}</span>
@@ -282,7 +288,7 @@ export default function LearningMap() {
           {/* Title + actions row */}
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
             <div className="flex-1 min-w-0">
-              <h1 className="text-4xl font-extrabold font-headline tracking-tight text-white leading-tight mb-4">
+              <h1 className="text-4xl font-extrabold font-headline tracking-tight text-on-surface leading-tight mb-4">
                 {pathData.title}
               </h1>
               {/* Progress bar */}
@@ -352,7 +358,7 @@ export default function LearningMap() {
                         emoji_events
                       </span>
                     </div>
-                    <h3 className="text-base font-black font-headline text-white mb-1 uppercase tracking-wide">
+                    <h3 className="text-base font-black font-headline text-on-surface mb-1 uppercase tracking-wide">
                       Chapter Final Test
                     </h3>
                     <p className="text-outline text-xs mb-4 px-2 leading-relaxed">
@@ -366,7 +372,7 @@ export default function LearningMap() {
                       <div className="h-6 w-px bg-outline-variant/25" />
                       <div className="text-center">
                         <p className="text-[9px] text-outline uppercase font-bold tracking-widest">Questions</p>
-                        <p className="text-white font-black text-base">25</p>
+                        <p className="text-on-surface font-black text-base">25</p>
                       </div>
                     </div>
                   </div>

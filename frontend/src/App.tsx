@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Login from './pages/Login';
 import StudentDashboard from './pages/StudentDashboard';
 import TeacherPanel from './pages/TeacherPanel';
@@ -11,6 +12,10 @@ import NodePage from './pages/NodePage';
 import AiTutor from './pages/AiTutor';
 import AdminDashboard from './pages/AdminDashboard';
 import MockTestPage from './pages/MockTestPage';
+import StudyGroupsPage from './pages/StudyGroupsPage';
+import ProfilePage from './pages/ProfilePage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode, allowedRole?: string }) => {
     const { user, isAuthenticated, loading } = useAuth();
@@ -43,6 +48,10 @@ function AppRoutes() {
                     <Route path="/tutor" element={<ProtectedRoute><AiTutor /></ProtectedRoute>} />
                     <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><AdminDashboard /></ProtectedRoute>} />
                     <Route path="/mock-test" element={<ProtectedRoute><MockTestPage /></ProtectedRoute>} />
+                    <Route path="/study-groups" element={<ProtectedRoute><StudyGroupsPage /></ProtectedRoute>} />
+                    <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                    <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
+                    <Route path="/verify-email" element={<VerifyEmailPage />} />
                 </Routes>
             </div>
         </Router>
@@ -51,9 +60,11 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-        <AppRoutes />
-    </AuthProvider>
+    <ThemeProvider>
+        <AuthProvider>
+            <AppRoutes />
+        </AuthProvider>
+    </ThemeProvider>
   );
 }
 

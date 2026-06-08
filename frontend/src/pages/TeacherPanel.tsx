@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { api, useAuth } from '../context/AuthContext';
 import CourseBuilder from '../components/CourseBuilder';
+import QuestionEditor from '../components/QuestionEditor';
+import UploadIngest from '../components/UploadIngest';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type ExamMode = 'ai' | 'manual' | 'hybrid' | 'course';
-type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'analytics' | 'approvals' | 'assigned';
+type ExamMode = 'ai' | 'manual' | 'hybrid' | 'course' | 'upload';
+type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'analytics' | 'approvals' | 'assigned' | 'questions';
 
 // ─── Paper structure: mirrors backend calculate_marks_distribution exactly ─────
 interface DistRow { type: string; label: string; count: number; marks: number; sec: string; }
@@ -140,7 +142,7 @@ function MarksDistributionPanel({ marks }: { marks: number }) {
   return (
     <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-6 h-fit">
       <p className="text-[10px] font-black uppercase tracking-widest text-outline mb-1">Marks Distribution</p>
-      <h3 className="text-base font-black text-white font-headline mb-4">Question Breakdown</h3>
+      <h3 className="text-base font-black text-on-surface font-headline mb-4">Question Breakdown</h3>
       <div className="space-y-0">
         {dist.map((row, i) => (
           <div key={i} className="flex items-center justify-between py-2.5 border-b border-outline-variant/10 last:border-0">
@@ -151,7 +153,7 @@ function MarksDistributionPanel({ marks }: { marks: number }) {
             <div className="flex gap-3 text-xs items-center">
               <span className="text-outline">{row.count}Q</span>
               <span className="text-outline">×{row.marks}</span>
-              <span className="text-white font-bold w-8 text-right">{row.count * row.marks}</span>
+              <span className="text-on-surface font-bold w-8 text-right">{row.count * row.marks}</span>
             </div>
           </div>
         ))}
@@ -177,9 +179,10 @@ function MarksDistributionPanel({ marks }: { marks: number }) {
 // ─── Sidebar nav items ────────────────────────────────────────────────────────
 const NAV_ITEMS = [
   { id: 'overview',   icon: 'grid_view',      label: 'Overview' },
-  { id: 'doubts',     icon: 'help_outline',   label: 'Doubt Solver' },
   { id: 'exam',       icon: 'science',        label: 'Exam Factory' },
+  { id: 'doubts',     icon: 'help_outline',   label: 'Doubt Solver' },
   { id: 'analytics',  icon: 'bar_chart',      label: 'Analytics' },
+  { id: 'questions',  icon: 'quiz',           label: 'Question Editor' },
   { id: 'assigned',   icon: 'edit_note',      label: 'Edit Courses' },
   { id: 'course',     icon: 'account_tree',   label: 'Course Builder' },
   { id: 'approvals',  icon: 'fact_check',     label: 'Approvals' },
@@ -210,7 +213,7 @@ function KpiCard({ icon, label, value, sub, iconColor }: { icon: string; label: 
         <span className="material-symbols-outlined text-2xl">{icon}</span>
       </div>
       <div>
-        <p className="text-2xl font-black text-white font-headline">{value}</p>
+        <p className="text-2xl font-black text-on-surface font-headline">{value}</p>
         <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">{label}</p>
         {sub && <p className="text-xs text-outline mt-0.5">{sub}</p>}
       </div>
@@ -241,6 +244,7 @@ const inputCls = "w-full bg-surface-container-highest border border-outline-vari
 export default function TeacherPanel() {
   const { user } = useAuth();
   const [navTab, setNavTab] = useState<NavTab>('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyText, setReplyText] = useState('');
   const [examMode, setExamMode] = useState<ExamMode>('ai');
@@ -320,6 +324,15 @@ export default function TeacherPanel() {
   const [papers, setPapers] = useState<any[]>([]);
   const [now, setNow] = useState(() => Date.now());
 
+  // Processing / done overlay state (shared across AI, manual, hybrid modes)
+  const [compilingPaper, setCompilingPaper] = useState<{ id: number; title: string } | null>(null);
+  const [compilingStep, setCompilingStep] = useState(0);
+  const [paperDone, setPaperDone] = useState<{ id: number; title: string } | null>(null);
+
+  const AI_COMPILE_STEPS = ['Analyzing curriculum', 'Generating questions', 'Structuring paper', 'Compiling PDF'];
+  const MANUAL_COMPILE_STEPS = ['Setting up sections', 'Compiling LaTeX', 'Building PDF'];
+  const [compileStepLabels, setCompileStepLabels] = useState<string[]>(AI_COMPILE_STEPS);
+
   const fetchPapers = async () => {
     try {
       const res = await api.get('/ai/generate-paper/');
@@ -374,6 +387,28 @@ export default function TeacherPanel() {
     const clock = setInterval(() => setNow(Date.now()), 1000);
     return () => { clearInterval(interval); clearInterval(clock); };
   }, []);
+
+  // Poll for PDF ready when a paper is compiling
+  useEffect(() => {
+    if (!compilingPaper) return;
+    const labels = compileStepLabels;
+    const timers = labels.slice(1).map((_, i) =>
+      setTimeout(() => setCompilingStep(i + 2), (i + 1) * 4000)
+    );
+    const poll = setInterval(async () => {
+      try {
+        const res = await api.get('/ai/generate-paper/');
+        const found = (res.data as any[]).find((p: any) => p.id === compilingPaper.id);
+        if (found?.pdf_url) {
+          clearInterval(poll); timers.forEach(clearTimeout);
+          setPapers(res.data);
+          setPaperDone({ id: compilingPaper.id, title: compilingPaper.title });
+          setCompilingPaper(null);
+        }
+      } catch {}
+    }, 3000);
+    return () => { clearInterval(poll); timers.forEach(clearTimeout); };
+  }, [compilingPaper]);
 
   // Fetch distinct subjects once when entering manual mode
   useEffect(() => {
@@ -466,7 +501,7 @@ export default function TeacherPanel() {
 
     setLoading(true);
     try {
-      await api.post('/ai/manual-paper/', {
+      const res = await api.post('/ai/manual-paper/', {
         title: paperTitle,
         board,
         grade,
@@ -474,12 +509,12 @@ export default function TeacherPanel() {
         sections: payloadSections,
         custom_questions: customQuestionsRaw,
       });
-      await fetchPapers();
-      alert('Paper queued for compilation. Your PDF will appear in "Generated History" below once ready (usually under a minute).');
+      setCompileStepLabels(MANUAL_COMPILE_STEPS);
+      setCompilingStep(1);
+      setCompilingPaper({ id: res.data.paper_id, title: paperTitle });
     } catch (err: any) {
       const detail = err?.response?.data?.detail ?? err?.response?.data?.error ?? err?.message ?? 'Unknown error';
       alert(`Compilation failed: ${detail}`);
-      console.error('Manual compile error:', err?.response?.data ?? err);
     } finally {
       setLoading(false);
     }
@@ -511,17 +546,16 @@ export default function TeacherPanel() {
         include_answers: true,
         custom_instructions: fullInstructions,
       });
-      setAiStep(3);
-      await new Promise(r => setTimeout(r, 600));
-      setAiStep(4);
-      await new Promise(r => setTimeout(r, 800));
-      alert('AI Synthesis Triggered: ' + res.data.message);
-      fetchPapers();
+      setAiStep(0);
+      const paperTitle = `${subject} — ${resolvedChapters[0]}`;
+      setCompileStepLabels(AI_COMPILE_STEPS);
+      setCompilingStep(1);
+      setCompilingPaper({ id: res.data.paper_id, title: paperTitle });
     } catch (err: any) {
-      const detail = err?.response?.data
-        ? JSON.stringify(err.response.data)
-        : err?.message ?? 'Unknown error';
-      alert('Failed to trigger AI Synthesis.\n\n' + detail);
+      const detail = err?.response?.data?.error ?? err?.response?.data?.detail ?? err?.message ?? 'Generation failed.';
+      setCompilingPaper(null);
+      setCompilingStep(0);
+      alert(detail);
     }
     setLoading(false);
     setAiStep(0);
@@ -531,36 +565,44 @@ export default function TeacherPanel() {
   const totalQs    = manualSections.reduce((acc, sec) => acc + sec.questions.length, 0);
 
   // ─── Render ────────────────────────────────────────────────────────────────
+  const closeSidebar = useCallback(() => setSidebarOpen(false), []);
+
   return (
     <div className="min-h-screen bg-background flex pt-16">
 
+      {/* Mobile sidebar backdrop */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={closeSidebar} />
+      )}
+
       {/* ── Sidebar ── */}
-      <aside className="hidden md:flex flex-col w-60 fixed left-0 top-16 h-[calc(100vh-4rem)] bg-surface-container border-r border-outline-variant/10 z-40 py-5 px-3">
+      <aside className={`fixed left-0 top-16 h-[calc(100vh-4rem)] w-60 flex-col bg-surface-container border-r border-outline-variant/10 z-40 py-5 px-3 transition-transform duration-200 ${sidebarOpen ? 'flex' : 'hidden md:flex'}`}>
         {/* Identity */}
-        <div className="px-3 mb-6">
+        <div className="px-3 mb-3 md:mb-6">
           <p className="text-[9px] font-black uppercase tracking-widest text-outline/60 mb-2">Instructor Portal</p>
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-primary text-lg">school</span>
             </div>
             <div className="min-w-0">
-              <p className="text-white font-bold text-sm leading-none truncate">{user?.username || 'Educator'}</p>
+              <p className="text-on-surface font-bold text-sm leading-none truncate">{user?.username || 'Educator'}</p>
               <p className="text-outline text-[10px] mt-0.5">Senior Educator</p>
             </div>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto space-y-0.5 pb-2">
           {NAV_ITEMS.map(item => {
             if (item.id === 'course' && user?.role !== 'admin' && user?.role !== 'teacher' && !user?.can_build_courses) return null;
             if (item.id === 'approvals' && user?.role !== 'admin') return null;
             if (item.id === 'assigned' && user?.role !== 'teacher' && user?.role !== 'admin') return null;
+            if (item.id === 'questions' && user?.role !== 'admin' && !user?.can_edit_questions) return null;
             const active = navTab === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => setNavTab(item.id as NavTab)}
+                onClick={() => { setNavTab(item.id as NavTab); setSidebarOpen(false); }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all text-left ${
                   active
                     ? 'bg-primary/10 text-primary'
@@ -588,12 +630,24 @@ export default function TeacherPanel() {
       </aside>
 
       {/* ── Main Content ── */}
-      <main className="md:ml-60 flex-1 p-6 pb-16">
+      <main className="md:ml-60 flex-1 p-4 md:p-6 pb-16">
+        {/* Mobile header with hamburger */}
+        <div className="flex items-center gap-3 mb-4 md:hidden">
+          <button
+            onClick={() => setSidebarOpen(v => !v)}
+            className="flex items-center justify-center w-9 h-9 rounded-lg text-slate-400 hover:text-white hover:bg-surface-container-high transition-colors shrink-0"
+            aria-label="Open menu"
+          >
+            <span className="material-symbols-outlined text-xl">menu</span>
+          </button>
+          <span className="text-sm font-black text-white font-headline capitalize">{navTab}</span>
+        </div>
+
         <div className="max-w-6xl mx-auto">
 
           {/* ── KPI Row (Overview) ── */}
           {navTab === 'overview' && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
               <KpiCard icon="pending_actions" label="Pending Doubts"    value={String(PENDING_DOUBTS.length)}      sub="4 High Priority"         iconColor="text-error" />
               <KpiCard icon="task_alt"        label="Doubts Resolved"   value={String(RESOLVED_DOUBTS.length + 139)} sub="+12% from last week"   iconColor="text-secondary" />
               <KpiCard icon="schedule"        label="Avg Response Time" value="18m"                                 sub="Top 5% of Educators"    iconColor="text-primary" />
@@ -602,9 +656,9 @@ export default function TeacherPanel() {
 
           {/* ── KPI Row (Exam/other tabs) ── */}
           {navTab !== 'overview' && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
               <KpiCard icon="quiz"            label="Questions Available" value="1,248"                             sub="Across all subjects"    iconColor="text-primary" />
-              <KpiCard icon="description"     label="Papers Generated"   value={String(papers.length)}             sub="All time"               iconColor="text-secondary" />
+              <KpiCard icon="description"     label="Recent Papers"      value={String(papers.length)}             sub="Last 5 generated"       iconColor="text-secondary" />
               <KpiCard icon="pending_actions" label="Compiling"          value={String(papers.filter(p => !p.pdf_url).length)} sub="In queue"   iconColor="text-tertiary" />
             </div>
           )}
@@ -612,124 +666,110 @@ export default function TeacherPanel() {
           {/* ── Overview Tab ── */}
           {navTab === 'overview' && (
             <div className="grid lg:grid-cols-[1fr_300px] gap-6">
-              {/* Left: Pending Doubts */}
+              {/* Left column */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between mb-1">
-                  <h2 className="text-lg font-black font-headline text-white">Pending Doubts</h2>
-                  <span className="text-[10px] text-outline font-bold uppercase tracking-widest">Auto-refresh in 30s</span>
+
+                {/* Generate Exam Paper */}
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="material-symbols-outlined text-primary text-xl">auto_awesome</span>
+                  <h2 className="text-lg font-black font-headline text-on-surface">Generate Exam Paper</h2>
+                </div>
+                <p className="text-outline text-xs mb-5">Create assessments tailored to current chapter progress.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {[
+                    { id: 'manual', icon: 'list_alt',    title: 'Manual Picker',   desc: 'Total control. Browse our exhaustive question bank and hand-pick every problem for the paper.',             cta: 'Start Manual Session', color: 'border-outline-variant/15' },
+                    { id: 'hybrid', icon: 'tune',         title: 'Smart Hybrid',    desc: "Define difficulty and chapter weightings. We'll suggest a mix of classic and new AI-refined questions.",   cta: 'Launch Configurator',  color: 'border-primary/30', badge: 'RECOMMENDED', btnCls: 'bg-primary text-on-primary' },
+                    { id: 'ai',     icon: 'auto_awesome', title: 'Full AI',         desc: 'Instant generation. Describe your learning goal, and our LLM will build a completely unique assessment.',   cta: 'Generate via AI',      color: 'border-outline-variant/15' },
+                    { id: 'upload', icon: 'upload_file',  title: 'Upload & Create', desc: 'Upload any PDF or image — AI extracts questions from your content. You pick what goes in the paper.',      cta: 'Upload Document',      color: 'border-secondary/30' },
+                  ].map(mode => (
+                    <div
+                      key={mode.id}
+                      className={`bg-surface-container rounded-2xl border p-5 flex flex-col gap-3 hover:bg-surface-container-high transition-all cursor-pointer ${mode.color}`}
+                      onClick={() => { setNavTab('exam'); setExamMode(mode.id as ExamMode); }}
+                    >
+                      {mode.badge && (
+                        <span className="self-start text-[9px] font-black uppercase tracking-widest bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">{mode.badge}</span>
+                      )}
+                      <span className="material-symbols-outlined text-on-surface-variant text-2xl">{mode.icon}</span>
+                      <div>
+                        <h4 className="text-sm font-black text-on-surface mb-1">{mode.title}</h4>
+                        <p className="text-[11px] text-outline leading-relaxed">{mode.desc}</p>
+                      </div>
+                      <button className={`mt-auto w-full py-2 rounded-lg text-xs font-bold border border-outline-variant/20 hover:border-primary/30 transition-all ${mode.btnCls ?? 'text-on-surface-variant bg-surface-container-highest hover:text-on-surface'}`}>
+                        {mode.cta}
+                      </button>
+                    </div>
+                  ))}
                 </div>
 
-                {PENDING_DOUBTS.map(doubt => (
-                  <div key={doubt.id} className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 space-y-3">
-                    {/* Header */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                          <span className="text-primary font-black text-xs">{doubt.student[0]}</span>
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-white leading-none">{doubt.student}</p>
-                          <p className="text-[10px] text-outline mt-0.5">{doubt.subject} · {doubt.topic}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        {doubt.priority === 'high' && (
-                          <span className="text-[9px] font-black uppercase tracking-widest bg-error/10 text-error px-2 py-0.5 rounded-full border border-error/20">High</span>
-                        )}
-                        <span className="text-[10px] text-outline">{doubt.age}</span>
-                      </div>
-                    </div>
-
-                    {/* Doubt text */}
-                    <p className="text-sm text-on-surface-variant leading-relaxed line-clamp-3">{doubt.text}</p>
-
-                    {/* Reply area */}
-                    {replyingTo === doubt.id ? (
-                      <div className="space-y-2">
-                        <textarea
-                          className="w-full bg-surface-container-lowest rounded-xl px-4 py-3 text-sm text-on-surface border border-outline-variant/15 focus:outline-none focus:border-primary/50 resize-none placeholder:text-outline/50"
-                          rows={3}
-                          value={replyText}
-                          onChange={e => setReplyText(e.target.value)}
-                          placeholder="Type your expert explanation here..."
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-secondary text-on-secondary text-xs font-bold hover:brightness-110 transition-all"
-                            onClick={() => { setReplyingTo(null); setReplyText(''); }}
-                          >
-                            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                            Mark as Resolved
-                          </button>
-                          <button
-                            className="px-4 py-2 rounded-lg text-outline text-xs font-bold hover:text-on-surface transition-all"
-                            onClick={() => { setReplyingTo(null); setReplyText(''); }}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-all"
-                        onClick={() => setReplyingTo(doubt.id)}
-                      >
-                        <span className="material-symbols-outlined text-sm">reply</span>
-                        Reply
-                      </button>
-                    )}
-                  </div>
-                ))}
-
-                {/* Generate Exam Paper section */}
+                {/* Pending Doubts */}
                 <div className="mt-8">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="material-symbols-outlined text-primary text-xl">auto_awesome</span>
-                    <h2 className="text-lg font-black font-headline text-white">Generate Exam Paper</h2>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-black font-headline text-on-surface">Pending Doubts</h2>
+                    <span className="text-[10px] text-outline font-bold uppercase tracking-widest">Auto-refresh in 30s</span>
                   </div>
-                  <p className="text-outline text-xs mb-5">Create assessments tailored to current chapter progress.</p>
-
-                  <div className="grid sm:grid-cols-3 gap-4">
-                    {[
-                      { id: 'manual', icon: 'list_alt',     title: 'Manual Picker',  desc: 'Total control. Browse our exhaustive question bank and hand-pick every problem for the paper.',    cta: 'Start Manual Session', color: 'border-outline-variant/15' },
-                      { id: 'hybrid', icon: 'tune',          title: 'Smart Hybrid',   desc: 'Define difficulty and chapter weightings. We\'ll suggest a mix of classic and new AI-refined questions.', cta: 'Launch Configurator', color: 'border-primary/30', badge: 'RECOMMENDED', btnCls: 'bg-primary text-on-primary' },
-                      { id: 'ai',     icon: 'auto_awesome',  title: 'Full AI',        desc: 'Instant generation. Describe your learning goal, and our LLM will build a completely unique assessment.',  cta: 'Generate via AI',     color: 'border-outline-variant/15' },
-                    ].map(mode => (
-                      <div
-                        key={mode.id}
-                        className={`bg-surface-container rounded-2xl border p-5 flex flex-col gap-3 hover:bg-surface-container-high transition-all cursor-pointer ${mode.color}`}
-                        onClick={() => { setNavTab('exam'); setExamMode(mode.id as ExamMode); }}
-                      >
-                        {mode.badge && (
-                          <span className="self-start text-[9px] font-black uppercase tracking-widest bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">{mode.badge}</span>
-                        )}
-                        <span className="material-symbols-outlined text-on-surface-variant text-2xl">{mode.icon}</span>
-                        <div>
-                          <h4 className="text-sm font-black text-white mb-1">{mode.title}</h4>
-                          <p className="text-[11px] text-outline leading-relaxed">{mode.desc}</p>
+                  {PENDING_DOUBTS.map(doubt => (
+                    <div key={doubt.id} className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 space-y-3 mb-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                            <span className="text-primary font-black text-xs">{doubt.student[0]}</span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-on-surface leading-none">{doubt.student}</p>
+                            <p className="text-[10px] text-outline mt-0.5">{doubt.subject} · {doubt.topic}</p>
+                          </div>
                         </div>
-                        <button
-                          className={`mt-auto w-full py-2 rounded-lg text-xs font-bold border border-outline-variant/20 hover:border-primary/30 transition-all ${mode.btnCls ?? 'text-on-surface-variant bg-surface-container-highest hover:text-on-surface'}`}
-                        >
-                          {mode.cta}
-                        </button>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {doubt.priority === 'high' && (
+                            <span className="text-[9px] font-black uppercase tracking-widest bg-error/10 text-error px-2 py-0.5 rounded-full border border-error/20">High</span>
+                          )}
+                          <span className="text-[10px] text-outline">{doubt.age}</span>
+                        </div>
                       </div>
-                    ))}
-                  </div>
+                      <p className="text-sm text-on-surface-variant leading-relaxed line-clamp-3">{doubt.text}</p>
+                      {replyingTo === doubt.id ? (
+                        <div className="space-y-2">
+                          <textarea
+                            className="w-full bg-surface-container-lowest rounded-xl px-4 py-3 text-sm text-on-surface border border-outline-variant/15 focus:outline-none focus:border-primary/50 resize-none placeholder:text-outline/50"
+                            rows={3} value={replyText} onChange={e => setReplyText(e.target.value)}
+                            placeholder="Type your expert explanation here..."
+                          />
+                          <div className="flex gap-2">
+                            <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-secondary text-on-secondary text-xs font-bold hover:brightness-110 transition-all"
+                              onClick={() => { setReplyingTo(null); setReplyText(''); }}>
+                              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                              Mark as Resolved
+                            </button>
+                            <button className="px-4 py-2 rounded-lg text-outline text-xs font-bold hover:text-on-surface transition-all"
+                              onClick={() => { setReplyingTo(null); setReplyText(''); }}>
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-all"
+                          onClick={() => setReplyingTo(doubt.id)}>
+                          <span className="material-symbols-outlined text-sm">reply</span>
+                          Reply
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {/* Right: Resolved History */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-base font-black font-headline text-white">Resolved History</h2>
+                  <h2 className="text-base font-black font-headline text-on-surface">Resolved History</h2>
                   <button className="text-primary text-xs font-bold hover:underline">View Full Archive</button>
                 </div>
                 <div className="space-y-3">
                   {RESOLVED_DOUBTS.map(r => (
                     <div key={r.id} className="bg-surface-container rounded-2xl border border-outline-variant/10 p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-bold text-white">{r.student}</p>
+                        <p className="text-sm font-bold text-on-surface">{r.student}</p>
                         <span className="text-[9px] font-black uppercase tracking-widest bg-secondary/10 text-secondary px-2 py-0.5 rounded-full">Resolved</span>
                       </div>
                       <p className="text-[10px] text-outline mb-1">{r.subject} · {r.time}</p>
@@ -747,7 +787,7 @@ export default function TeacherPanel() {
               <div className="w-16 h-16 rounded-2xl bg-surface-container-highest flex items-center justify-center mb-4">
                 <span className="material-symbols-outlined text-3xl text-primary">help_outline</span>
               </div>
-              <h2 className="text-xl font-black font-headline text-white mb-2">Doubt Queue</h2>
+              <h2 className="text-xl font-black font-headline text-on-surface mb-2">Doubt Queue</h2>
               <p className="text-outline text-sm max-w-xs">Student doubt resolution will appear here once students start submitting questions from their lesson pages.</p>
             </div>
           )}
@@ -772,7 +812,7 @@ export default function TeacherPanel() {
                 <div className="flex items-center justify-between">
                   <div>
                     <SectionLabel>Assigned to You</SectionLabel>
-                    <h2 className="text-xl font-black font-headline text-white">Edit Courses</h2>
+                    <h2 className="text-xl font-black font-headline text-on-surface">Edit Courses</h2>
                     <p className="text-outline text-xs mt-1">Courses assigned to you by an admin for editing.</p>
                   </div>
                   <button
@@ -787,7 +827,7 @@ export default function TeacherPanel() {
                 {assignedCourses.length === 0 ? (
                   <div className="bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/15 p-16 flex flex-col items-center justify-center text-center">
                     <span className="material-symbols-outlined text-4xl text-outline-variant/40 mb-3">edit_note</span>
-                    <h3 className="text-sm font-black text-white mb-1">No Courses Assigned</h3>
+                    <h3 className="text-sm font-black text-on-surface mb-1">No Courses Assigned</h3>
                     <p className="text-outline text-xs max-w-xs">An admin will assign courses to you when they need edits.</p>
                   </div>
                 ) : (
@@ -798,7 +838,7 @@ export default function TeacherPanel() {
                           <span className="material-symbols-outlined text-primary text-xl">{course.icon || 'school'}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-black text-white truncate">{course.title}</p>
+                          <p className="text-sm font-black text-on-surface truncate">{course.title}</p>
                           <p className="text-[11px] text-outline mt-0.5">
                             {course.subject} · Grade {course.class_grade}
                             {course.board ? ` · ${course.board}` : ''}
@@ -820,11 +860,16 @@ export default function TeacherPanel() {
             )
           )}
 
+          {/* ── Question Editor ── */}
+          {navTab === 'questions' && (user?.role === 'admin' || user?.can_edit_questions) && (
+            <QuestionEditor isAdmin={user?.role === 'admin'} />
+          )}
+
           {/* ── Course Builder ── */}
           {navTab === 'course' && (user?.role === 'admin' || user?.role === 'teacher' || user?.can_build_courses) && (
             <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-6">
               <SectionLabel>{user?.role === 'admin' ? 'Admin' : 'Teacher'}</SectionLabel>
-              <h2 className="text-xl font-black font-headline text-white mb-6">Course Framework Builder</h2>
+              <h2 className="text-xl font-black font-headline text-on-surface mb-6">Course Framework Builder</h2>
               <CourseBuilder />
             </div>
           )}
@@ -835,7 +880,7 @@ export default function TeacherPanel() {
               <div className="flex items-center justify-between">
                 <div>
                   <SectionLabel>Admin Review</SectionLabel>
-                  <h2 className="text-xl font-black font-headline text-white">Course Approvals</h2>
+                  <h2 className="text-xl font-black font-headline text-on-surface">Course Approvals</h2>
                   <p className="text-outline text-xs mt-1">Review and approve courses submitted by teachers.</p>
                 </div>
                 <button
@@ -852,7 +897,7 @@ export default function TeacherPanel() {
                   <div className="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center mb-4">
                     <span className="material-symbols-outlined text-3xl text-secondary">fact_check</span>
                   </div>
-                  <h3 className="text-base font-black text-white mb-1">All Clear</h3>
+                  <h3 className="text-base font-black text-on-surface mb-1">All Clear</h3>
                   <p className="text-outline text-sm max-w-xs">No courses pending review. Any teacher submissions will appear here.</p>
                 </div>
               ) : (
@@ -866,7 +911,7 @@ export default function TeacherPanel() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-3 flex-wrap">
                             <div>
-                              <h3 className="text-base font-black text-white leading-tight">{course.title}</h3>
+                              <h3 className="text-base font-black text-on-surface leading-tight">{course.title}</h3>
                               <p className="text-xs text-outline mt-0.5">{course.subject} · Grade {course.class_grade} · {course.board}</p>
                             </div>
                             <div className="flex items-center gap-1.5 shrink-0">
@@ -916,20 +961,87 @@ export default function TeacherPanel() {
           {/* ── Exam Factory ── */}
           {navTab === 'exam' && (
             <>
+              {/* ── Compiling overlay ── */}
+              {compilingPaper && (
+                <div className="max-w-md mx-auto flex flex-col items-center justify-center min-h-[380px] gap-8 p-6">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-3xl text-primary">picture_as_pdf</span>
+                  </div>
+                  <div className="text-center space-y-1">
+                    <p className="font-black text-on-surface text-lg">Building Your Paper</p>
+                    <p className="text-sm text-outline truncate max-w-xs">{compilingPaper.title}</p>
+                  </div>
+                  <div className="w-full max-w-xs space-y-3">
+                    {compileStepLabels.map((label, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-500 ${
+                          compilingStep > i + 1 ? 'bg-secondary' : compilingStep === i + 1 ? 'bg-primary animate-pulse' : 'bg-surface-container-highest'
+                        }`}>
+                          {compilingStep > i + 1
+                            ? <span className="material-symbols-outlined text-xs text-on-secondary">check</span>
+                            : <span className="text-[10px] font-black text-outline">{i + 1}</span>}
+                        </div>
+                        <span className={`text-sm font-semibold transition-colors duration-300 ${
+                          compilingStep > i + 1 ? 'text-secondary' : compilingStep === i + 1 ? 'text-on-surface' : 'text-outline/40'
+                        }`}>{label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Paper ready screen ── */}
+              {!compilingPaper && paperDone && (
+                <div className="max-w-md mx-auto flex flex-col items-center justify-center min-h-[380px] gap-6 p-6 text-center">
+                  <div className="w-20 h-20 rounded-2xl bg-secondary/10 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-4xl text-secondary">task_alt</span>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="font-black text-on-surface text-2xl">Paper Ready!</p>
+                    <p className="text-sm text-outline max-w-xs">{paperDone.title}</p>
+                  </div>
+                  <div className="flex flex-col w-full gap-3">
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await api.get(`/ai/generate-paper/${paperDone.id}/download/`, { responseType: 'blob' });
+                          const url = URL.createObjectURL(res.data);
+                          const a = document.createElement('a'); a.href = url;
+                          a.download = `${paperDone.title ?? 'paper'}.pdf`; a.click();
+                          URL.revokeObjectURL(url);
+                        } catch { alert('Download failed. Please try from the archive below.'); }
+                      }}
+                      className="w-full py-4 rounded-2xl bg-primary text-on-primary font-black text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-lg"
+                    >
+                      <span className="material-symbols-outlined text-xl">download</span>Download PDF
+                    </button>
+                    <button
+                      onClick={() => setPaperDone(null)}
+                      className="w-full py-3 rounded-2xl border border-outline-variant/30 text-sm font-semibold text-on-surface-variant hover:border-primary/40 hover:text-on-surface transition-all"
+                    >
+                      Create Another Paper
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Hide rest of UI while compiling or done */}
+              {compilingPaper || paperDone ? null : <>
               {/* Mode Selector */}
-              <div className="flex gap-2 mb-6 p-1.5 bg-surface-container rounded-2xl border border-outline-variant/10 w-fit">
+              <div className="flex flex-wrap gap-2 mb-6 p-1.5 bg-surface-container rounded-2xl border border-outline-variant/10 w-fit max-w-full">
                 {[
                   { id: 'ai',     icon: 'auto_awesome',   label: 'Full AI' },
                   { id: 'hybrid', icon: 'tune',           label: 'Smart Hybrid' },
                   { id: 'manual', icon: 'list_alt',       label: 'Manual Picker' },
+                  { id: 'upload', icon: 'upload_file',    label: 'Upload & Create' },
                 ].map(m => (
                   <button
                     key={m.id}
                     onClick={() => setExamMode(m.id as ExamMode)}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
                       examMode === m.id
                         ? 'bg-primary text-on-primary shadow-lg'
-                        : 'text-on-surface-variant hover:text-white'
+                        : 'text-on-surface-variant hover:text-on-surface'
                     }`}
                   >
                     <span className="material-symbols-outlined text-[18px]">{m.icon}</span>
@@ -982,7 +1094,7 @@ export default function TeacherPanel() {
                           </Field>
                           <Field label="Grade">
                             <select className={inputCls} value={grade} onChange={e => setGrade(e.target.value)}>
-                              <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+                              <option value="9th">Grade 9</option><option value="10th">Grade 10</option><option value="11th">Grade 11</option><option value="12th">Grade 12</option>
                             </select>
                           </Field>
                           <Field label="Subject">
@@ -1165,11 +1277,11 @@ export default function TeacherPanel() {
                     <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-6 space-y-5">
                       <div>
                         <SectionLabel>Paper Configuration</SectionLabel>
-                        <h2 className="text-xl font-black font-headline text-white">Smart Exam Generator</h2>
+                        <h2 className="text-xl font-black font-headline text-on-surface">Smart Exam Generator</h2>
                         <p className="text-outline text-xs mt-1">Pulls from question bank · AI fills the gaps</p>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <Field label="Board">
                           <select className={inputCls} value={board} onChange={e => setBoard(e.target.value)}>
                             <option>CBSE</option><option>ICSE</option>
@@ -1182,7 +1294,7 @@ export default function TeacherPanel() {
                         </Field>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <Field label="Difficulty">
                           <select className={inputCls} value={difficulty} onChange={e => setDifficulty(e.target.value)}>
                             <option value="easy">Easy</option>
@@ -1233,7 +1345,7 @@ export default function TeacherPanel() {
                           <span className="material-symbols-outlined text-primary text-lg">auto_awesome</span>
                         </div>
                         <div className="flex-1">
-                          <p className="text-sm font-bold text-white">Auto-fill with AI if bank is insufficient</p>
+                          <p className="text-sm font-bold text-on-surface">Auto-fill with AI if bank is insufficient</p>
                           <p className="text-xs text-outline leading-relaxed mt-0.5">
                             Our intelligence engine will synthesise high-quality questions matching CBSE standards if the internal vault doesn't meet your quota.
                           </p>
@@ -1314,7 +1426,7 @@ export default function TeacherPanel() {
                   <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-6 flex flex-col">
                     <SectionLabel>Question Library</SectionLabel>
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-black font-headline text-white">Browse Questions</h2>
+                      <h2 className="text-lg font-black font-headline text-on-surface">Browse Questions</h2>
                       <span className="text-xs text-outline">{libraryQs.length} found</span>
                     </div>
 
@@ -1404,7 +1516,7 @@ export default function TeacherPanel() {
                   <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-6 flex flex-col">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <h2 className="text-lg font-black font-headline text-white">Paper Preview</h2>
+                        <h2 className="text-lg font-black font-headline text-on-surface">Paper Preview</h2>
                         <p className="text-[10px] text-outline mt-0.5">
                           {libSubject} · {new Date().toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
                         </p>
@@ -1413,7 +1525,7 @@ export default function TeacherPanel() {
                         <div className="flex items-center gap-1.5 justify-end">
                           <span className="text-xs font-bold text-outline">{totalQs}Qs</span>
                           <span className="text-outline/40">·</span>
-                          <span className="text-lg font-black text-white font-headline">{totalMarks}</span>
+                          <span className="text-lg font-black text-on-surface font-headline">{totalMarks}</span>
                           <span className="text-xs text-outline font-bold">/ {marks}</span>
                         </div>
                         <p className="text-[9px] text-outline uppercase font-bold tracking-widest">Total Marks</p>
@@ -1506,10 +1618,15 @@ export default function TeacherPanel() {
                 </div>
               )}
 
+              {/* ── Upload & Create ── */}
+              {examMode === 'upload' && <UploadIngest />}
+
               {/* ── Generated Papers History ── */}
+              {examMode !== 'upload' && (
               <div className="mt-8 bg-surface-container rounded-2xl border border-outline-variant/10 p-6">
                 <SectionLabel>Generated History</SectionLabel>
-                <h3 className="text-base font-black font-headline text-white mb-4">Paper Archive</h3>
+                <h3 className="text-base font-black font-headline text-on-surface mb-1">Paper Archive</h3>
+                <p className="text-xs text-outline mb-4">Your 5 most recent papers</p>
 
                 {papers.length === 0 ? (
                   <div className="flex items-center gap-3 p-4 bg-surface-container-high rounded-xl border border-dashed border-outline-variant/20">
@@ -1526,7 +1643,7 @@ export default function TeacherPanel() {
                           </span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-bold text-white truncate">{p.title}</p>
+                          <p className="text-sm font-bold text-on-surface truncate">{p.title}</p>
                           <p className="text-xs text-outline mt-0.5">
                             {new Date(p.created_at).toLocaleDateString()} · {p.config?.board} · {p.config?.grade} · {p.total_marks || p.config?.max_marks} Marks
                           </p>
@@ -1566,6 +1683,8 @@ export default function TeacherPanel() {
                   </div>
                 )}
               </div>
+              )}
+              </> /* end: hide while compiling/done */}
             </>
           )}
         </div>

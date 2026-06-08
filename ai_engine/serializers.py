@@ -18,6 +18,47 @@ class QuestionBankSerializer(serializers.ModelSerializer):
         model = QuestionBank
         fields = ['id', 'subject', 'chapter', 'question_type', 'difficulty', 'marks', 'question_text', 'answer_text', 'options', 'case_parts']
 
+class QuestionBankEditorSerializer(serializers.ModelSerializer):
+    """Full read serializer for the question editor — includes image URL and all metadata."""
+    options = MCQOptionSerializer(many=True, read_only=True)
+    case_parts = CaseStudyPartSerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = QuestionBank
+        fields = [
+            'id', 'subject', 'chapter', 'concept', 'question_type', 'difficulty',
+            'marks', 'bloom_level', 'question_text', 'answer_text',
+            'has_image', 'image_url', 'image_description',
+            'is_verified', 'is_ai_generated', 'times_used',
+            'created_at', 'updated_at', 'options', 'case_parts',
+        ]
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            return request.build_absolute_uri(obj.image.url) if request else obj.image.url
+        return None
+
+class QuestionBankEditSerializer(serializers.ModelSerializer):
+    """Write serializer for partial updates to a question."""
+    class Meta:
+        model = QuestionBank
+        fields = [
+            'question_text', 'answer_text', 'difficulty', 'marks',
+            'bloom_level', 'concept', 'image', 'image_description',
+        ]
+        extra_kwargs = {
+            'question_text': {'required': False},
+            'answer_text': {'required': False},
+            'difficulty': {'required': False},
+            'marks': {'required': False},
+            'bloom_level': {'required': False},
+            'concept': {'required': False},
+            'image': {'required': False},
+            'image_description': {'required': False},
+        }
+
 class ManualSectionSerializer(serializers.Serializer):
     type = serializers.CharField()
     name = serializers.CharField()

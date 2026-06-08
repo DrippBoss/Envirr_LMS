@@ -2,23 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, useAuth } from '../context/AuthContext';
 
-// ── Static mock data for chart visuals ───────────────────────────
-const DAY_BARS = [32, 41, 28, 47, 52, 44, 38, 55, 49, 36, 43, 58, 62, 51,
-    45, 39, 48, 54, 61, 57, 42, 38, 46, 53, 59, 64, 50, 44, 41, 67];
+// ── Chart helpers ────────────────────────────────────────────────
+const subjectBarColor = (pct: number) =>
+    pct >= 80 ? 'bg-secondary' : pct >= 60 ? 'bg-primary-container' : 'bg-error';
 
-const SUBJECT_SCORES = [
-    { label: 'Mathematics', pct: 82, color: 'bg-secondary' },
-    { label: 'Physics', pct: 74, color: 'bg-primary-container' },
-    { label: 'Biology', pct: 91, color: 'bg-secondary' },
-    { label: 'Chemistry', pct: 68, color: 'bg-error' },
-];
-
-const WEAK_CONCEPTS = [
-    { rank: '01', name: 'Irrational Proofs', meta: 'Mathematics • 42% Error Rate', severity: 'error' },
-    { rank: '02', name: 'Chemical Bonding', meta: 'Chemistry • 38% Error Rate', severity: 'tertiary' },
-    { rank: '03', name: 'Circular Motion', meta: 'Physics • 35% Error Rate', severity: 'tertiary' },
-    { rank: '04', name: 'Photosynthesis', meta: 'Biology • 29% Error Rate', severity: 'outline' },
-];
+const weakSeverity = (errorRate: number) =>
+    errorRate >= 40 ? 'error' : errorRate >= 30 ? 'tertiary' : 'outline';
 
 type AdminTab = 'overview' | 'approvals' | 'courses';
 
@@ -56,7 +45,16 @@ export default function AdminDashboard() {
     const [userFilter, setUserFilter] = useState('');
     const [localUsers, setLocalUsers] = useState<any[]>([]);
     const [togglingId, setTogglingId] = useState<number | null>(null);
+    const [togglingQEditorId, setTogglingQEditorId] = useState<number | null>(null);
+    const [togglingStatusId, setTogglingStatusId] = useState<number | null>(null);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [confirmDelete, setConfirmDelete] = useState<{ id: number; username: string } | null>(null);
+    const [allSubjects, setAllSubjects] = useState<string[]>([]);
+    const [subjectEditorUserId, setSubjectEditorUserId] = useState<number | null>(null);
+    const [subjectEditorValue, setSubjectEditorValue] = useState<string[]>([]);
+    const [savingSubjects, setSavingSubjects] = useState(false);
     const [activeTab, setActiveTab] = useState<AdminTab>('overview');
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [pendingCourses, setPendingCourses] = useState<any[]>([]);
     const [approvingId, setApprovingId] = useState<number | null>(null);
     const [publishedCourses, setPublishedCourses] = useState<any[]>([]);
@@ -76,6 +74,7 @@ export default function AdminDashboard() {
             .catch(() => {});
         fetchPublishedCourses();
         api.get('/teacher/teachers/').then(r => setTeachers(r.data)).catch(() => {});
+        api.get('/ai/questions/meta/').then(r => setAllSubjects(r.data.subjects ?? [])).catch(() => {});
     }, []);
 
     const handleAssign = async (unitId: number, teacherId: number | '') => {
@@ -116,6 +115,37 @@ export default function AdminDashboard() {
     const kpi = data?.kpi ?? {};
     const papers: any[] = data?.papers ?? [];
     const qbank: any[] = data?.qbank_by_subject ?? [];
+    const dayBars: number[] = data?.day_bars ?? [];
+    const subjectScores: any[] = data?.subject_scores ?? [];
+    const weakConcepts: any[] = data?.weak_concepts ?? [];
+
+    const handleDeleteUser = async () => {
+        if (!confirmDelete) return;
+        setDeletingId(confirmDelete.id);
+        try {
+            await api.delete(`/auth/admin/users/${confirmDelete.id}/delete/`);
+            setLocalUsers(prev => prev.filter(u => u.id !== confirmDelete.id));
+            setConfirmDelete(null);
+        } catch (err: any) {
+            alert(err?.response?.data?.detail ?? 'Failed to delete user.');
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
+    const toggleUserStatus = async (userId: number) => {
+        setTogglingStatusId(userId);
+        try {
+            const res = await api.post(`/auth/admin/users/${userId}/toggle-status/`);
+            setLocalUsers(prev => prev.map(u =>
+                u.id === userId ? { ...u, is_active: res.data.is_active } : u
+            ));
+        } catch (err: any) {
+            alert(err?.response?.data?.detail ?? 'Failed to update status.');
+        } finally {
+            setTogglingStatusId(null);
+        }
+    };
 
     const toggleCourseBuilder = async (userId: number) => {
         setTogglingId(userId);
@@ -129,24 +159,60 @@ export default function AdminDashboard() {
         }
     };
 
+    const openSubjectEditor = (u: any) => {
+        setSubjectEditorUserId(u.id);
+        setSubjectEditorValue(u.assigned_subjects ?? []);
+    };
+
+    const saveAssignedSubjects = async () => {
+        if (subjectEditorUserId === null) return;
+        setSavingSubjects(true);
+        try {
+            const res = await api.post(`/auth/admin/users/${subjectEditorUserId}/assign-subjects/`, { subjects: subjectEditorValue });
+            setLocalUsers(prev => prev.map(u => u.id === subjectEditorUserId ? { ...u, assigned_subjects: res.data.assigned_subjects } : u));
+            setSubjectEditorUserId(null);
+        } catch { }
+        finally { setSavingSubjects(false); }
+    };
+
+    const toggleQuestionEditor = async (userId: number) => {
+        setTogglingQEditorId(userId);
+        try {
+            const res = await api.post(`/auth/admin/users/${userId}/toggle-question-editor/`);
+            setLocalUsers(prev => prev.map(u => u.id === userId ? { ...u, can_edit_questions: res.data.can_edit_questions } : u));
+        } catch {
+            // ignore — user sees no change
+        } finally {
+            setTogglingQEditorId(null);
+        }
+    };
+
     const filteredUsers = localUsers.filter(u =>
         u.username.toLowerCase().includes(userFilter.toLowerCase()) ||
         u.email.toLowerCase().includes(userFilter.toLowerCase())
     );
 
-    const maxBar = Math.max(...DAY_BARS);
+    const maxBar = Math.max(1, ...dayBars);
 
     return (
         <div className="flex h-screen bg-background overflow-hidden">
 
+            {/* ── Mobile sidebar backdrop ── */}
+            {sidebarOpen && (
+                <div
+                    className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+
             {/* ── Sidebar ── */}
-            <aside className="fixed left-0 top-0 h-screen w-64 hidden lg:flex flex-col p-4 gap-1 bg-surface-container-lowest border-r border-outline-variant/10 z-40">
+            <aside className={`fixed left-0 top-0 h-screen w-64 flex-col p-4 gap-1 bg-surface-container-lowest border-r border-outline-variant/10 z-40 transition-transform duration-200 ${sidebarOpen ? 'flex' : 'hidden lg:flex'}`}>
                 <div className="flex items-center gap-3 px-3 py-4 mb-2">
                     <div className="w-9 h-9 rounded-xl bg-primary-container flex items-center justify-center">
                         <span className="material-symbols-outlined text-on-primary-container text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>rocket_launch</span>
                     </div>
                     <div>
-                        <p className="text-white font-black font-headline leading-none text-base">Envirr</p>
+                        <p className="text-on-surface font-black font-headline leading-none text-base">Envirr</p>
                         <p className="text-slate-500 text-[10px] uppercase tracking-widest mt-0.5">Admin Console</p>
                     </div>
                 </div>
@@ -157,17 +223,17 @@ export default function AdminDashboard() {
                         return (
                             <button
                                 key={link.label}
-                                onClick={() => link.tab && setActiveTab(link.tab)}
+                                onClick={() => { if (link.tab) { setActiveTab(link.tab); setSidebarOpen(false); } }}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
                                     active
                                         ? 'bg-primary/10 text-primary'
-                                        : 'text-slate-400 hover:text-white hover:bg-surface-container-high'
+                                        : 'text-slate-400 hover:text-on-surface hover:bg-surface-container-high'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-xl">{link.icon}</span>
                                 {link.label}
                                 {link.tab === 'approvals' && pendingCourses.length > 0 && (
-                                    <span className="ml-auto text-[10px] font-black bg-error text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                                    <span className="ml-auto text-[10px] font-black bg-error text-on-surface rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                                         {pendingCourses.length}
                                     </span>
                                 )}
@@ -189,7 +255,7 @@ export default function AdminDashboard() {
                     </div>
                     <button
                         onClick={logout}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white hover:bg-surface-container-high transition-all"
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-on-surface hover:bg-surface-container-high transition-all"
                     >
                         <span className="material-symbols-outlined text-xl">logout</span>
                         Sign Out
@@ -201,20 +267,30 @@ export default function AdminDashboard() {
             <main className="flex-1 lg:ml-64 overflow-y-auto no-scrollbar">
 
                 {/* Top bar */}
-                <header className="sticky top-0 z-30 flex justify-between items-center h-14 px-6 bg-background/80 backdrop-blur-xl border-b border-outline-variant/10">
-                    <div className="relative w-80">
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base">search</span>
-                        <input
-                            className="w-full bg-surface-container rounded-full py-2 pl-10 pr-4 text-sm border-none focus:ring-1 focus:ring-primary/30 focus:outline-none placeholder:text-slate-600 text-on-surface"
-                            placeholder="Search analytics, users, or concepts..."
-                        />
+                <header className="sticky top-0 z-30 flex justify-between items-center h-14 px-4 md:px-6 bg-background/80 backdrop-blur-xl border-b border-outline-variant/10">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                        {/* Hamburger — mobile only */}
+                        <button
+                            className="lg:hidden flex items-center justify-center w-9 h-9 rounded-lg text-slate-400 hover:text-on-surface hover:bg-surface-container-high transition-colors shrink-0"
+                            onClick={() => setSidebarOpen(v => !v)}
+                            aria-label="Open sidebar"
+                        >
+                            <span className="material-symbols-outlined text-xl">menu</span>
+                        </button>
+                        <div className="relative w-full max-w-xs">
+                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base">search</span>
+                            <input
+                                className="w-full bg-surface-container rounded-full py-2 pl-10 pr-4 text-sm border-none focus:ring-1 focus:ring-primary/30 focus:outline-none placeholder:text-slate-600 text-on-surface"
+                                placeholder="Search analytics..."
+                            />
+                        </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <button className="relative text-slate-400 hover:text-white transition-colors">
+                    <div className="flex items-center gap-4 shrink-0">
+                        <button className="relative text-slate-400 hover:text-on-surface transition-colors">
                             <span className="material-symbols-outlined">notifications</span>
                             <span className="absolute top-0 right-0 w-2 h-2 bg-error rounded-full" />
                         </button>
-                        <button className="text-slate-400 hover:text-white transition-colors">
+                        <button className="text-slate-400 hover:text-on-surface transition-colors">
                             <span className="material-symbols-outlined">settings</span>
                         </button>
                     </div>
@@ -228,12 +304,12 @@ export default function AdminDashboard() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Admin Review</p>
-                                    <h2 className="text-3xl font-extrabold font-headline tracking-tight text-white">Course Approvals</h2>
+                                    <h2 className="text-3xl font-extrabold font-headline tracking-tight text-on-surface">Course Approvals</h2>
                                     <p className="text-slate-500 text-sm mt-1">Review and publish courses submitted by teachers.</p>
                                 </div>
                                 <button
                                     onClick={() => api.get('/teacher/courses/pending/').then(r => setPendingCourses(r.data)).catch(() => {})}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-xl border border-outline-variant/20 text-slate-400 hover:text-white hover:border-outline-variant/40 text-xs font-bold transition-all"
+                                    className="flex items-center gap-2 px-4 py-2 rounded-xl border border-outline-variant/20 text-slate-400 hover:text-on-surface hover:border-outline-variant/40 text-xs font-bold transition-all"
                                 >
                                     <span className="material-symbols-outlined text-base">refresh</span>
                                     Refresh
@@ -245,7 +321,7 @@ export default function AdminDashboard() {
                                     <div className="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mb-4">
                                         <span className="material-symbols-outlined text-3xl text-secondary">fact_check</span>
                                     </div>
-                                    <h3 className="text-base font-black text-white mb-1">All Clear</h3>
+                                    <h3 className="text-base font-black text-on-surface mb-1">All Clear</h3>
                                     <p className="text-slate-500 text-sm max-w-xs">No courses pending review. Teacher submissions will appear here.</p>
                                 </div>
                             ) : (
@@ -259,7 +335,7 @@ export default function AdminDashboard() {
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-start justify-between gap-3 flex-wrap">
                                                         <div>
-                                                            <h3 className="text-base font-black text-white">{course.title}</h3>
+                                                            <h3 className="text-base font-black text-on-surface">{course.title}</h3>
                                                             <p className="text-xs text-slate-500 mt-0.5">{course.subject} · Grade {course.class_grade} · {course.board}</p>
                                                         </div>
                                                         <span className="text-[9px] font-black uppercase tracking-widest bg-tertiary/10 text-tertiary px-2 py-0.5 rounded-full border border-tertiary/20 shrink-0">Pending</span>
@@ -310,12 +386,12 @@ export default function AdminDashboard() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Admin</p>
-                                    <h2 className="text-3xl font-extrabold font-headline tracking-tight text-white">Course Management</h2>
+                                    <h2 className="text-3xl font-extrabold font-headline tracking-tight text-on-surface">Course Management</h2>
                                     <p className="text-slate-500 text-sm mt-1">Assign published courses to teachers for editing.</p>
                                 </div>
                                 <button
                                     onClick={fetchPublishedCourses}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-xl border border-outline-variant/20 text-slate-400 hover:text-white hover:border-outline-variant/40 text-xs font-bold transition-all"
+                                    className="flex items-center gap-2 px-4 py-2 rounded-xl border border-outline-variant/20 text-slate-400 hover:text-on-surface hover:border-outline-variant/40 text-xs font-bold transition-all"
                                 >
                                     <span className="material-symbols-outlined text-base">refresh</span>
                                     Refresh
@@ -325,7 +401,7 @@ export default function AdminDashboard() {
                             {publishedCourses.length === 0 ? (
                                 <div className="bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/15 p-20 flex flex-col items-center justify-center text-center">
                                     <span className="material-symbols-outlined text-4xl text-outline-variant/40 mb-3">collections_bookmark</span>
-                                    <h3 className="text-base font-black text-white mb-1">No Published Courses</h3>
+                                    <h3 className="text-base font-black text-on-surface mb-1">No Published Courses</h3>
                                     <p className="text-slate-500 text-sm max-w-xs">Approve courses from the Approvals tab first.</p>
                                 </div>
                             ) : (
@@ -338,7 +414,7 @@ export default function AdminDashboard() {
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-start justify-between gap-2 flex-wrap">
                                                     <div>
-                                                        <p className="text-sm font-black text-white truncate">{course.title}</p>
+                                                        <p className="text-sm font-black text-on-surface truncate">{course.title}</p>
                                                         <p className="text-[11px] text-slate-500 mt-0.5">
                                                             {course.subject} · Grade {course.class_grade}
                                                             {course.board ? ` · ${course.board}` : ''}
@@ -384,7 +460,7 @@ export default function AdminDashboard() {
                     {/* Page header */}
                     <div className="flex justify-between items-end">
                         <div>
-                            <h2 className="text-3xl font-extrabold font-headline tracking-tight text-white mb-1">Overview Dashboard</h2>
+                            <h2 className="text-3xl font-extrabold font-headline tracking-tight text-on-surface mb-1">Overview Dashboard</h2>
                             <p className="text-slate-500 text-sm">Real-time performance metrics and platform health.</p>
                         </div>
                         <div className="flex gap-3">
@@ -411,7 +487,7 @@ export default function AdminDashboard() {
                             <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Total Users</p>
                                 <div className="flex items-end justify-between">
-                                    <span className="text-2xl font-extrabold text-white">{kpi.total_users?.toLocaleString() ?? '—'}</span>
+                                    <span className="text-2xl font-extrabold text-on-surface">{kpi.total_users?.toLocaleString() ?? '—'}</span>
                                     <span className="text-secondary text-[10px] font-bold flex items-center gap-0.5">
                                         +4.2% <span className="material-symbols-outlined text-sm">trending_up</span>
                                     </span>
@@ -426,7 +502,7 @@ export default function AdminDashboard() {
                             {/* Active Students */}
                             <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Students</p>
-                                <span className="text-2xl font-extrabold text-white">{kpi.students?.toLocaleString() ?? '—'}</span>
+                                <span className="text-2xl font-extrabold text-on-surface">{kpi.students?.toLocaleString() ?? '—'}</span>
                                 <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden mt-2">
                                     <div className="h-full bg-secondary w-3/4 rounded-full" />
                                 </div>
@@ -436,7 +512,7 @@ export default function AdminDashboard() {
                             {/* Question Bank */}
                             <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Question Bank</p>
-                                <span className="text-2xl font-extrabold text-white">{kpi.total_questions?.toLocaleString() ?? '—'}</span>
+                                <span className="text-2xl font-extrabold text-on-surface">{kpi.total_questions?.toLocaleString() ?? '—'}</span>
                                 <div className="flex gap-0.5 h-1.5 mt-1">
                                     <div className="bg-primary rounded-l-full" style={{ width: '65%' }} />
                                     <div className="bg-tertiary rounded-r-full" style={{ width: '35%' }} />
@@ -451,7 +527,7 @@ export default function AdminDashboard() {
                             <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Papers Created</p>
                                 <div className="flex items-end justify-between">
-                                    <span className="text-2xl font-extrabold text-white">{kpi.total_papers?.toLocaleString() ?? '—'}</span>
+                                    <span className="text-2xl font-extrabold text-on-surface">{kpi.total_papers?.toLocaleString() ?? '—'}</span>
                                     <span className="material-symbols-outlined text-primary">description</span>
                                 </div>
                                 <p className="text-[10px] text-slate-500 mt-2">Monthly generation rate</p>
@@ -464,7 +540,7 @@ export default function AdminDashboard() {
                             {/* Avg Score */}
                             <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Avg. Platform Score</p>
-                                <span className="text-2xl font-extrabold text-white">78%</span>
+                                <span className="text-2xl font-extrabold text-on-surface">78%</span>
                                 <div className="relative pt-4">
                                     <div className="w-full h-1 bg-surface-container-highest rounded-full" />
                                     <div className="absolute top-4 w-1.5 h-3 bg-white rounded-full -translate-x-1/2" style={{ left: '78%' }} />
@@ -484,38 +560,50 @@ export default function AdminDashboard() {
                                     <span className="w-2 h-2 rounded-full bg-primary inline-block" /> Current Period
                                 </span>
                             </div>
-                            <div className="h-40 flex items-end gap-0.5">
-                                {DAY_BARS.map((val, i) => (
-                                    <div
-                                        key={i}
-                                        className="flex-1 bg-gradient-to-t from-primary/30 to-primary/5 rounded-t hover:from-primary/50 transition-all cursor-default"
-                                        style={{ height: `${(val / maxBar) * 100}%` }}
-                                        title={`Day ${i + 1}: ${val}k`}
-                                    />
-                                ))}
-                            </div>
-                            <div className="flex justify-between text-[10px] text-slate-600 mt-3 px-1">
-                                <span>1 Oct</span><span>10 Oct</span><span>20 Oct</span><span>30 Oct</span>
-                            </div>
+                            {dayBars.some(v => v > 0) ? (
+                                <>
+                                    <div className="h-40 flex items-end gap-0.5">
+                                        {dayBars.map((val, i) => (
+                                            <div
+                                                key={i}
+                                                className="flex-1 bg-gradient-to-t from-primary/30 to-primary/5 rounded-t hover:from-primary/50 transition-all cursor-default"
+                                                style={{ height: `${(val / maxBar) * 100}%` }}
+                                                title={`${dayBars.length - 1 - i === 0 ? 'Today' : `${dayBars.length - 1 - i}d ago`}: ${val} active`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <div className="flex justify-between text-[10px] text-slate-600 mt-3 px-1">
+                                        <span>30 days ago</span><span>20d</span><span>10d</span><span>Today</span>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="h-40 flex items-center justify-center text-xs text-slate-500">
+                                    No student activity in the last 30 days.
+                                </div>
+                            )}
                         </div>
 
                         {/* Subject-wise scores */}
                         <div className="lg:col-span-2 bg-surface-container-low rounded-2xl p-6">
                             <h3 className="text-sm font-bold text-slate-200 mb-6">Subject-wise Average Quiz Score</h3>
-                            <div className="space-y-5">
-                                {SUBJECT_SCORES.map(s => (
-                                    <div key={s.label} className="space-y-2">
-                                        <div className="flex justify-between text-xs font-medium">
-                                            <span className="text-slate-400">{s.label}</span>
-                                            <span className="text-white">{s.pct}%</span>
+                            {subjectScores.length ? (
+                                <div className="space-y-5">
+                                    {subjectScores.map(s => (
+                                        <div key={s.label} className="space-y-2">
+                                            <div className="flex justify-between text-xs font-medium">
+                                                <span className="text-slate-400">{s.label}</span>
+                                                <span className="text-on-surface">{s.pct}%</span>
+                                            </div>
+                                            <div className="h-2 bg-surface-container-highest rounded-full relative">
+                                                <div className={`h-full ${subjectBarColor(s.pct)} rounded-full transition-all`} style={{ width: `${s.pct}%` }} />
+                                                <div className="absolute top-0 h-full w-px bg-white/20" style={{ left: '75%' }} />
+                                            </div>
                                         </div>
-                                        <div className="h-2 bg-surface-container-highest rounded-full relative">
-                                            <div className={`h-full ${s.color} rounded-full transition-all`} style={{ width: `${s.pct}%` }} />
-                                            <div className="absolute top-0 h-full w-px bg-white/20" style={{ left: '75%' }} />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-xs text-slate-500 py-8 text-center">No completed mock tests yet.</p>
+                            )}
                         </div>
                     </div>
 
@@ -572,7 +660,7 @@ export default function AdminDashboard() {
                                             <span className="px-2 py-0.5 bg-surface-container rounded text-slate-400">{item.tag}</span>
                                             <span className={`font-black ${item.diffColor}`}>{item.diff}</span>
                                         </div>
-                                        <p className="text-xs text-slate-300 leading-relaxed italic">"{item.q}"</p>
+                                        <p className="text-xs text-on-surface-variant leading-relaxed italic">"{item.q}"</p>
                                         <div className="flex gap-2 pt-1">
                                             <button className="flex-1 py-1.5 bg-secondary/10 text-secondary text-[10px] font-black rounded-lg hover:bg-secondary/20 transition-colors">APPROVE</button>
                                             <button className="flex-1 py-1.5 bg-error/10 text-error text-[10px] font-black rounded-lg hover:bg-error/20 transition-colors">REJECT</button>
@@ -588,16 +676,18 @@ export default function AdminDashboard() {
                                 <h3 className="text-sm font-bold text-slate-200">Weak Concept Trends</h3>
                             </div>
                             <div className="p-3 space-y-1">
-                                {WEAK_CONCEPTS.map(c => (
-                                    <div key={c.rank} className="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-container-high rounded-xl transition-colors group">
-                                        <span className="text-xs font-black text-slate-600 w-5">{c.rank}</span>
+                                {weakConcepts.length ? weakConcepts.map((c, i) => (
+                                    <div key={`${c.name}-${i}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-container-high rounded-xl transition-colors group">
+                                        <span className="text-xs font-black text-slate-600 w-5">{String(i + 1).padStart(2, '0')}</span>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-xs font-bold text-slate-200 truncate">{c.name}</p>
-                                            <p className="text-[10px] text-slate-500">{c.meta}</p>
+                                            <p className="text-[10px] text-slate-500">{c.subject} • {c.error_rate}% Error Rate</p>
                                         </div>
-                                        <span className={`material-symbols-outlined text-${c.severity} text-base opacity-0 group-hover:opacity-100 transition-opacity`}>warning</span>
+                                        <span className={`material-symbols-outlined text-${weakSeverity(c.error_rate)} text-base opacity-0 group-hover:opacity-100 transition-opacity`}>warning</span>
                                     </div>
-                                ))}
+                                )) : (
+                                    <p className="text-xs text-slate-500 py-6 text-center">No weak concepts identified yet.</p>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -605,7 +695,7 @@ export default function AdminDashboard() {
                     {/* ── Paper Database ── */}
                     <div className="bg-surface-container-low rounded-2xl overflow-hidden">
                         <div className="px-6 py-5 border-b border-outline-variant/10 flex justify-between items-center">
-                            <h3 className="text-lg font-bold font-headline text-white">Paper Database</h3>
+                            <h3 className="text-lg font-bold font-headline text-on-surface">Paper Database</h3>
                             <button className="text-xs text-primary font-black hover:underline">View All Papers</button>
                         </div>
                         <div className="overflow-x-auto">
@@ -622,10 +712,10 @@ export default function AdminDashboard() {
                                         <tr key={p.id} className="hover:bg-surface-container-high/40 transition-colors">
                                             <td className="px-6 py-4 font-mono text-xs text-primary">#{`EB-${p.id}-X`}</td>
                                             <td className="px-6 py-4">
-                                                <div className="text-white font-bold text-xs">{p.board}</div>
+                                                <div className="text-on-surface font-bold text-xs">{p.board}</div>
                                                 <div className="text-[10px] text-slate-500">Grade {p.grade}</div>
                                             </td>
-                                            <td className="px-6 py-4 text-slate-300 text-xs">{p.subject}</td>
+                                            <td className="px-6 py-4 text-on-surface-variant text-xs">{p.subject}</td>
                                             <td className="px-6 py-4">
                                                 <span className={`px-2 py-1 text-[10px] font-black rounded-full ${MODE_BADGE[p.mode] ?? 'bg-surface-container text-slate-400'}`}>
                                                     {MODE_LABEL[p.mode] ?? p.mode}
@@ -655,7 +745,7 @@ export default function AdminDashboard() {
                     {/* ── User Management ── */}
                     <div className="bg-surface-container-low rounded-2xl overflow-hidden pb-4">
                         <div className="px-6 py-5 border-b border-outline-variant/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                            <h3 className="text-lg font-bold font-headline text-white">User Management</h3>
+                            <h3 className="text-lg font-bold font-headline text-on-surface">User Management</h3>
                             <div className="flex items-center gap-3 w-full md:w-auto">
                                 <div className="relative flex-1 md:w-64">
                                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">filter_list</span>
@@ -689,7 +779,7 @@ export default function AdminDashboard() {
                                                         {initials(u.username)}
                                                     </div>
                                                     <div>
-                                                        <div className="text-white font-bold text-xs">{u.username}</div>
+                                                        <div className="text-on-surface font-bold text-xs">{u.username}</div>
                                                         <div className="text-[10px] text-slate-500">{u.email}</div>
                                                     </div>
                                                 </div>
@@ -698,20 +788,36 @@ export default function AdminDashboard() {
                                                 <div className="flex items-center gap-2">
                                                     <span className={`text-xs font-bold capitalize ${
                                                         u.role === 'admin' ? 'text-primary' :
-                                                        u.role === 'teacher' ? 'text-tertiary' : 'text-slate-300'
+                                                        u.role === 'teacher' ? 'text-tertiary' : 'text-on-surface-variant'
                                                     }`}>{u.role}</span>
                                                     {u.can_build_courses && (
                                                         <span className="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[9px] font-black rounded uppercase tracking-wider">
                                                             Course Builder
                                                         </span>
                                                     )}
+                                                    {u.can_edit_questions && (
+                                                        <span className="px-1.5 py-0.5 bg-primary/10 text-primary text-[9px] font-black rounded uppercase tracking-wider">
+                                                            Q Editor
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-xs text-slate-500">{u.date_joined}</td>
                                             <td className="px-6 py-4">
-                                                <div className={`w-8 h-4 rounded-full flex items-center px-1 ${u.is_active ? 'bg-secondary/20' : 'bg-surface-container-high'}`}>
-                                                    <div className={`w-2.5 h-2.5 rounded-full ${u.is_active ? 'bg-secondary ml-auto' : 'bg-slate-600'}`} />
-                                                </div>
+                                                <button
+                                                    onClick={() => u.role !== 'admin' && toggleUserStatus(u.id)}
+                                                    disabled={togglingStatusId === u.id || u.role === 'admin'}
+                                                    title={u.role === 'admin' ? 'Admin status cannot be changed' : u.is_active ? 'Click to deactivate' : 'Click to activate'}
+                                                    className={`relative w-10 h-5 rounded-full transition-colors duration-200 focus:outline-none
+                                                        ${u.role === 'admin' ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}
+                                                        ${u.is_active ? 'bg-secondary/40' : 'bg-surface-container-high border border-outline-variant/20'}
+                                                        ${togglingStatusId === u.id ? 'opacity-50' : ''}
+                                                    `}
+                                                >
+                                                    <span className={`absolute top-0.5 w-4 h-4 rounded-full shadow transition-all duration-200
+                                                        ${u.is_active ? 'left-5 bg-secondary' : 'left-0.5 bg-slate-500'}
+                                                    `} />
+                                                </button>
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
@@ -728,12 +834,37 @@ export default function AdminDashboard() {
                                                             {togglingId === u.id ? '…' : u.can_build_courses ? 'REVOKE BUILDER' : 'GRANT BUILDER'}
                                                         </button>
                                                     )}
-                                                    <button
-                                                        className="text-[10px] font-black text-primary px-3 py-1.5 border border-primary/20 rounded-lg hover:bg-primary/5 transition-all"
-                                                        onClick={() => navigate(`/admin/users/${u.id}`)}
-                                                    >
-                                                        CHANGE ROLE
-                                                    </button>
+                                                    {u.role === 'teacher' && (
+                                                        <button
+                                                            disabled={togglingQEditorId === u.id}
+                                                            onClick={() => toggleQuestionEditor(u.id)}
+                                                            title="Grant or revoke permission to edit questions in the question bank"
+                                                            className={`text-[10px] font-black px-3 py-1.5 border rounded-lg transition-all disabled:opacity-50 ${
+                                                                u.can_edit_questions
+                                                                    ? 'text-primary border-primary/30 hover:bg-primary/5'
+                                                                    : 'text-outline border-outline-variant/20 hover:text-primary hover:border-primary/30'
+                                                            }`}
+                                                        >
+                                                            {togglingQEditorId === u.id ? '…' : u.can_edit_questions ? 'REVOKE Q-EDITOR' : 'GRANT Q-EDITOR'}
+                                                        </button>
+                                                    )}
+                                                    {u.role === 'teacher' && (
+                                                        <button
+                                                            onClick={() => openSubjectEditor(u)}
+                                                            className="text-[10px] font-black px-3 py-1.5 border border-outline-variant/20 rounded-lg text-outline hover:text-tertiary hover:border-tertiary/30 transition-all"
+                                                        >
+                                                            SUBJECTS {u.assigned_subjects?.length ? `(${u.assigned_subjects.length})` : ''}
+                                                        </button>
+                                                    )}
+                                                    {u.role !== 'admin' && (
+                                                        <button
+                                                            disabled={deletingId === u.id}
+                                                            onClick={() => setConfirmDelete({ id: u.id, username: u.username })}
+                                                            className="text-[10px] font-black text-error px-3 py-1.5 border border-error/20 rounded-lg hover:bg-error/5 transition-all disabled:opacity-50"
+                                                        >
+                                                            {deletingId === u.id ? '…' : 'DELETE'}
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
@@ -766,6 +897,91 @@ export default function AdminDashboard() {
             {/* Ambient glow */}
             <div className="fixed top-[-10%] right-[-5%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
             <div className="fixed bottom-[-10%] left-64 w-[300px] h-[300px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
+
+            {/* ── Subject Assignment Modal ──────────────────────────── */}
+            {subjectEditorUserId !== null && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+                    <div className="w-full max-w-md bg-surface-container rounded-2xl border border-outline-variant/10 p-6 shadow-nebula">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 rounded-xl bg-tertiary/10 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-tertiary text-xl">menu_book</span>
+                            </div>
+                            <div>
+                                <p className="text-on-surface font-bold text-sm">Assign Subjects</p>
+                                <p className="text-outline text-xs">{localUsers.find(u => u.id === subjectEditorUserId)?.username}</p>
+                            </div>
+                        </div>
+                        <p className="text-xs text-outline mb-3">Select which subjects this teacher can view and edit questions for.</p>
+                        <div className="flex flex-wrap gap-2 mb-5 max-h-48 overflow-y-auto pr-1">
+                            {allSubjects.map(s => {
+                                const active = subjectEditorValue.includes(s);
+                                return (
+                                    <button
+                                        key={s}
+                                        onClick={() => setSubjectEditorValue(prev => active ? prev.filter(x => x !== s) : [...prev, s])}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                                            active
+                                                ? 'bg-tertiary/10 text-tertiary border-tertiary/30'
+                                                : 'bg-surface-container-high text-outline border-outline-variant/20 hover:border-tertiary/30 hover:text-tertiary'
+                                        }`}
+                                    >
+                                        {active && <span className="mr-1">✓</span>}{s}
+                                    </button>
+                                );
+                            })}
+                            {allSubjects.length === 0 && <p className="text-xs text-outline">No subjects found in question bank.</p>}
+                        </div>
+                        <div className="flex gap-3">
+                            <button onClick={() => setSubjectEditorUserId(null)} className="flex-1 py-2.5 rounded-xl border border-outline-variant/20 text-outline text-sm font-bold hover:text-on-surface transition-all">Cancel</button>
+                            <button onClick={saveAssignedSubjects} disabled={savingSubjects} className="flex-1 py-2.5 rounded-xl bg-tertiary/10 text-tertiary border border-tertiary/30 text-sm font-bold hover:bg-tertiary/20 transition-all disabled:opacity-50">
+                                {savingSubjects ? 'Saving…' : `Save (${subjectEditorValue.length} selected)`}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Delete Confirmation Modal ─────────────────────────── */}
+            {confirmDelete && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+                    <div className="w-full max-w-sm bg-surface-container rounded-2xl border border-outline-variant/10 p-6 shadow-nebula">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 rounded-xl bg-error/10 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-error text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>person_remove</span>
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-black text-on-surface">Delete User</h3>
+                                <p className="text-xs text-slate-500">This action cannot be undone.</p>
+                            </div>
+                        </div>
+
+                        <p className="text-sm text-on-surface-variant mb-6">
+                            Permanently delete{' '}
+                            <span className="text-on-surface font-bold">@{confirmDelete.username}</span>?
+                            {' '}All their progress, answers, and data will be erased.
+                        </p>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setConfirmDelete(null)}
+                                className="flex-1 py-2.5 rounded-xl border border-outline-variant/20 text-slate-400 hover:text-on-surface text-sm font-bold transition-all"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDeleteUser}
+                                disabled={deletingId !== null}
+                                className="flex-1 py-2.5 rounded-xl bg-error/10 border border-error/30 text-error hover:bg-error/20 text-sm font-black transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {deletingId !== null
+                                    ? <><span className="w-4 h-4 rounded-full border-2 border-error/30 border-t-error animate-spin" /><span>Deleting...</span></>
+                                    : <><span className="material-symbols-outlined text-base">delete_forever</span><span>Delete Permanently</span></>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

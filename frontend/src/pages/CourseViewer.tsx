@@ -59,7 +59,7 @@ export default function CourseViewer() {
                     <p className="text-slate-400">{error || 'Course not found.'}</p>
                     <button
                         onClick={() => navigate('/')}
-                        className="px-6 py-2.5 rounded-xl bg-surface-container border border-outline-variant/20 text-sm font-bold text-white hover:bg-surface-container-high transition-all"
+                        className="px-6 py-2.5 rounded-xl bg-surface-container border border-outline-variant/20 text-sm font-bold text-on-surface hover:bg-surface-container-high transition-all"
                     >
                         Back to Dashboard
                     </button>
@@ -72,19 +72,19 @@ export default function CourseViewer() {
 
     return (
         <div className="min-h-screen bg-background pt-16 pb-16">
-            <div className="max-w-4xl mx-auto px-6">
+            <div className="max-w-4xl mx-auto px-4 md:px-6">
 
                 {/* Header */}
                 <div className="pt-10 mb-10">
                     <button
                         onClick={() => navigate('/')}
-                        className="flex items-center gap-1.5 text-slate-500 text-sm hover:text-white transition-colors mb-6"
+                        className="flex items-center gap-1.5 text-slate-500 text-sm hover:text-on-surface transition-colors mb-6"
                     >
                         <span className="material-symbols-outlined text-base">arrow_back</span>
                         Dashboard
                     </button>
 
-                    <div className="flex items-start gap-4">
+                    <div className="flex flex-col sm:flex-row items-start gap-4">
                         <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
                             <span className="material-symbols-outlined text-primary text-2xl">school</span>
                         </div>
@@ -92,7 +92,7 @@ export default function CourseViewer() {
                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">
                                 {course.subject ?? 'Course'}
                             </p>
-                            <h1 className="text-3xl md:text-4xl font-black font-headline text-white leading-tight">
+                            <h1 className="text-3xl md:text-4xl font-black font-headline text-on-surface leading-tight">
                                 {course.title}
                             </h1>
                             {course.description && (
@@ -105,7 +105,7 @@ export default function CourseViewer() {
                     <div className="flex gap-4 mt-6">
                         <div className="px-4 py-2 bg-surface-container rounded-xl border border-outline-variant/10 flex items-center gap-2">
                             <span className="material-symbols-outlined text-primary text-lg">account_tree</span>
-                            <span className="text-sm font-bold text-white">{paths.length} Units</span>
+                            <span className="text-sm font-bold text-on-surface">{paths.length} Units</span>
                         </div>
                     </div>
                 </div>
@@ -114,7 +114,7 @@ export default function CourseViewer() {
                 {paths.length === 0 ? (
                     <div className="bg-surface-container rounded-3xl border border-outline-variant/10 p-12 flex flex-col items-center text-center">
                         <span className="material-symbols-outlined text-4xl text-slate-600 mb-4">inventory_2</span>
-                        <h3 className="text-lg font-black font-headline text-white mb-2">No units yet</h3>
+                        <h3 className="text-lg font-black font-headline text-on-surface mb-2">No units yet</h3>
                         <p className="text-slate-500 text-sm">The teacher hasn't added any learning units to this course.</p>
                     </div>
                 ) : (
@@ -171,7 +171,7 @@ export default function CourseViewer() {
                                                 </span>
                                             )}
                                         </div>
-                                        <h3 className="text-base font-bold text-white leading-snug truncate">{path.title}</h3>
+                                        <h3 className="text-base font-bold text-on-surface leading-snug truncate">{path.title}</h3>
                                         {path.node_count !== undefined && (
                                             <p className="text-xs text-slate-500 mt-0.5">{path.node_count} lessons</p>
                                         )}

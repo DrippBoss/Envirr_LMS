@@ -50,6 +50,12 @@ class LearningPath(models.Model):
 class NodeType(models.TextChoices):
     LESSON = 'LESSON', 'Lesson Node'
     CHAPTER_TEST = 'CHAPTER_TEST', 'Chapter Test'
+    LAB = 'LAB', 'Lab Node'
+
+class LabCategory(models.TextChoices):
+    INTERACTIVE = 'INTERACTIVE', 'Interactive Explorer'
+    CREATIVE = 'CREATIVE', 'Creative Builder'
+    SIMULATION = 'SIMULATION', 'Simulation'
 
 class LearningNode(models.Model):
     path = models.ForeignKey(LearningPath, on_delete=models.CASCADE, related_name='nodes')
@@ -72,6 +78,18 @@ class LearningNode(models.Model):
     test_pass_percentage = models.PositiveIntegerField(default=70)
     question_filter = models.JSONField(default=dict, blank=True)
 
+    # Lab-only fields
+    lab_type = models.CharField(max_length=60, blank=True, help_text="Registry key, e.g. HCF_LCM_VISUALIZER")
+    lab_category = models.CharField(max_length=20, choices=LabCategory.choices, blank=True)
+    lab_required_completions = models.PositiveIntegerField(
+        default=0, help_text="Number of non-lab nodes that must be completed to unlock this lab"
+    )
+
+    # Mastery-based unlock
+    unlock_min_stars = models.PositiveSmallIntegerField(
+        default=0, help_text="Minimum stars (1-3) required on the preceding lesson node to unlock this node. 0 = no requirement."
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -89,6 +107,8 @@ class QuestionType(models.TextChoices):
     PROOF_PUZZLE = 'PROOF_PUZZLE', 'Proof Puzzle'
     REARRANGE = 'REARRANGE', 'Rearrange / Picker'
     MULTI_SELECT = 'MULTI_SELECT', 'Select All That Apply'
+    SHORT_ANSWER = 'SHORT_ANSWER', 'Short Answer'
+    LONG_ANSWER = 'LONG_ANSWER', 'Long Answer'
 
 class LessonQuestion(models.Model):
     node = models.ForeignKey(LearningNode, on_delete=models.CASCADE, related_name='questions')
@@ -99,6 +119,9 @@ class LessonQuestion(models.Model):
     hint = models.TextField(blank=True)
     explanation = models.TextField(blank=True)
     concept = models.CharField(max_length=150, blank=True)
+    has_image = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='question_images/', null=True, blank=True)
+    image_description = models.TextField(blank=True)
     source_question = models.ForeignKey(
         'ai_engine.QuestionBank',
         null=True, blank=True,
@@ -141,6 +164,7 @@ class NodeProgress(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True)
     last_attempted_at = models.DateTimeField(null=True, blank=True)
     flashcard_shown = models.BooleanField(default=False)
+    lab_artifact = models.JSONField(null=True, blank=True, help_text="Stores lab output for CREATIVE labs")
 
     class Meta:
         unique_together = [['student', 'node']]
@@ -285,3 +309,161 @@ class UnitPrerequisiteSeen(models.Model):
 
     class Meta:
         unique_together = [['student', 'course_unit']]
+
+
+import secrets
+import string
+
+def _invite_code():
+    alphabet = string.ascii_uppercase + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(6))
+
+
+class StudyGroup(models.Model):
+    MAX_MEMBERS = 6
+    name        = models.CharField(max_length=100)
+    subject     = models.CharField(max_length=100, blank=True)
+    description = models.TextField(blank=True)
+    invite_code = models.CharField(max_length=8, unique=True, default=_invite_code)
+    creator     = models.ForeignKey('users.StudentProfile', on_delete=models.CASCADE, related_name='created_groups')
+    max_members = models.PositiveIntegerField(default=10)
+    is_active   = models.BooleanField(default=True)
+    created_at  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.name} ({self.invite_code})'
+
+
+class StudyGroupMember(models.Model):
+    ROLE_CHOICES = [('admin', 'Admin'), ('member', 'Member')]
+    group           = models.ForeignKey(StudyGroup, on_delete=models.CASCADE, related_name='memberships')
+    student         = models.ForeignKey('users.StudentProfile', on_delete=models.CASCADE, related_name='group_memberships')
+    role            = models.CharField(max_length=10, choices=ROLE_CHOICES, default='member')
+    joined_at       = models.DateTimeField(auto_now_add=True)
+    violation_count = models.PositiveIntegerField(default=0)
+    muted_until     = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = [['group', 'student']]
+        ordering = ['joined_at']
+
+    def __str__(self):
+        return f'{self.student} in {self.group}'
+
+
+class GroupSession(models.Model):
+    STATUS = [('waiting', 'Waiting'), ('active', 'Active'), ('completed', 'Completed')]
+    SESSION_TYPE = [('questions', 'Questions'), ('pdf', 'PDF Paper')]
+
+    group        = models.ForeignKey(StudyGroup, on_delete=models.CASCADE, related_name='sessions')
+    title        = models.CharField(max_length=150)
+    session_type = models.CharField(max_length=20, choices=SESSION_TYPE, default='questions')
+    question_ids = models.JSONField(default=list, help_text='Ordered QuestionBank PKs')
+    source       = models.CharField(max_length=20, default='ai_generated')
+    source_paper = models.ForeignKey(
+        'ai_engine.QuestionPaper', null=True, blank=True, on_delete=models.SET_NULL
+    )
+    status       = models.CharField(max_length=15, choices=STATUS, default='waiting')
+    time_limit   = models.PositiveIntegerField(null=True, blank=True, help_text='Seconds')
+    created_by   = models.ForeignKey('users.StudentProfile', on_delete=models.CASCADE, related_name='created_sessions')
+    started_at   = models.DateTimeField(null=True, blank=True)
+    ended_at     = models.DateTimeField(null=True, blank=True)
+    created_at   = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.group.name} — {self.title} [{self.status}]'
+
+
+class GroupSessionProgress(models.Model):
+    session      = models.ForeignKey(GroupSession, on_delete=models.CASCADE, related_name='progress')
+    student      = models.ForeignKey('users.StudentProfile', on_delete=models.CASCADE, related_name='session_progress')
+    answers      = models.JSONField(default=dict, help_text='{"<qid>": "<answer>"}')
+    submitted    = models.BooleanField(default=False)
+    score        = models.PositiveIntegerField(default=0)
+    total        = models.PositiveIntegerField(default=0)
+    submitted_at = models.DateTimeField(null=True, blank=True)
+    joined_at    = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [['session', 'student']]
+
+    def __str__(self):
+        return f'{self.student.user.username} — {self.session}'
+
+
+class GroupChatMessage(models.Model):
+    session          = models.ForeignKey(GroupSession, on_delete=models.CASCADE, related_name='chat_messages')
+    sender           = models.ForeignKey('users.StudentProfile', null=True, blank=True, on_delete=models.SET_NULL, related_name='chat_messages')
+    message          = models.TextField(blank=True)
+    image            = models.ImageField(upload_to='group_chat_images/', null=True, blank=True)
+    question_number  = models.IntegerField(null=True, blank=True, help_text='PDF question number (1-based)')
+    question_id      = models.IntegerField(null=True, blank=True, help_text='QuestionBank PK for question-mode doubts')
+    is_doubt         = models.BooleanField(default=False)
+    is_system        = models.BooleanField(default=False, help_text='AI/system generated message')
+    created_at       = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        sender_name = self.sender.user.username if self.sender else 'System'
+        return f'{sender_name}: {self.message[:40]}'
+
+
+class GroupDoubt(models.Model):
+    session              = models.ForeignKey(GroupSession, on_delete=models.CASCADE, related_name='doubts')
+    question_number      = models.IntegerField(help_text='1-based question number in PDF')
+    doubt_count          = models.IntegerField(default=1)
+    escalated_to_ai      = models.BooleanField(default=False)
+    escalated_to_teacher = models.BooleanField(default=False)
+    ai_response          = models.TextField(blank=True)
+    created_at           = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [['session', 'question_number']]
+
+    def __str__(self):
+        return f'Doubt Q{self.question_number} in {self.session}'
+
+
+class ChatModerationEvent(models.Model):
+    session      = models.ForeignKey(GroupSession, on_delete=models.CASCADE, related_name='moderation_events')
+    sender       = models.ForeignKey('users.StudentProfile', on_delete=models.CASCADE, related_name='moderation_events')
+    blocked_text = models.TextField()
+    reason       = models.CharField(max_length=300)
+    created_at   = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'[BLOCKED] {self.sender} in {self.session_id}: {self.blocked_text[:40]}'
+
+
+class MockTestAttempt(models.Model):
+    student      = models.ForeignKey('users.StudentProfile', on_delete=models.CASCADE, related_name='mock_attempts')
+    subject      = models.CharField(max_length=100)
+    chapters     = models.JSONField(default=list)
+    difficulty   = models.CharField(max_length=20, default='mixed')
+    time_limit   = models.PositiveIntegerField(null=True, blank=True, help_text='Seconds; null = untimed')
+    question_ids = models.JSONField(default=list, help_text='Ordered list of QuestionBank PKs')
+    answers      = models.JSONField(default=dict, help_text='{"<qid>": "<given>"}')
+    results      = models.JSONField(default=dict, help_text='Per-question grading output')
+    score        = models.PositiveIntegerField(default=0)
+    total        = models.PositiveIntegerField(default=0)
+    time_taken   = models.PositiveIntegerField(null=True, blank=True, help_text='Seconds')
+    completed    = models.BooleanField(default=False)
+    created_at   = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'MockTest #{self.pk} — {self.student} — {self.score}/{self.total}'
