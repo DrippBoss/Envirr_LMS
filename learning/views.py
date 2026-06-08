@@ -16,7 +16,7 @@ class IsStudent(BasePermission):
 from .models import (
     CourseUnit, LearningPath, LearningNode, LessonQuestion, NodeProgress,
     FlashcardDeck, FlashcardProgress, SessionAnswer, RevisionNode, RevisionNodeProgress, UnitPrerequisiteSeen,
-    Flashcard, NodeType
+    Flashcard, NodeType, CompletionStatus
 )
 from .serializers import (
     CourseUnitSerializer, LearningPathSerializer, FlashcardDeckSerializer, 
@@ -74,7 +74,7 @@ class UnitPrerequisitesView(views.APIView):
                 NodeProgress.objects.get_or_create(
                     student=request.user.profile,
                     node=first_node,
-                    defaults={'status': 'UNLOCKED'}
+                    defaults={'status': CompletionStatus.UNLOCKED}
                 )
         return Response({'status': 'success'})
 
@@ -100,7 +100,7 @@ class MapDataView(views.APIView):
              NodeProgress.objects.get_or_create(
                  student=request.user.profile,
                  node=first_node,
-                 defaults={'status': 'UNLOCKED'}
+                 defaults={'status': CompletionStatus.UNLOCKED}
              )
              
         return Response(LearningPathSerializer(path, context={'request': request}).data)
