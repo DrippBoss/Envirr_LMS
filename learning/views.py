@@ -69,7 +69,7 @@ class UnitPrerequisitesView(views.APIView):
         # Unlock first node of first path
         first_path = unit.paths.filter(is_active=True).first()
         if first_path:
-            first_node = first_path.nodes.order_by('order').first()
+            first_node = first_path.nodes.filter(is_archived=False).order_by('order').first()
             if first_node:
                 NodeProgress.objects.get_or_create(
                     student=request.user.profile,
@@ -95,7 +95,7 @@ class MapDataView(views.APIView):
                 return Response({'error': 'PREREQUISITES_NOT_SEEN', 'unit_id': unit.id}, status=403)
         
         # Ensure first node is at least UNLOCKED if they reached the map
-        first_node = path.nodes.order_by('order').first()
+        first_node = path.nodes.filter(is_archived=False).order_by('order').first()
         if first_node:
              NodeProgress.objects.get_or_create(
                  student=request.user.profile,
@@ -187,7 +187,7 @@ class NodePracticeView(views.APIView):
         if prog.current_step not in ['PRACTICE', 'COMPLETED']:
             return Response({'error': 'Finish the video lesson first!'}, status=403)
             
-        questions = list(node.questions.all())
+        questions = list(node.questions.filter(is_archived=False))
         random.shuffle(questions)
         count = node.test_question_count if node.node_type == 'CHAPTER_TEST' else node.practice_question_count
         questions = questions[:count]

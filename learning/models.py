@@ -90,6 +90,12 @@ class LearningNode(models.Model):
         default=0, help_text="Minimum stars (1-3) required on the preceding lesson node to unlock this node. 0 = no requirement."
     )
 
+    # Soft-delete (D5): set instead of hard-deleting a node that has student
+    # progress, so SessionAnswer / NodeProgress are never silently destroyed when
+    # an admin restructures a course via the wizard. Archived nodes are hidden
+    # from students but their data is preserved and recoverable.
+    is_archived = models.BooleanField(default=False, db_index=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -129,6 +135,10 @@ class LessonQuestion(models.Model):
         related_name='lesson_copies',
     )
     order = models.PositiveIntegerField(default=0)
+    # Soft-delete (D5): a question removed from a node via the wizard is archived
+    # rather than hard-deleted when students have already answered it, so the
+    # CASCADE on SessionAnswer.question never silently destroys student answers.
+    is_archived = models.BooleanField(default=False, db_index=True)
 
     class Meta:
         ordering = ['order']

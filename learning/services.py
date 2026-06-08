@@ -13,7 +13,8 @@ def unlock_next_nodes(student_profile, completed_node):
     # 1. Find the next sequential non-lab node
     next_node = LearningNode.objects.filter(
         path=path,
-        order__gt=completed_node.order
+        order__gt=completed_node.order,
+        is_archived=False,
     ).exclude(node_type='LAB').order_by('order').first()
 
     if next_node:
@@ -33,6 +34,7 @@ def unlock_next_nodes(student_profile, completed_node):
                 path=path, node_type='LAB',
                 order__gt=completed_node.order,
                 order__lt=next_node.order,
+                is_archived=False,
             )
             for lab in intervening_labs:
                 lab_done = NodeProgress.objects.filter(
@@ -64,7 +66,7 @@ def unlock_next_nodes(student_profile, completed_node):
         status=CompletionStatus.COMPLETED,
     ).exclude(node__node_type='LAB').count()
 
-    lab_nodes = LearningNode.objects.filter(path=path, node_type='LAB')
+    lab_nodes = LearningNode.objects.filter(path=path, node_type='LAB', is_archived=False)
     for lab in lab_nodes:
         if lab.lab_required_completions > 0 and completed_count >= lab.lab_required_completions:
             NodeProgress.objects.get_or_create(
