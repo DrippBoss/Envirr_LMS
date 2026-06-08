@@ -240,7 +240,7 @@ export default function IdentityVisualizerLab({ nodeTitle, xpReward, onComplete 
           <div style={{ background: '#0f172a', borderRadius: 12, padding: 20, border: '1px solid #1e293b' }}>
             {/* Progress dots */}
             <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
-              {CHALLENGES.map((c, i) => (
+              {CHALLENGES.map((_c, i) => (
                 <div key={i} onClick={() => { setCIdx(i); setFeedback(null); setUserAns(''); setShowHint(false); }}
                   style={{ width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, cursor: 'pointer',
                     background: solved[i] ? '#10b981' : i === cIdx ? '#6366f1' : '#1e293b',

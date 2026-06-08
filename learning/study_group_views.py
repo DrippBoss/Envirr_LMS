@@ -300,14 +300,36 @@ class StudyGroupLeaderboardView(views.APIView):
 
 # ── Teacher papers list ───────────────────────────────────────────────────────
 
+def _grade_digits(value):
+    """Extract the numeric grade from a free-form label ('10th', 'Grade 10' -> '10')."""
+    return ''.join(ch for ch in str(value or '') if ch.isdigit())
+
+
 class TeacherPapersView(views.APIView):
     permission_classes = [IsStudent]
 
     def get(self, request):
         from ai_engine.models import QuestionPaper, PaperQuestion
-        papers = QuestionPaper.objects.select_related('created_by').order_by('-created_at')[:30]
+
+        user = request.user
+        papers = QuestionPaper.objects.select_related('created_by').order_by('-created_at')
+
+        # This endpoint is student-only (IsStudent permission requires a
+        # StudentProfile), so scope papers to the student's own grade — they must
+        # not be able to enumerate papers from other grades (S5). Ungraded papers
+        # are treated as universal and remain visible. An admin is exempted in the
+        # unlikely event one carries a profile and reaches this view.
+        student_grade = None
+        if getattr(user, 'role', 'student') != 'admin':
+            student_grade = _grade_digits(getattr(getattr(user, 'profile', None), 'class_grade', ''))
+
         result = []
-        for p in papers:
+        for p in papers[:200]:
+            # Grade gate for students: their own grade, plus ungraded (universal) papers.
+            if student_grade is not None:
+                paper_grade = _grade_digits(p.class_grade)
+                if paper_grade and paper_grade != student_grade:
+                    continue
             qids = list(
                 PaperQuestion.objects.filter(section__paper=p)
                 .values_list('question_id', flat=True).distinct()
@@ -329,6 +351,8 @@ class TeacherPapersView(views.APIView):
                 'pdf_url':        pdf_url,
                 'has_pdf':        bool(pdf_url),
             })
+            if len(result) >= 30:
+                break
         return Response(result)
 
 

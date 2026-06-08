@@ -355,7 +355,7 @@ function StartSessionModal({
 
 // ── Chat panel (shared between PDF and question modes) ────────────────────────
 function ChatPanel({
-  groupId, sessionId, sessionType, questions, doubts, onDoubtRaised,
+  groupId, sessionId, sessionType: _sessionType, questions: _questions, doubts, onDoubtRaised,
   answerKey, rightTab, onTabChange, width, fullScreen = false,
 }: {
   groupId: number; sessionId: number; sessionType: 'questions' | 'pdf';

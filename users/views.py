@@ -5,6 +5,7 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Count
 from users.models import CustomUser
 import secrets
@@ -128,16 +129,23 @@ class CookieTokenObtainPairView(APIView):
 
         if not user or not user.check_password(password):
             if user:
-                user.failed_login_attempts += 1
-                if user.failed_login_attempts >= 10:
-                    user.is_active = False
-                    user.save(update_fields=['failed_login_attempts', 'is_active'])
-                    return Response(
-                        {'detail': 'Your account has been locked after too many failed attempts. '
-                                   'Contact support to regain access.'},
-                        status=403,
-                    )
-                user.save(update_fields=['failed_login_attempts'])
+                # Atomically increment the failure counter under a row lock so
+                # concurrent failed attempts cannot race past the lockout
+                # threshold (S1). Without the lock, N simultaneous requests can
+                # each read the same count and all write count+1, letting an
+                # attacker exceed 10 tries before is_active flips to False.
+                with transaction.atomic():
+                    locked = CustomUser.objects.select_for_update().get(pk=user.pk)
+                    locked.failed_login_attempts += 1
+                    if locked.failed_login_attempts >= 10:
+                        locked.is_active = False
+                        locked.save(update_fields=['failed_login_attempts', 'is_active'])
+                        return Response(
+                            {'detail': 'Your account has been locked after too many failed attempts. '
+                                       'Contact support to regain access.'},
+                            status=403,
+                        )
+                    locked.save(update_fields=['failed_login_attempts'])
             return Response(
                 {'detail': 'No active account found with the given credentials.'},
                 status=401,

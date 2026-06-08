@@ -4,11 +4,6 @@ interface NodeCardProps {
   node: any;
 }
 
-const MISSION_LABEL: Record<string, string> = {
-  LESSON: "Mission",
-  CHAPTER_TEST: "Final Boss",
-  LAB: "Lab",
-};
 
 export default function NodeCard({ node }: NodeCardProps) {
   const navigate = useNavigate();
