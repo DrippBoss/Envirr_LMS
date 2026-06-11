@@ -437,7 +437,7 @@ export default function TeacherPanel() {
   const fetchLibrary = async () => {
     try {
       const res = await api.get(`/ai/questions/?subject=${encodeURIComponent(libSubject)}&chapter=${encodeURIComponent(libChapter)}&type=${encodeURIComponent(libType)}`);
-      setLibraryQs(res.data);
+      setLibraryQs(res.data?.results ?? res.data);
     } catch (err) {
       console.error('Failed to fetch library', err);
     }

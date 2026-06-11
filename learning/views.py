@@ -30,6 +30,7 @@ from .services import (
 from django.shortcuts import get_object_or_404
 import random
 from ai_engine.models import QuestionBank
+from envirr_backend.pagination import StandardResultsPagination
 
 
 def _grade_check(path, profile):
@@ -42,6 +43,7 @@ def _grade_check(path, profile):
 class DashboardView(generics.ListAPIView):
     serializer_class = CourseUnitSerializer
     permission_classes = [IsStudent]
+    pagination_class = StandardResultsPagination
 
     def get_queryset(self):
         user = self.request.user

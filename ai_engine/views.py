@@ -22,6 +22,7 @@ from ai_engine.serializers import (
 )
 from ai_engine.tasks import generate_paper_task, compile_manual_paper_task
 from ai_engine.models import QuestionPaper, QuestionBank, MCQOption
+from envirr_backend.pagination import StandardResultsPagination
 
 class GeneratePaperAPIView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -74,6 +75,7 @@ class GeneratePaperAPIView(views.APIView):
 class QuestionBankListView(generics.ListAPIView):
     serializer_class = QuestionBankSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardResultsPagination
 
     def get_queryset(self):
         qs = QuestionBank.objects.all().order_by('-id')

@@ -179,7 +179,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
         setQbLoading(true);
         try {
             const res = await api.get(`/ai/questions/?subject=${encodeURIComponent(subject)}&chapter=${encodeURIComponent(qbChapter)}&type=${encodeURIComponent(qbType)}`);
-            setQbResults(res.data);
+            setQbResults(res.data?.results ?? res.data);
         } catch { setQbResults([]); }
         finally { setQbLoading(false); }
     };
