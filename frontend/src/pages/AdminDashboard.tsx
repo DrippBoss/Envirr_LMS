@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { api, useAuth } from '../context/AuthContext';
 
 // ── Chart helpers ────────────────────────────────────────────────
@@ -38,7 +37,6 @@ function initials(name: string) {
 }
 
 export default function AdminDashboard() {
-    const navigate = useNavigate();
     const { logout, user } = useAuth();
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);

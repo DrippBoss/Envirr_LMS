@@ -10,5 +10,15 @@ export default defineConfig({
       interval: 300,
     },
     host: true,
+    proxy: {
+      '/api': {
+        target: 'http://web:8000',
+        changeOrigin: true,
+      },
+      '/media': {
+        target: 'http://web:8000',
+        changeOrigin: true,
+      },
+    },
   },
 })

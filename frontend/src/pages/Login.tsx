@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth, api } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { useNavigate } from "react-router-dom";
 
 type Role = "student" | "teacher";
 
@@ -22,8 +21,7 @@ export default function Login() {
   const [showResend, setShowResend] = useState(false);
   const [resendStatus, setResendStatus] = useState("");
 
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

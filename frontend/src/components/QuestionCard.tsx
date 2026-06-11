@@ -37,6 +37,9 @@ export default function QuestionCard({ question, onSubmit, result }: QuestionCar
                 .find(([, v]) => v === selected);
             if (entry) answer = entry[0];
         } else if (question.question_type === 'REARRANGE') {
+            // Contract (U5): submit the chip *texts* concatenated in the chosen
+            // order (NOT indices). The backend compares this whitespace- and
+            // arrow-connector-insensitively against correct_answer.
             answer = selectedChips.map(idx => rawChips[idx]).join("");
         }
         const correct = await onSubmit(answer);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../context/AuthContext';
 import MathText from '../components/MathText';
@@ -222,8 +222,6 @@ function QuizScreen({
   }, [secondsLeft]);
 
   const q = questions[idx];
-  const isAutoGraded = AUTO_GRADED.includes(q.question_type);
-  const answered = answers[q.id] !== undefined;
 
   const setAnswer = (val: string) => setAnswers(p => ({ ...p, [q.id]: val }));
   const toggleFlag = () => setFlagged(p => { const s = new Set(p); s.has(q.id) ? s.delete(q.id) : s.add(q.id); return s; });

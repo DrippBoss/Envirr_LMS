@@ -69,7 +69,7 @@ class UnitPrerequisitesView(views.APIView):
         # Unlock first node of first path
         first_path = unit.paths.filter(is_active=True).first()
         if first_path:
-            first_node = first_path.nodes.order_by('order').first()
+            first_node = first_path.nodes.filter(is_archived=False).order_by('order').first()
             if first_node:
                 NodeProgress.objects.get_or_create(
                     student=request.user.profile,
@@ -95,7 +95,7 @@ class MapDataView(views.APIView):
                 return Response({'error': 'PREREQUISITES_NOT_SEEN', 'unit_id': unit.id}, status=403)
         
         # Ensure first node is at least UNLOCKED if they reached the map
-        first_node = path.nodes.order_by('order').first()
+        first_node = path.nodes.filter(is_archived=False).order_by('order').first()
         if first_node:
              NodeProgress.objects.get_or_create(
                  student=request.user.profile,
@@ -187,15 +187,31 @@ class NodePracticeView(views.APIView):
         if prog.current_step not in ['PRACTICE', 'COMPLETED']:
             return Response({'error': 'Finish the video lesson first!'}, status=403)
             
-        questions = list(node.questions.all())
+        questions = list(node.questions.filter(is_archived=False))
         random.shuffle(questions)
         count = node.test_question_count if node.node_type == 'CHAPTER_TEST' else node.practice_question_count
         questions = questions[:count]
         return Response(LessonQuestionSerializer(questions, many=True).data)
 
+# REARRANGE answer contract (U5):
+#   Frontend (QuestionCard.tsx) submits the chip *texts* concatenated in the
+#   student's chosen order — e.g. ['3x²','−','4x'] -> "3x²−4x". The backend
+#   compares whitespace-insensitively against correct_answer (which may hold
+#   several '|'-separated valid sequences). Cosmetic flow arrows ("→") that
+#   authors sometimes place between steps in correct_answer but NOT in the chips
+#   are also stripped, so such a question can't become silently ungradeable.
+#   Stripping arrows is symmetric (applied to both sides) and therefore safe
+#   even for questions where "→" is itself a chip.
+_REARRANGE_CONNECTORS = str.maketrans('', '', '→⟶⇒➜')
+
+
+def _normalize_rearrange(value):
+    return ''.join(str(value).split()).translate(_REARRANGE_CONNECTORS).lower()
+
+
 class NodePracticeAnswerView(views.APIView):
     permission_classes = [IsStudent]
-    
+
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
         prog = get_object_or_404(NodeProgress, student=request.user.profile, node=node)
@@ -217,11 +233,11 @@ class NodePracticeAnswerView(views.APIView):
             # given_answer is "0,1,2,3" — compare to correct order stored in correct_answer
             is_correct = str(given_answer).strip() == str(q.correct_answer).strip()
         elif q.question_type == 'REARRANGE':
-            # Remove all whitespace for robust math/text comparison
-            given = "".join(str(given_answer).split()).lower()
-            
+            # Whitespace- and connector-insensitive comparison (see contract note above)
+            given = _normalize_rearrange(given_answer)
+
             # Accommodate AI generating multiple possible valid sequences separated by '|'
-            possible_corrects = [ "".join(c.split()).lower() for c in str(q.correct_answer).split('|') ]
+            possible_corrects = [_normalize_rearrange(c) for c in str(q.correct_answer).split('|')]
             is_correct = given in possible_corrects
             
             # Fallback for commutative binomial factors: (x-2)(x-3) should be identical to (x-3)(x-2)
@@ -390,17 +406,62 @@ class RevisionNodeDetailView(views.APIView):
             award_node_xp(request.user.profile, rnode, rnode.xp_reward)
         return Response({'status': 'success', 'xp_earned': prog.xp_earned})
 
+# Fields on QuestionBank that a chapter-test filter is allowed to constrain.
+# Anything outside this set is rejected so a malformed or adversarial
+# question_filter cannot expand into arbitrary ORM kwargs / relation traversal (S3).
+_ALLOWED_QFILTER_FIELDS = frozenset({
+    'subject', 'chapter', 'concept', 'question_type',
+    'difficulty', 'bloom_level', 'marks', 'tags',
+    'is_verified', 'is_ai_generated',
+})
+# Lookup suffixes permitted on those fields (key form: "field" or "field__lookup").
+_ALLOWED_QFILTER_LOOKUPS = frozenset({
+    'exact', 'iexact', 'in', 'contains', 'icontains',
+    'gte', 'lte', 'gt', 'lt', 'isnull',
+})
+
+
+def _sanitize_question_filter(raw):
+    """Return a whitelisted copy of a question_filter dict, or raise ValueError.
+
+    Only base fields in _ALLOWED_QFILTER_FIELDS with an optional single
+    permitted lookup suffix survive; relational traversal (anything with extra
+    `__` segments) and unknown fields are rejected outright.
+    """
+    if not isinstance(raw, dict):
+        raise ValueError('question_filter must be an object')
+    clean = {}
+    for key, value in raw.items():
+        parts = key.split('__')
+        field = parts[0]
+        if field not in _ALLOWED_QFILTER_FIELDS:
+            raise ValueError(f'Disallowed filter field: {key}')
+        if len(parts) == 1:
+            pass
+        elif len(parts) == 2 and parts[1] in _ALLOWED_QFILTER_LOOKUPS:
+            pass
+        else:
+            raise ValueError(f'Disallowed filter lookup: {key}')
+        clean[key] = value
+    return clean
+
+
 class ChapterTestStartView(views.APIView):
     permission_classes = [IsStudent]
-    
+
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id, node_type='CHAPTER_TEST')
         err = _grade_check(node.path, request.user.profile)
         if err:
             return err
-        # Pull from QuestionBank
+        # Pull from QuestionBank — sanitize the stored filter before expanding it
+        # into ORM kwargs to prevent filter/relation injection (S3).
         count = node.test_question_count
-        qs = QuestionBank.objects.filter(**node.question_filter).order_by('?')[:count]
+        try:
+            safe_filter = _sanitize_question_filter(node.question_filter or {})
+        except ValueError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        qs = QuestionBank.objects.filter(**safe_filter).order_by('?')[:count]
         data = []
         for q in qs:
             data.append({

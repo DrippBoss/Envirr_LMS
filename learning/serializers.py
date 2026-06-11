@@ -20,7 +20,7 @@ class CourseUnitSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if not user.is_authenticated or user.role != 'student':
             return 0
-        total_nodes = LearningNode.objects.filter(path__unit=obj).count()
+        total_nodes = LearningNode.objects.filter(path__unit=obj, is_archived=False).count()
         if total_nodes == 0: return 0
         completed_nodes = NodeProgress.objects.filter(
             student=user.profile,
@@ -107,7 +107,7 @@ class LearningPathSerializer(serializers.ModelSerializer):
         return f"Grade {obj.class_grade}" if obj.class_grade else (f"Grade {obj.unit.class_grade}" if obj.unit else '')
 
     def get_nodes(self, obj):
-        nodes = obj.nodes.all()
+        nodes = obj.nodes.filter(is_archived=False)
         return SimpleLearningNodeSerializer(nodes, many=True, context=self.context).data
         
     def get_revision_nodes(self, obj):

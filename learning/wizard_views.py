@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from .models import (
     CourseUnit, LearningPath, LearningNode, LessonQuestion,
     ContentTemplate, RevisionNode, Flashcard, FlashcardDeck, DeckCard,
+    NodeProgress, SessionAnswer,
 )
 from ai_engine.models import QuestionBank
 
@@ -270,6 +271,19 @@ class WizardApproveView(AdminWizardBaseView):
             return Response({'message': f'"{unit.title}" approved and published'})
         elif action == 'reject':
             title = unit.title
+            # Safety guard (D5): reject only ever targets unpublished courses, which
+            # should carry no student progress. If one somehow does, refuse the
+            # delete — it would orphan the paths (unit→NULL) and detach existing
+            # student answers from their course context.
+            has_progress = (
+                NodeProgress.objects.filter(node__path__unit=unit).exists()
+                or SessionAnswer.objects.filter(node__path__unit=unit).exists()
+            )
+            if has_progress:
+                return Response(
+                    {'error': 'Cannot reject: students have already attempted this course.'},
+                    status=status.HTTP_409_CONFLICT,
+                )
             unit.delete()
             return Response({'message': f'"{title}" rejected and removed'})
         return Response({'error': 'action must be approve or reject'}, status=status.HTTP_400_BAD_REQUEST)
@@ -417,9 +431,9 @@ class WizardCourseStructureView(APIView):
         chapters = []
         for path in unit.paths.all().order_by('id'):
             nodes = []
-            for node in path.nodes.all().order_by('order'):
+            for node in path.nodes.filter(is_archived=False).order_by('order'):
                 questions = []
-                for q in node.questions.all().order_by('order'):
+                for q in node.questions.filter(is_archived=False).order_by('order'):
                     questions.append({
                         'id': q.id,
                         'source_question_id': q.source_question_id,
@@ -620,7 +634,16 @@ class WizardCourseStructureView(APIView):
                     for q_entry in raw_questions
                 ]
 
-                node.questions.exclude(source_question_id__in=incoming_qb_ids).delete()
+                # Remove questions dropped from the payload (D5). Hard-delete only
+                # those with no student answers; archive answered ones so their
+                # SessionAnswer rows (CASCADE on question) are preserved.
+                for lq in node.questions.exclude(source_question_id__in=incoming_qb_ids):
+                    if SessionAnswer.objects.filter(question=lq).exists():
+                        if not lq.is_archived:
+                            lq.is_archived = True
+                            lq.save(update_fields=['is_archived'])
+                    else:
+                        lq.delete()
                 existing_qb_ids = set(node.questions.values_list('source_question_id', flat=True))
 
                 for q_entry in raw_questions:
@@ -629,10 +652,12 @@ class WizardCourseStructureView(APIView):
                     custom_explanation = q_entry.get('explanation', '') if isinstance(q_entry, dict) else ''
 
                     if qid in existing_qb_ids:
-                        # Update hint/explanation only — preserves LessonQuestion PK
+                        # Update hint/explanation only — preserves LessonQuestion PK.
+                        # Re-adding a previously-removed question un-archives it (D5).
                         node.questions.filter(source_question_id=qid).update(
                             hint=custom_hint,
                             explanation=custom_explanation,
+                            is_archived=False,
                         )
                         total_questions += 1
                         continue
@@ -661,9 +686,39 @@ class WizardCourseStructureView(APIView):
                     except QuestionBank.DoesNotExist:
                         pass
 
-        # Delete only what was actually removed from the payload
-        unit.paths.exclude(id__in=kept_path_ids).delete()
-        LearningNode.objects.filter(path__unit=unit).exclude(id__in=kept_node_ids).delete()
+        # Reconcile removals (D5). Anything removed from the payload that carries
+        # student progress (NodeProgress / SessionAnswer) is ARCHIVED instead of
+        # hard-deleted, so a course edit can never silently wipe student data.
+        # Truly unused items are still hard-deleted to keep the schema tidy.
+        removed_nodes = LearningNode.objects.filter(path__unit=unit).exclude(id__in=kept_node_ids)
+        for node in removed_nodes:
+            has_progress = (
+                NodeProgress.objects.filter(node=node).exists()
+                or SessionAnswer.objects.filter(node=node).exists()
+            )
+            if has_progress:
+                # Free the (path, order) slot and hide from students; preserve data.
+                node.is_archived = True
+                node.order = 900000 + node.id
+                node.save(update_fields=['is_archived', 'order'])
+            else:
+                node.delete()
+
+        removed_paths = unit.paths.exclude(id__in=kept_path_ids)
+        for path in removed_paths:
+            # A path is safe to delete only if none of its (now-reconciled) nodes
+            # carry student progress; otherwise soft-delete it (is_active=False),
+            # which already hides it from students.
+            if path.nodes.filter(is_archived=False).exists() or NodeProgress.objects.filter(
+                node__path=path
+            ).exists() or SessionAnswer.objects.filter(node__path=path).exists():
+                if path.is_active:
+                    path.is_active = False
+                    path.save(update_fields=['is_active'])
+            else:
+                path.delete()
+
+        # Revision nodes hold no auto-graded answers; safe to hard-delete.
         RevisionNode.objects.filter(path__unit=unit).exclude(id__in=kept_revision_ids).delete()
 
         return Response({

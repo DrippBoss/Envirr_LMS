@@ -72,13 +72,14 @@ def check_and_award_badges(student_profile, node) -> dict | None:
     if not unit:
         return None
 
-    total_nodes = LearningNode.objects.filter(path__unit=unit).count()
+    total_nodes = LearningNode.objects.filter(path__unit=unit, is_archived=False).count()
     if total_nodes == 0:
         return None
 
     completed_nodes = NodeProgress.objects.filter(
         student=student_profile,
         node__path__unit=unit,
+        node__is_archived=False,
         status='COMPLETED',
     ).count()
 

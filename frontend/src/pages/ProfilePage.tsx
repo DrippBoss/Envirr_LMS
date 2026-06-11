@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAuth, api } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const GRADES = ["9", "10", "11", "12"];
 const BOARDS = ["CBSE", "ICSE", "State", "Other"];
@@ -62,7 +61,6 @@ function Alert({ type, message, onClose }: { type: "error" | "success"; message:
 
 export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
-  const navigate = useNavigate();
 
   // Profile form state
   const [name, setName]           = useState(user?.name ?? "");

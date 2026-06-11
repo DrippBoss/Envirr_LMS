@@ -212,7 +212,7 @@ export default function LinearPatternExplorerLab({ nodeTitle, xpReward, onComple
             {/* Difference arrows */}
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
               <span style={{ fontSize: '0.75rem', color: C.dim }}>Constant difference:</span>
-              {ch.sequence.slice(1).map((val, i) => (
+              {ch.sequence.slice(1).map((_val, i) => (
                 <span key={i} style={{ fontSize: '0.78rem', color: diff >= 0 ? C.green : C.red, fontWeight: 700 }}>
                   {diff >= 0 ? '+' : ''}{diff}
                 </span>

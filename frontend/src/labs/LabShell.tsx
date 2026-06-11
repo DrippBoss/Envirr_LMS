@@ -6,24 +6,61 @@ export interface Takeaway {
   points: string[];
 }
 
-interface LabShellProps {
+export interface LabShellProps {
   title: string;
   xpReward: number;
-  onComplete: (artifact?: unknown) => void;
+  /** Called when the lab is finished (either directly or after takeaway dismiss) */
+  onComplete?: (artifact?: unknown) => void;
+  /** Alternative callback name used by some labs — treated identically to onComplete */
+  onSaveFinish?: () => void;
   children: React.ReactNode;
   disableFinish?: boolean;
   takeaway?: Takeaway;
   artifact?: unknown;
+  /** Override the default "LAB" badge text */
+  badgeLabel?: string;
+  /** External control for the takeaway overlay (labs that trigger it programmatically) */
+  showTakeaway?: boolean;
+  /** Called when the externally-controlled takeaway is dismissed */
+  onDismissTakeaway?: () => void;
 }
 
-export default function LabShell({ title, xpReward, onComplete, children, disableFinish, takeaway, artifact }: LabShellProps) {
-  const [showTakeaway, setShowTakeaway] = useState(false);
+export default function LabShell({
+  title,
+  xpReward,
+  onComplete,
+  onSaveFinish,
+  children,
+  disableFinish,
+  takeaway,
+  artifact,
+  badgeLabel,
+  showTakeaway: externalShowTakeaway,
+  onDismissTakeaway,
+}: LabShellProps) {
+  const [internalShowTakeaway, setInternalShowTakeaway] = useState(false);
+
+  // External control takes precedence; fall back to internal state
+  const showTakeaway = externalShowTakeaway !== undefined ? externalShowTakeaway : internalShowTakeaway;
 
   const handleFinishClick = () => {
-    if (takeaway) {
-      setShowTakeaway(true);
+    if (onSaveFinish) {
+      onSaveFinish();
+      return;
+    }
+    if (takeaway && !onDismissTakeaway) {
+      setInternalShowTakeaway(true);
     } else {
-      onComplete(artifact);
+      onComplete?.(artifact);
+    }
+  };
+
+  const handleDismiss = () => {
+    if (onDismissTakeaway) {
+      onDismissTakeaway();
+    } else {
+      setInternalShowTakeaway(false);
+      onComplete?.(artifact);
     }
   };
 
@@ -31,7 +68,7 @@ export default function LabShell({ title, xpReward, onComplete, children, disabl
     <div className="lab-shell">
       <header className="lab-shell__header">
         <div className="lab-shell__title-row">
-          <span className="lab-shell__badge">LAB</span>
+          <span className="lab-shell__badge">{badgeLabel ?? 'LAB'}</span>
           <h2 className="lab-shell__title">{title}</h2>
         </div>
         <div className="lab-shell__xp">+{xpReward} XP on completion</div>
@@ -45,7 +82,6 @@ export default function LabShell({ title, xpReward, onComplete, children, disabl
         </button>
       </footer>
 
-      {/* Takeaway overlay */}
       {showTakeaway && takeaway && (
         <div className="lab-shell__takeaway-overlay">
           <div className="lab-shell__takeaway-card">
@@ -58,7 +94,7 @@ export default function LabShell({ title, xpReward, onComplete, children, disabl
             </ul>
             <button
               className="lab-shell__takeaway-btn"
-              onClick={() => { setShowTakeaway(false); onComplete(artifact); }}
+              onClick={handleDismiss}
             >
               Got it — Finish Lab!
             </button>

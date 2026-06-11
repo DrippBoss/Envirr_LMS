@@ -137,9 +137,9 @@ function LineGraph({ a, b, color, showYIntercept, showSlope }: LineGraphProps) {
       )}
       {showSlope && (
         <>
-          <line x1={rx0[0]} y1={ry0[1]} x2={rx1[0]} y2={ry0[1]} stroke={C.gold} strokeWidth={1.5} strokeDasharray="4,3" />
-          <line x1={rx1[0]} y1={ry0[1]} x2={rx1[0]} y2={ry1[1]} stroke={C.orange} strokeWidth={1.5} strokeDasharray="4,3" />
-          <text x={rx1[0] + 8} y={(ry0[1] + ry1[1]) / 2 + 4} fontSize="10" fill={C.orange} fontWeight="bold">
+          <line x1={rx0} y1={ry0} x2={rx1} y2={ry0} stroke={C.gold} strokeWidth={1.5} strokeDasharray="4,3" />
+          <line x1={rx1} y1={ry0} x2={rx1} y2={ry1} stroke={C.orange} strokeWidth={1.5} strokeDasharray="4,3" />
+          <text x={rx1 + 8} y={(ry0 + ry1) / 2 + 4} fontSize="10" fill={C.orange} fontWeight="bold">
             {a > 0 ? '+' : ''}{a}
           </text>
         </>

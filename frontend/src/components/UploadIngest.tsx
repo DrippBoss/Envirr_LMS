@@ -73,7 +73,7 @@ export default function UploadIngest() {
   // Compile/done
   const [compileStep, setCompileStep] = useState(0);
   const [paperId, setPaperId]         = useState<number | null>(null);
-  const [pdfUrl, setPdfUrl]           = useState('');
+  const [_pdfUrl, setPdfUrl]          = useState('');
   const [seededCount, setSeededCount] = useState(0);
   const [error, setError]             = useState('');
 
