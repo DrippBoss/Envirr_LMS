@@ -4,7 +4,10 @@ import json
 import os
 import base64
 import hashlib
+import logging
 from rest_framework.throttling import ScopedRateThrottle
+
+logger = logging.getLogger(__name__)
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
@@ -264,13 +267,24 @@ class QuestionBankDetailView(views.APIView):
 
         # Recompute hash when question text changes so duplicates stay detectable
         if 'question_text' in request.data:
-            import hashlib
-            raw = f"{instance.subject}{instance.chapter}{instance.question_text.strip().lower()}"
-            instance.question_hash = hashlib.sha256(raw.encode()).hexdigest()
+            from django.db import IntegrityError
+            from ai_engine.models import QuestionBank
+            instance.question_hash = QuestionBank.compute_hash(
+                instance.subject, instance.chapter,
+                instance.question_type, instance.question_text,
+            )
             try:
                 instance.save(update_fields=['question_hash'])
-            except Exception:
-                pass  # hash collision with another question — non-fatal
+            except IntegrityError:
+                # D2: edited text now collides with another question's hash. Keep
+                # the edit (other fields already saved) but log it instead of
+                # silently swallowing, and restore the persisted hash in-memory.
+                logger.warning(
+                    "QuestionBank hash collision on edit of id=%s (subject=%s, "
+                    "chapter=%s, type=%s) — hash not updated.",
+                    instance.pk, instance.subject, instance.chapter, instance.question_type,
+                )
+                instance.refresh_from_db(fields=['question_hash'])
 
         return response.Response(QuestionBankEditorSerializer(instance, context={'request': request}).data)
 

@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.conf import settings
 from django.utils import timezone
 from gamification.models import Streak, StudentXP, Badge, StudentBadge
 from datetime import timedelta
@@ -8,6 +9,16 @@ XP_REWARDS = {
     'doubt_resolved': 20,
     'practice_question': 5,
 }
+
+# D3: cap the XP level so a high-XP student can't reach an unbounded level
+# (e.g. 10000+). Configurable via settings.GAMIFICATION_MAX_LEVEL.
+XP_PER_LEVEL = 500
+MAX_LEVEL = getattr(settings, 'GAMIFICATION_MAX_LEVEL', 100)
+
+
+def level_for_xp(total_xp):
+    """Single source of truth for XP→level, capped at MAX_LEVEL."""
+    return min(MAX_LEVEL, max(1, (total_xp // XP_PER_LEVEL) + 1))
 
 @transaction.atomic
 def update_streak_and_xp(student, activity_type: str):
@@ -42,9 +53,8 @@ def update_streak_and_xp(student, activity_type: str):
         student_xp, created = StudentXP.objects.select_for_update().get_or_create(student=student)
         student_xp.total_xp += xp_amount
         
-        # Calculate Level (Every 500 XP = 1 Level)
-        new_level = max(1, (student_xp.total_xp // 500) + 1)
-        student_xp.current_level = new_level
+        # Calculate Level (every XP_PER_LEVEL XP = 1 level), capped at MAX_LEVEL
+        student_xp.current_level = level_for_xp(student_xp.total_xp)
         
         # Append to XP History
         current_history = student_xp.xp_history
