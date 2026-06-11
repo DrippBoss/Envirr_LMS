@@ -450,7 +450,9 @@ class GroupSessionCreateView(views.APIView):
                 status='active', started_at=timezone.now(),
             )
 
-        GroupSessionProgress.objects.create(session=session, student=request.user.profile)
+        # D4: idempotent — a network retry / double-submit must not create a
+        # duplicate (session, student) progress row.
+        GroupSessionProgress.objects.get_or_create(session=session, student=request.user.profile)
 
         resp = {'session': _serialize_session_brief(session)}
         if session.session_type == 'questions' and session.question_ids:
