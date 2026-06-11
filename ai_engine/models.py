@@ -110,10 +110,18 @@ class QuestionBank(models.Model):
         verbose_name = "Question"
         verbose_name_plural = "Question Bank"
 
+    @staticmethod
+    def compute_hash(subject, chapter, question_type, question_text):
+        # D2: question_type is part of the identity — the same text as an MCQ vs
+        # a FILL_BLANK is a different question and must not collide.
+        raw = f"{subject}{chapter}{question_type}{(question_text or '').strip().lower()}"
+        return hashlib.sha256(raw.encode()).hexdigest()
+
     def save(self, *args, **kwargs):
         if not self.question_hash:
-            raw = f"{self.subject}{self.chapter}{self.question_text.strip().lower()}"
-            self.question_hash = hashlib.sha256(raw.encode()).hexdigest()
+            self.question_hash = self.compute_hash(
+                self.subject, self.chapter, self.question_type, self.question_text
+            )
         super().save(*args, **kwargs)
 
     def __str__(self):
