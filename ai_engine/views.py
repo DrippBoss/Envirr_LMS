@@ -22,6 +22,9 @@ from ai_engine.serializers import (
 )
 from ai_engine.tasks import generate_paper_task, compile_manual_paper_task
 from ai_engine.models import QuestionPaper, QuestionBank, MCQOption
+from envirr_backend.pagination import StandardResultsPagination
+from envirr_backend.cache_utils import qbank_meta_version, QBANK_META_TTL
+from django.core.cache import cache
 
 class GeneratePaperAPIView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -74,6 +77,7 @@ class GeneratePaperAPIView(views.APIView):
 class QuestionBankListView(generics.ListAPIView):
     serializer_class = QuestionBankSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardResultsPagination
 
     def get_queryset(self):
         qs = QuestionBank.objects.all().order_by('-id')
@@ -92,6 +96,18 @@ class QuestionBankMetaView(views.APIView):
     def get(self, request):
         user = request.user
         subject = request.query_params.get('subject')
+
+        # Redis-cached: question-bank metadata changes only when questions are
+        # added/edited/removed, which busts the shared version token.
+        assigned_key = ''
+        if user.role == 'teacher':
+            assigned_key = ','.join(sorted(user.assigned_subjects or []))
+        ver = qbank_meta_version()
+        cache_key = f"qbmeta:{ver}:{user.role}:{assigned_key}:{subject or ''}"
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return response.Response(cached)
+
         qs = QuestionBank.objects.all()
 
         # Scope teachers to their assigned subjects; if none assigned yet, show all
@@ -103,9 +119,13 @@ class QuestionBankMetaView(views.APIView):
         if subject:
             qs = qs.filter(subject__iexact=subject)
             chapters = list(qs.values_list('chapter', flat=True).distinct().order_by('chapter'))
-            return response.Response({'chapters': chapters})
-        subjects = list(qs.values_list('subject', flat=True).distinct().order_by('subject'))
-        return response.Response({'subjects': subjects})
+            payload = {'chapters': chapters}
+        else:
+            subjects = list(qs.values_list('subject', flat=True).distinct().order_by('subject'))
+            payload = {'subjects': subjects}
+
+        cache.set(cache_key, payload, QBANK_META_TTL)
+        return response.Response(payload)
 
 
 class ManualPaperCreateView(views.APIView):

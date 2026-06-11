@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 import environ
 
@@ -149,6 +150,18 @@ CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+
+# Cache — Redis (separate db from the Celery broker to avoid key collisions).
+# Defaults to db 2 on the same host derived from REDIS_URL; LocMemCache fallback
+# keeps tests/local runs working if Redis is unreachable.
+CACHE_URL = env('CACHE_URL', default=re.sub(r'/\d+$', '/2', CELERY_BROKER_URL))
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': CACHE_URL,
+        'KEY_PREFIX': 'envirr',
+    }
+}
 # Email — SMTP when credentials are set, console fallback otherwise
 EMAIL_HOST          = env('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT          = env.int('EMAIL_PORT', default=587)
