@@ -106,7 +106,17 @@ function QuestionCard({
   const [deleting, setDeleting]       = useState(false);
 
   const isMCQ = ['MCQ', 'ASSERTION_REASON'].includes(q.question_type);
-  const previewUrl = newFile ? URL.createObjectURL(newFile) : removeImg ? null : q.image_url;
+
+  // Object URLs for image previews must be revoked, or the underlying blob leaks.
+  const [objectUrl, setObjectUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!newFile) { setObjectUrl(null); return; }
+    const url = URL.createObjectURL(newFile);
+    setObjectUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [newFile]);
+
+  const previewUrl = newFile ? objectUrl : removeImg ? null : q.image_url;
 
   const startEdit = () => {
     setQText(q.question_text);

@@ -324,3 +324,16 @@ class DoubtResponse(models.Model):
 
     def __str__(self):
         return f"Response to {self.doubt.id} by {'AI' if self.is_ai_generated else self.responder}"
+
+
+# ── Question-bank metadata cache invalidation ────────────────────────────────
+# Bust the shared subjects/chapters metadata cache whenever the bank changes.
+from django.db import transaction
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from envirr_backend.cache_utils import bust_qbank_meta
+
+
+@receiver([post_save, post_delete], sender=QuestionBank)
+def _invalidate_qbank_meta(sender, instance, **kwargs):
+    transaction.on_commit(bust_qbank_meta)

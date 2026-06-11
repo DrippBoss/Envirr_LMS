@@ -50,7 +50,7 @@ export default function StudentDashboard() {
     Promise.all([
       api.get("gamification/stats/").then(r => setStats(r.data)).catch(console.error),
       api.get("student/dashboard/").then(r => {
-        const data: CourseUnit[] = r.data;
+        const data: CourseUnit[] = r.data?.results ?? r.data;
         setUnits(data);
         // Default to "All" so every course is visible immediately
       }).catch(console.error),

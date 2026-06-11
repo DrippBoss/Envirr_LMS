@@ -509,3 +509,25 @@ class MockTestAttempt(models.Model):
 
     def __str__(self):
         return f'MockTest #{self.pk} — {self.student} — {self.score}/{self.total}'
+
+
+# ── Dashboard cache invalidation ────────────────────────────────────────────
+# Bust a student's cached dashboard whenever their node/revision progress
+# changes, deferred to commit so the new state is visible before we invalidate.
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from envirr_backend.cache_utils import bust_dashboard
+
+
+def _bust_student_dashboard(student_id):
+    transaction.on_commit(lambda: bust_dashboard(student_id))
+
+
+@receiver([post_save, post_delete], sender=NodeProgress)
+def _invalidate_dashboard_on_node_progress(sender, instance, **kwargs):
+    _bust_student_dashboard(instance.student_id)
+
+
+@receiver([post_save, post_delete], sender=RevisionNodeProgress)
+def _invalidate_dashboard_on_revision_progress(sender, instance, **kwargs):
+    _bust_student_dashboard(instance.student_id)
