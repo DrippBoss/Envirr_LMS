@@ -31,6 +31,8 @@ from django.shortcuts import get_object_or_404
 import random
 from ai_engine.models import QuestionBank
 from envirr_backend.pagination import StandardResultsPagination
+from envirr_backend.cache_utils import dashboard_version, DASHBOARD_TTL
+from django.core.cache import cache
 
 
 def _grade_check(path, profile):
@@ -61,6 +63,20 @@ class DashboardView(generics.ListAPIView):
     def get_serializer_context(self):
         # Pre-fetch all of the student's progress once to kill the per-node N+1.
         return build_learning_context(self.request)
+
+    def list(self, request, *args, **kwargs):
+        # Per-student Redis cache, busted whenever the student's progress changes.
+        student_id = request.user.profile.id
+        ver = dashboard_version(student_id)
+        page = request.query_params.get('page', '1')
+        page_size = request.query_params.get('page_size', '')
+        cache_key = f"dashboard:{student_id}:{ver}:p{page}:s{page_size}"
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return Response(cached)
+        resp = super().list(request, *args, **kwargs)
+        cache.set(cache_key, resp.data, DASHBOARD_TTL)
+        return resp
 
 class UnitPrerequisitesView(views.APIView):
     permission_classes = [IsStudent]
