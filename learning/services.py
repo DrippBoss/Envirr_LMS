@@ -4,7 +4,7 @@ from learning.models import (
     LearningNode, NodeProgress, CompletionStatus, RevisionNode, 
     RevisionNodeProgress, WeakSpot, Flashcard, DeckCard
 )
-from gamification.services import update_streak_and_xp
+from gamification.services import update_streak_and_xp, level_for_xp
 
 @transaction.atomic
 def unlock_next_nodes(student_profile, completed_node):
@@ -108,7 +108,7 @@ def award_node_xp(student_profile, node, xp_amount, is_test=False):
     if xp_amount > 0:
         student_xp, _ = StudentXP.objects.select_for_update().get_or_create(student=student_profile.user)
         student_xp.total_xp += xp_amount
-        student_xp.current_level = max(1, (student_xp.total_xp // 500) + 1)
+        student_xp.current_level = level_for_xp(student_xp.total_xp)
         
         current_history = student_xp.xp_history
         if not isinstance(current_history, list): current_history = []
