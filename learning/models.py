@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
 
 CLASS_CHOICES = [(str(i), f'Class {i}') for i in range(9, 13)]
@@ -208,16 +208,45 @@ class SessionAnswer(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if not self.is_correct and self.question.concept:
-            weak, _ = WeakSpot.objects.get_or_create(
-                student=self.student,
-                concept=self.question.concept,
-                subject=self.node.path.unit.subject,
-                chapter=self.node.path.title,
-            )
-            weak.wrong_count += 1
-            weak.is_resolved = False
-            weak.save()
+
+        concept = self.question.concept
+        if not concept:
+            return
+
+        # Capture values now so the deferred callback doesn't depend on lazy
+        # relation loads after the request transaction has closed.
+        student = self.student
+        subject = self.node.path.unit.subject
+        chapter = self.node.path.title
+        is_correct = self.is_correct
+
+        def _sync_weak_spot():
+            if not is_correct:
+                # Wrong answer: record/strengthen the weak spot for this concept.
+                weak, _ = WeakSpot.objects.get_or_create(
+                    student=student, concept=concept,
+                    subject=subject, chapter=chapter,
+                )
+                weak.wrong_count += 1
+                weak.is_resolved = False
+                weak.save(update_fields=['wrong_count', 'is_resolved', 'last_wrong_at'])
+            else:
+                # D1: correct answer eases off an existing weak spot so the
+                # weak-topic list actually improves as the student studies.
+                weak = WeakSpot.objects.filter(
+                    student=student, concept=concept,
+                    subject=subject, chapter=chapter,
+                ).first()
+                if weak and not weak.is_resolved:
+                    weak.wrong_count = max(0, weak.wrong_count - 1)
+                    if weak.wrong_count == 0:
+                        weak.is_resolved = True
+                    weak.save(update_fields=['wrong_count', 'is_resolved'])
+
+        # D6: only mutate WeakSpot if the surrounding transaction commits, so a
+        # rolled-back answer never leaves an orphaned/incorrect weak spot. With
+        # no active transaction Django runs the callback immediately.
+        transaction.on_commit(_sync_weak_spot)
 
 class FlashcardType(models.TextChoices):
     CONCEPT = 'CONCEPT', 'Concept Card'
