@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../context/AuthContext';
 import MathText from '../components/MathText';
+import { METADATA_DEFAULTS } from '../lib/metadata';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type Phase = 'config' | 'loading' | 'quiz' | 'results';
@@ -48,7 +49,9 @@ const TYPE_LABELS: Record<string, string> = {
   LONG: 'Long Answer', CASE: 'Case Study',
 };
 
-const AUTO_GRADED = ['MCQ', 'ASSERTION_REASON', 'VERY_SHORT'];
+// Which question types the backend auto-grades — mirrors MetadataView so the
+// "self-mark" hints and grading branch stay aligned with server behaviour.
+const AUTO_GRADED = METADATA_DEFAULTS.auto_graded_types;
 
 function fmt(sec: number) {
   const m = Math.floor(sec / 60), s = sec % 60;
@@ -64,7 +67,7 @@ function ConfigScreen({ onStart }: { onStart: (cfg: any) => void }) {
   const [count, setCount] = useState(15);
   const [difficulty, setDifficulty] = useState<Difficulty>('mixed');
   const [timeLimitMin, setTimeLimitMin] = useState<number | null>(null);
-  const [types, setTypes] = useState<string[]>(['MCQ', 'ASSERTION_REASON', 'VERY_SHORT']);
+  const [types, setTypes] = useState<string[]>([...AUTO_GRADED]);
 
   useEffect(() => {
     api.get('/ai/questions/meta/').then(r => {

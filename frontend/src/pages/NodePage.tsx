@@ -8,7 +8,11 @@ import MultiSelectCard from "../components/MultiSelectCard";
 import ResultBottomSheet from "../components/ResultBottomSheet";
 import FlashcardModal, { type Flashcard } from "../components/FlashcardModal";
 import LabDispatcher from "../labs/LabDispatcher";
+import { METADATA_DEFAULTS } from "../lib/metadata";
 import "../components/Flashcard.css";
+
+// Placeholder until the node's real life count arrives from the API.
+const INITIAL_LIVES = METADATA_DEFAULTS.node.initial_lives;
 
 type NodeState = "loading" | "video" | "practice" | "failed" | "complete" | "lab";
 
@@ -21,8 +25,8 @@ export default function NodePage() {
   const [nodeTitle, setNodeTitle] = useState("");
   const [questions, setQuestions] = useState<any[]>([]);
   const [qIndex, setQIndex] = useState(0);
-  const [lives, setLives] = useState(3);
-  const [maxLives, setMaxLives] = useState(3);
+  const [lives, setLives] = useState(INITIAL_LIVES);
+  const [maxLives, setMaxLives] = useState(INITIAL_LIVES);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [revisionCards, setRevisionCards] = useState<Flashcard[]>([]);

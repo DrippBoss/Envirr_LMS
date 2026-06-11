@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useAuth, api } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { useMetadata } from "../lib/metadata";
 
 type Role = "student" | "teacher";
 
 export default function Login() {
   const { theme, toggleTheme } = useTheme();
+  const meta = useMetadata();
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
@@ -315,8 +317,8 @@ export default function Login() {
                         required
                       >
                         <option value="" disabled>Select</option>
-                        {[9, 10, 11, 12].map((g) => (
-                          <option key={g} value={g}>Class {g}</option>
+                        {meta.grades.map((g) => (
+                          <option key={g.value} value={g.value}>{g.label}</option>
                         ))}
                       </select>
                     </div>
@@ -328,8 +330,8 @@ export default function Login() {
                         onChange={(e) => setBoard(e.target.value)}
                       >
                         <option value="">Optional</option>
-                        {["CBSE", "ICSE", "State Board", "Other"].map((b) => (
-                          <option key={b} value={b}>{b}</option>
+                        {meta.boards.map((b) => (
+                          <option key={b.value} value={b.value}>{b.label}</option>
                         ))}
                       </select>
                     </div>
