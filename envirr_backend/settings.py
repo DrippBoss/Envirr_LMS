@@ -22,7 +22,9 @@ if not DEBUG and SECRET_KEY.startswith('django-insecure'):
 GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
 GROQ_API_KEY   = env('GROQ_API_KEY',   default='')
 
-ALLOWED_HOSTS = ['*'] # Change in prod
+# Wide-open only in DEBUG; production must declare its hosts via ALLOWED_HOSTS
+# (comma-separated). Fail closed — an unset value in prod allows nothing.
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=(['*'] if DEBUG else []))
 
 
 # Application definition
@@ -179,6 +181,11 @@ EMAIL_BACKEND = (
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['http://localhost:5173'])
 CORS_ALLOW_CREDENTIALS = True
+
+# Local LLM (Ollama) for the AI tutor — endpoint and model are env-configurable
+# so the host/port/model can change per environment without code edits.
+OLLAMA_URL   = env('OLLAMA_URL',   default='http://host.docker.internal:11434/api/generate')
+OLLAMA_MODEL = env('OLLAMA_MODEL', default='llama3')
 
 # Cookie security — enforce HTTPS in production
 SESSION_COOKIE_SECURE = not DEBUG

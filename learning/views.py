@@ -1,6 +1,6 @@
 from rest_framework import generics, status, views
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.permissions import IsAuthenticated, BasePermission, AllowAny
 
 
 class IsStudent(BasePermission):
@@ -752,3 +752,66 @@ class StudyGroupsView(views.APIView):
             }
             for item in active
         ])
+
+
+# --- App metadata (FH #31) ---------------------------------------------------
+# Single source of truth for values the frontend previously hardcoded. Served
+# from one cheap endpoint so grades/boards/xp-math/lives/subjects/etc. stay in
+# sync with the backend instead of drifting in duplicated TS constants.
+
+# Per-subject presentation. `color` is a token key the frontend maps to a
+# static (purge-safe) Tailwind class set — never send raw class strings.
+SUBJECT_META = {
+    'Mathematics': {'icon': 'functions', 'color': 'primary'},
+    'Science':     {'icon': 'science',   'color': 'secondary'},
+    'English':     {'icon': 'menu_book', 'color': 'tertiary'},
+}
+DEFAULT_SUBJECT_META = {'icon': 'school', 'color': 'primary'}
+
+AUTO_GRADED_TYPES = ['MCQ', 'ASSERTION_REASON', 'VERY_SHORT']
+AI_TUTOR_HISTORY_LIMIT = 120
+PAPER_SECTION_DEFAULTS = [
+    {'name': 'Section A', 'type': 'MCQ',        'marks': 1, 'target': 5},
+    {'name': 'Section B', 'type': 'VERY_SHORT', 'marks': 2, 'target': 3},
+    {'name': 'Section C', 'type': 'SHORT',      'marks': 3, 'target': 3},
+    {'name': 'Section D', 'type': 'LONG',       'marks': 5, 'target': 2},
+]
+
+
+class MetadataView(views.APIView):
+    """Public, read-only app configuration the frontend consumes on load.
+
+    AllowAny so the login/signup screens (grades, boards) can populate before
+    auth. Pure constants + one cheap distinct() query, safe to cache client-side.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, _request):
+        from .models import CLASS_CHOICES
+        from users.models import StudentProfile
+        from gamification.services import XP_PER_LEVEL, MAX_LEVEL
+
+        # Distinct subjects that actually have content, merged with presentation.
+        db_subjects = (
+            CourseUnit.objects
+            .order_by()  # clear Meta.ordering so it isn't injected into DISTINCT
+            .values_list('subject', flat=True)
+            .distinct()
+        )
+        subjects = []
+        for name in sorted(s for s in db_subjects if s):
+            meta = SUBJECT_META.get(name, DEFAULT_SUBJECT_META)
+            subjects.append({'name': name, 'icon': meta['icon'], 'color': meta['color']})
+
+        initial_lives = LearningNode._meta.get_field('starting_lives').default
+
+        return Response({
+            'grades': [{'value': v, 'label': l} for v, l in CLASS_CHOICES],
+            'boards': [{'value': v, 'label': l} for v, l in StudentProfile.BOARD_CHOICES],
+            'gamification': {'xp_per_level': XP_PER_LEVEL, 'max_level': MAX_LEVEL},
+            'node': {'initial_lives': initial_lives},
+            'subjects': subjects,
+            'auto_graded_types': AUTO_GRADED_TYPES,
+            'ai_tutor': {'history_limit': AI_TUTOR_HISTORY_LIMIT},
+            'paper_section_defaults': PAPER_SECTION_DEFAULTS,
+        })

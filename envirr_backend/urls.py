@@ -2,10 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from learning.views import MetadataView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/metadata/', MetadataView.as_view()),
     path('api/auth/', include('users.urls')),
     path('api/courses/', include('courses.urls')),
     path('api/activity/', include('activity.urls')),

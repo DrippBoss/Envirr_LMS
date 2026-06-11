@@ -14,6 +14,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 class AiTutorRateThrottle(ScopedRateThrottle):
     scope = 'ai_tutor'
 from django.http import FileResponse, Http404
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework import views, response, status, permissions, generics
 from ai_engine.serializers import (
@@ -207,8 +208,8 @@ class AiTutorView(views.APIView):
 
         try:
             res = http_requests.post(
-                "http://host.docker.internal:11434/api/generate",
-                json={"model": "llama3", "prompt": prompt, "stream": False},
+                settings.OLLAMA_URL,
+                json={"model": settings.OLLAMA_MODEL, "prompt": prompt, "stream": False},
                 timeout=60,
             )
             res.raise_for_status()
