@@ -19,8 +19,9 @@ from .models import (
     Flashcard, NodeType, CompletionStatus
 )
 from .serializers import (
-    CourseUnitSerializer, LearningPathSerializer, FlashcardDeckSerializer, 
-    LessonQuestionSerializer, FullLearningNodeSerializer, FlashcardSerializer
+    CourseUnitSerializer, LearningPathSerializer, FlashcardDeckSerializer,
+    LessonQuestionSerializer, FullLearningNodeSerializer, FlashcardSerializer,
+    build_learning_context
 )
 from .services import (
     unlock_next_nodes, award_node_xp, calculate_stars, 
@@ -45,7 +46,19 @@ class DashboardView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         if not hasattr(user, 'profile'): return CourseUnit.objects.none()
-        return CourseUnit.objects.filter(class_grade=user.profile.class_grade, is_published=True)
+        return CourseUnit.objects.filter(
+            class_grade=user.profile.class_grade, is_published=True
+        ).prefetch_related(
+            'paths',
+            'paths__nodes',
+            'paths__revision_nodes',
+            'paths__revision_nodes__deck',
+            'paths__revision_nodes__deck__cards',
+        )
+
+    def get_serializer_context(self):
+        # Pre-fetch all of the student's progress once to kill the per-node N+1.
+        return build_learning_context(self.request)
 
 class UnitPrerequisitesView(views.APIView):
     permission_classes = [IsStudent]
@@ -82,7 +95,12 @@ class MapDataView(views.APIView):
     permission_classes = [IsStudent]
     
     def get(self, request, path_id):
-        path = get_object_or_404(LearningPath, pk=path_id)
+        path = get_object_or_404(
+            LearningPath.objects.prefetch_related(
+                'nodes', 'revision_nodes', 'revision_nodes__deck', 'revision_nodes__deck__cards'
+            ),
+            pk=path_id,
+        )
         err = _grade_check(path, request.user.profile)
         if err:
             return err
@@ -103,7 +121,7 @@ class MapDataView(views.APIView):
                  defaults={'status': CompletionStatus.UNLOCKED}
              )
              
-        return Response(LearningPathSerializer(path, context={'request': request}).data)
+        return Response(LearningPathSerializer(path, context=build_learning_context(request)).data)
 
 class NodeStartView(views.APIView):
     permission_classes = [IsStudent]
