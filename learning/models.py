@@ -365,7 +365,10 @@ class StudyGroup(models.Model):
     description = models.TextField(blank=True)
     invite_code = models.CharField(max_length=8, unique=True, default=_invite_code)
     creator     = models.ForeignKey('users.StudentProfile', on_delete=models.CASCADE, related_name='created_groups')
-    max_members = models.PositiveIntegerField(default=10)
+    # B10: keep the field default in lockstep with the MAX_MEMBERS constant
+    # (6) the frontend and join logic enforce — previously defaulted to 10,
+    # letting direct API calls create oversized groups.
+    max_members = models.PositiveIntegerField(default=MAX_MEMBERS)
     is_active   = models.BooleanField(default=True)
     created_at  = models.DateTimeField(auto_now_add=True)
 
