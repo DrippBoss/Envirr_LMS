@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { api } from '../context/AuthContext';
+import { METADATA_DEFAULTS } from '../lib/metadata';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface ExtractedQuestion {
@@ -141,12 +142,9 @@ export default function UploadIngest() {
       setPool(qs);
       setDocSummary(subject ? `${subject} — ${chapter || subject}` : 'Uploaded document');
       // Start with pre-built sections (empty) — user picks questions from pool
-      setSections([
-        { name: 'Section A', type: 'MCQ',        marks: 1, target: 5, questions: [] },
-        { name: 'Section B', type: 'VERY_SHORT', marks: 2, target: 3, questions: [] },
-        { name: 'Section C', type: 'SHORT',      marks: 3, target: 3, questions: [] },
-        { name: 'Section D', type: 'LONG',       marks: 5, target: 2, questions: [] },
-      ]);
+      setSections(
+        METADATA_DEFAULTS.paper_section_defaults.map((s) => ({ ...s, questions: [] }))
+      );
       setAssignedIds(new Set());
       setStep('build');
     } catch (err: any) {

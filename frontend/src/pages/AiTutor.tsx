@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, useAuth } from '../context/AuthContext';
+import { METADATA_DEFAULTS } from '../lib/metadata';
 
 interface ConceptKey {
     title: string;
@@ -34,7 +35,7 @@ const STARTERS = [
 ];
 
 const CACHE_KEY = 'envirr_tutor_history';
-const MAX_CACHED = 120; // messages
+const MAX_CACHED = METADATA_DEFAULTS.ai_tutor.history_limit; // messages
 
 function loadCached(userId?: number): Message[] {
     try {

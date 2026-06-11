@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api, useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PrerequisiteModal from "../components/PrerequisiteModal";
+import { useMetadata } from "../lib/metadata";
 import heroImg from "../assets/hero.png";
 
 type CourseUnit = {
@@ -45,6 +46,8 @@ export default function StudentDashboard() {
 
   const { user } = useAuth();
   const navigate  = useNavigate();
+  const meta = useMetadata();
+  const xpPerLevel = meta.gamification.xp_per_level;
 
   useEffect(() => {
     Promise.all([
@@ -129,8 +132,8 @@ export default function StudentDashboard() {
                 You're on a{" "}
                 <span className="text-secondary font-bold">{stats?.current_streak ?? 0}-day roll!</span>{" "}
                 {(() => {
-                  const xpInLevel = (stats?.total_xp ?? 0) % 500;
-                  const xpToNext  = 500 - xpInLevel;
+                  const xpInLevel = (stats?.total_xp ?? 0) % xpPerLevel;
+                  const xpToNext  = xpPerLevel - xpInLevel;
                   const lvl       = stats?.current_level ?? 1;
                   return `${xpToNext} XP to Level ${lvl + 1} — keep going!`;
                 })()}
@@ -140,13 +143,13 @@ export default function StudentDashboard() {
               {stats && (
                 <div className="mb-4">
                   <div className="flex justify-between text-[11px] text-slate-500 mb-1">
-                    <span>{(stats.total_xp % 500).toLocaleString()} / 500 XP</span>
+                    <span>{(stats.total_xp % xpPerLevel).toLocaleString()} / {xpPerLevel} XP</span>
                     <span>Lv {stats.current_level} → Lv {stats.current_level + 1}</span>
                   </div>
                   <div className="h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
                     <div
                       className="h-full bg-primary rounded-full transition-all duration-700"
-                      style={{ width: `${(stats.total_xp % 500) / 5}%` }}
+                      style={{ width: `${((stats.total_xp % xpPerLevel) / xpPerLevel) * 100}%` }}
                     />
                   </div>
                 </div>
