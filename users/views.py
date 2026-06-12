@@ -24,6 +24,26 @@ from users.models import CustomUser, EmailVerificationToken
 
 MAX_VERIFICATION_SENDS = 5
 
+# Page size for the admin dashboard user table. The analytics endpoint returns
+# the first page; AdminUsersListView serves page 2+ for the "Show More" button.
+ADMIN_USERS_PAGE_SIZE = 20
+
+
+def _serialize_admin_user(u):
+    """Shape a CustomUser for the admin dashboard user table. Shared by the
+    analytics summary (first page) and the paginated users list (Show More)."""
+    return {
+        'id': u.id,
+        'username': u.username,
+        'email': u.email,
+        'role': u.role,
+        'date_joined': u.date_joined.strftime('%b %d, %Y'),
+        'is_active': u.is_active,
+        'can_build_courses': u.can_build_courses,
+        'can_edit_questions': u.can_edit_questions,
+        'assigned_subjects': u.assigned_subjects,
+    }
+
 # Generic responses for unauthenticated account-recovery endpoints. We always
 # return the same message whether or not the account exists so the endpoints
 # can't be used to enumerate valid usernames/emails.
@@ -697,22 +717,9 @@ class AdminAnalyticsView(APIView):
                 'mode': p.config.get('mode', 'full_ai') if p.config else 'full_ai',
             })
 
-        # Recent users
-        users = CustomUser.objects.order_by('-date_joined')[:10]
-        user_data = [
-            {
-                'id': u.id,
-                'username': u.username,
-                'email': u.email,
-                'role': u.role,
-                'date_joined': u.date_joined.strftime('%b %d, %Y'),
-                'is_active': u.is_active,
-                'can_build_courses': u.can_build_courses,
-                'can_edit_questions': u.can_edit_questions,
-                'assigned_subjects': u.assigned_subjects,
-            }
-            for u in users
-        ]
+        # Recent users (first page; the dashboard pages the rest via AdminUsersListView)
+        users = CustomUser.objects.order_by('-date_joined')[:ADMIN_USERS_PAGE_SIZE]
+        user_data = [_serialize_admin_user(u) for u in users]
 
         return Response({
             'kpi': {
@@ -730,3 +737,25 @@ class AdminAnalyticsView(APIView):
             'papers': paper_data,
             'users': user_data,
         })
+
+
+class AdminUsersListView(APIView):
+    """Paginated list of all users for the admin dashboard's "Show More Users"
+    button. Page 1 mirrors the recent users embedded in the analytics payload;
+    page 2+ extends the table. Ordered newest-first to stay consistent."""
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        if request.user.role != 'admin':
+            return Response({'error': 'Admin only.'}, status=403)
+
+        from envirr_backend.pagination import StandardResultsPagination
+
+        class _AdminUsersPagination(StandardResultsPagination):
+            page_size = ADMIN_USERS_PAGE_SIZE
+
+        qs = CustomUser.objects.order_by('-date_joined')
+        paginator = _AdminUsersPagination()
+        page = paginator.paginate_queryset(qs, request, view=self)
+        data = [_serialize_admin_user(u) for u in page]
+        return paginator.get_paginated_response(data)
