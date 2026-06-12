@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, useAuth } from '../context/AuthContext';
 import { METADATA_DEFAULTS } from '../lib/metadata';
+import MarkdownMessage from '../components/MarkdownMessage';
 
 interface ConceptKey {
     title: string;
@@ -242,7 +243,7 @@ export default function AiTutor() {
                                         {/* Text card */}
                                         <div className="bg-surface-container text-on-surface px-5 py-4 rounded-2xl rounded-tl-none border border-outline-variant/10 relative overflow-hidden">
                                             <div className="absolute top-0 left-0 w-0.5 h-full bg-primary/40 rounded-full" />
-                                            <p className="text-[15px] leading-relaxed whitespace-pre-wrap break-words pl-1">{msg.content}</p>
+                                            <MarkdownMessage content={msg.content} className="text-[15px] leading-relaxed break-words pl-1" />
                                         </div>
 
                                         {/* Concept Key bento card */}
