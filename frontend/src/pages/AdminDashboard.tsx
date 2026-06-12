@@ -58,6 +58,8 @@ export default function AdminDashboard() {
     const [publishedCourses, setPublishedCourses] = useState<any[]>([]);
     const [teachers, setTeachers] = useState<any[]>([]);
     const [assigningId, setAssigningId] = useState<number | null>(null);
+    const [usersPage, setUsersPage] = useState(1);
+    const [loadingMoreUsers, setLoadingMoreUsers] = useState(false);
 
     const fetchPublishedCourses = () =>
         api.get('/teacher/courses/assigned/').then(r => setPublishedCourses(r.data)).catch(() => {});
@@ -189,6 +191,26 @@ export default function AdminDashboard() {
         u.username.toLowerCase().includes(userFilter.toLowerCase()) ||
         u.email.toLowerCase().includes(userFilter.toLowerCase())
     );
+
+    const hasMoreUsers = localUsers.length < (kpi.total_users ?? 0);
+
+    const handleShowMoreUsers = async () => {
+        if (loadingMoreUsers || !hasMoreUsers) return;
+        setLoadingMoreUsers(true);
+        try {
+            const res = await api.get(`/auth/admin/users/?page=${usersPage + 1}`);
+            const incoming: any[] = res.data?.results ?? [];
+            setLocalUsers(prev => {
+                const seen = new Set(prev.map(u => u.id));
+                return [...prev, ...incoming.filter(u => !seen.has(u.id))];
+            });
+            setUsersPage(p => p + 1);
+        } catch {
+            // ignore — button stays available for retry
+        } finally {
+            setLoadingMoreUsers(false);
+        }
+    };
 
     const maxBar = Math.max(1, ...dayBars);
 
@@ -882,9 +904,17 @@ export default function AdminDashboard() {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="px-6 pt-4 flex justify-center">
-                            <button className="text-xs text-slate-500 hover:text-primary font-bold transition-colors">Show More Users</button>
-                        </div>
+                        {hasMoreUsers && (
+                            <div className="px-6 pt-4 flex justify-center">
+                                <button
+                                    onClick={handleShowMoreUsers}
+                                    disabled={loadingMoreUsers}
+                                    className="text-xs text-slate-500 hover:text-primary font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {loadingMoreUsers ? 'Loading…' : 'Show More Users'}
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     </>}
