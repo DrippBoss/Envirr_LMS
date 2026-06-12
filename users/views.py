@@ -5,8 +5,11 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
 from django.db import transaction
 from django.db.models import Count
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from users.models import CustomUser
 import secrets
 from django.core.mail import send_mail
@@ -20,6 +23,44 @@ from users.serializers import (
 from users.models import CustomUser, EmailVerificationToken
 
 MAX_VERIFICATION_SENDS = 5
+
+# Generic responses for unauthenticated account-recovery endpoints. We always
+# return the same message whether or not the account exists so the endpoints
+# can't be used to enumerate valid usernames/emails.
+GENERIC_RECOVERY_MSG = (
+    'If an account matching that information exists, we have sent an email '
+    'with further instructions. Please check your inbox.'
+)
+
+
+def _send_password_reset(user) -> None:
+    """Email a password-reset link using Django's stateless token generator.
+
+    The token encodes the user's pk, a timestamp, and a hash of the current
+    password — so it auto-invalidates once the password changes or after
+    PASSWORD_RESET_TIMEOUT. No DB model is needed.
+    """
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+    reset_url = f"{settings.FRONTEND_URL}/reset-password?uid={uid}&token={token}"
+
+    body = (
+        f"Hi {user.username},\n\n"
+        f"We received a request to reset your Envirr password. "
+        f"Click the link below to choose a new one. This link expires in "
+        f"{settings.PASSWORD_RESET_TIMEOUT // 3600} hours.\n\n"
+        f"{reset_url}\n\n"
+        f"If you didn't request this, you can safely ignore this email — "
+        f"your password will remain unchanged.\n\n"
+        f"— The Envirr Team"
+    )
+    send_mail(
+        subject='Reset your Envirr password',
+        message=body,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        fail_silently=False,
+    )
 
 
 def _send_verification(user, new_email: str = '') -> tuple[bool, str]:
@@ -98,6 +139,12 @@ def _send_verification(user, new_email: str = '') -> tuple[bool, str]:
 
 class LoginRateThrottle(ScopedRateThrottle):
     scope = 'login'
+
+
+class AccountRecoveryThrottle(ScopedRateThrottle):
+    """Tight rate limit for the unauthenticated resend / password-reset
+    endpoints to blunt email-bombing and enumeration brute-forcing."""
+    scope = 'account_recovery'
 
 
 def set_auth_cookies(response, access_token, refresh_token=None):
@@ -360,6 +407,97 @@ class VerifyEmailView(APIView):
         user.save(update_fields=['email_verified', 'is_active'])
         token_obj.delete()
         return Response({'detail': 'Email verified! Your account is now active. You can log in.'}, status=200)
+
+
+class ResendVerificationView(APIView):
+    """Unauthenticated email-verification resend (#26).
+
+    Replaces the old frontend hack of logging the user in just to call the
+    authenticated send-verification endpoint. Accepts a username, looks up an
+    unverified account, and resends — always returning a generic message so it
+    can't be used to probe which usernames exist.
+    """
+    permission_classes = (permissions.AllowAny,)
+    throttle_classes = [AccountRecoveryThrottle]
+
+    def post(self, request):
+        username = request.data.get('username', '').strip()
+        if not username:
+            return Response({'detail': 'Username is required.'}, status=400)
+
+        user = CustomUser.objects.filter(username__iexact=username).first()
+        # Only resend for accounts that exist and still need verification.
+        if user and not user.email_verified:
+            _send_verification(user, new_email=user.pending_email or '')
+
+        return Response({'detail': GENERIC_RECOVERY_MSG}, status=200)
+
+
+class PasswordResetRequestView(APIView):
+    """Step 1 of forgot-password (#7): email a reset link.
+
+    Accepts username or email. Enumeration-safe: always returns the same
+    generic message regardless of whether a matching account was found.
+    """
+    permission_classes = (permissions.AllowAny,)
+    throttle_classes = [AccountRecoveryThrottle]
+
+    def post(self, request):
+        identifier = (request.data.get('username') or request.data.get('email') or '').strip()
+        if not identifier:
+            return Response({'detail': 'Enter your username or email.'}, status=400)
+
+        user = CustomUser.objects.filter(username__iexact=identifier).first()
+        if not user:
+            user = CustomUser.objects.filter(email__iexact=identifier).first()
+
+        # Only send to active, verified accounts with an email on file. A
+        # locked or unverified account can't reset its way back in — they go
+        # through verification/support instead.
+        if user and user.is_active and user.email:
+            _send_password_reset(user)
+
+        return Response({'detail': GENERIC_RECOVERY_MSG}, status=200)
+
+
+class PasswordResetConfirmView(APIView):
+    """Step 2 of forgot-password (#7): consume the token, set new password."""
+    permission_classes = (permissions.AllowAny,)
+    throttle_classes = [AccountRecoveryThrottle]
+
+    def post(self, request):
+        uid_b64          = request.data.get('uid', '')
+        token            = request.data.get('token', '')
+        new_password     = request.data.get('new_password', '')
+        confirm_password = request.data.get('confirm_password', '')
+
+        if not uid_b64 or not token:
+            return Response({'detail': 'This reset link is invalid or incomplete.'}, status=400)
+        if not new_password or not confirm_password:
+            return Response({'detail': 'new_password and confirm_password are required.'}, status=400)
+        if new_password != confirm_password:
+            return Response({'detail': 'New password and confirm password do not match.'}, status=400)
+
+        try:
+            uid = force_str(urlsafe_base64_decode(uid_b64))
+            user = CustomUser.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+            return Response({'detail': 'This reset link is invalid or has expired.'}, status=400)
+
+        if not default_token_generator.check_token(user, token):
+            return Response({'detail': 'This reset link is invalid or has expired.'}, status=400)
+
+        try:
+            validate_password_strength(new_password)
+        except Exception as e:
+            return Response({'detail': str(e.detail[0]) if hasattr(e, 'detail') else str(e)}, status=400)
+
+        user.set_password(new_password)
+        # A successful reset proves email ownership and should clear a lockout.
+        user.failed_login_attempts = 0
+        user.save(update_fields=['password', 'failed_login_attempts'])
+
+        return Response({'detail': 'Your password has been reset. You can now log in.'}, status=200)
 
 
 class ToggleCourseBuilderView(APIView):

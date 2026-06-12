@@ -22,6 +22,12 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResend, setShowResend] = useState(false);
   const [resendStatus, setResendStatus] = useState("");
+  // Forgot-password modal (#7)
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotId, setForgotId] = useState("");
+  const [forgotStatus, setForgotStatus] = useState("");
+  const [forgotSubmitting, setForgotSubmitting] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
 
   useAuth();
 
@@ -72,25 +78,124 @@ export default function Login() {
   };
 
   const handleResendVerification = async () => {
+    if (!username.trim()) {
+      setResendStatus("Enter your username first, then resend.");
+      return;
+    }
     setResendStatus("Sending...");
     try {
-      // Temporarily log in with credentials to call the send endpoint
-      const tokenRes = await api.post("auth/login/", { username, password }).catch(() => null);
-      if (!tokenRes) {
-        // Can't authenticate — just tell user to re-register or contact support
-        setResendStatus("Could not resend. Please contact support.");
-        return;
-      }
-      await api.post("auth/send-verification/");
-      setResendStatus("Verification email resent! Check your inbox.");
+      // Token-based resend (#26) — no credentials needed; the backend looks up
+      // the unverified account by username and returns a generic message.
+      const res = await api.post("auth/resend-verification/", { username });
+      setResendStatus(res.data?.detail ?? "Verification email sent. Check your inbox.");
       setShowResend(false);
-    } catch {
-      setResendStatus("Failed to resend. Try again in a moment.");
+    } catch (err: any) {
+      setResendStatus(err.response?.data?.detail ?? "Failed to resend. Try again in a moment.");
+    }
+  };
+
+  const openForgot = () => {
+    setForgotId(username);  // prefill with whatever they've typed
+    setForgotStatus("");
+    setForgotSent(false);
+    setForgotOpen(true);
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!forgotId.trim()) {
+      setForgotStatus("Enter your username or email.");
+      return;
+    }
+    setForgotSubmitting(true);
+    setForgotStatus("");
+    try {
+      const res = await api.post("auth/password-reset/", { username: forgotId });
+      setForgotStatus(res.data?.detail ?? "If an account exists, a reset link is on its way.");
+      setForgotSent(true);
+    } catch (err: any) {
+      setForgotStatus(err.response?.data?.detail ?? "Something went wrong. Try again in a moment.");
+    } finally {
+      setForgotSubmitting(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-background flex animate-fade-in selection:bg-primary/30 selection:text-primary overflow-hidden">
+      {/* Forgot-password modal (#7) */}
+      {forgotOpen && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+          onClick={() => setForgotOpen(false)}
+        >
+          <div
+            className="w-full max-w-md bg-surface-container rounded-2xl border border-outline-variant/15 p-8 space-y-5 shadow-nebula"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between">
+              <div className="space-y-1">
+                <h2 className="text-lg font-black font-headline text-on-surface">Reset your password</h2>
+                <p className="text-xs text-outline leading-relaxed">
+                  Enter your username or email and we'll send a reset link.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setForgotOpen(false)}
+                className="shrink-0 text-outline hover:text-on-surface transition-colors"
+                aria-label="Close"
+              >
+                <span className="material-symbols-outlined text-xl">close</span>
+              </button>
+            </div>
+
+            {forgotSent ? (
+              <div className="space-y-4">
+                <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-secondary/10 border border-secondary/30 text-secondary text-sm">
+                  <span className="material-symbols-outlined text-base shrink-0 mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>mark_email_read</span>
+                  <span className="flex-1 leading-snug">{forgotStatus}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setForgotOpen(false)}
+                  className="w-full py-3 rounded-lg bg-surface-container-high border border-outline-variant/20 text-on-surface-variant hover:text-on-surface font-bold text-sm transition-all"
+                >
+                  Back to login
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-xl">person</span>
+                  </div>
+                  <input
+                    autoFocus
+                    className="w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border-none rounded-lg text-on-surface placeholder:text-outline/50 focus:ring-0 focus:outline-none transition-all"
+                    placeholder="Username or email"
+                    value={forgotId}
+                    onChange={(e) => setForgotId(e.target.value)}
+                  />
+                </div>
+                {forgotStatus && (
+                  <p className="text-xs text-error leading-snug px-1">{forgotStatus}</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={forgotSubmitting}
+                  className="w-full py-3.5 bg-gradient-to-r from-secondary-container to-secondary text-on-secondary-container font-bold rounded-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {forgotSubmitting
+                    ? <><span className="w-4 h-4 rounded-full border-2 border-on-secondary-container/30 border-t-on-secondary-container animate-spin" /><span>Sending...</span></>
+                    : <><span className="material-symbols-outlined text-lg">send</span><span>Send reset link</span></>
+                  }
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Theme toggle — fixed top-right, visible before auth */}
       <button
         onClick={toggleTheme}
@@ -367,9 +472,13 @@ export default function Login() {
               <div className="flex justify-between items-center px-1">
                 <label className="text-xs font-label text-outline uppercase tracking-wider">Access Key</label>
                 {isLogin && (
-                  <a className="text-[10px] uppercase font-bold tracking-tighter text-outline hover:text-primary transition-colors cursor-pointer">
+                  <button
+                    type="button"
+                    onClick={openForgot}
+                    className="text-[10px] uppercase font-bold tracking-tighter text-outline hover:text-primary transition-colors cursor-pointer"
+                  >
                     Forgot Password?
-                  </a>
+                  </button>
                 )}
               </div>
               <div className="relative group">
@@ -443,33 +552,6 @@ export default function Login() {
               }
             </button>
           </form>
-
-          {/* Divider */}
-          <div className="relative py-2">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-outline-variant/15" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="px-4 bg-surface-container text-outline uppercase tracking-widest">Or Bridge With</span>
-            </div>
-          </div>
-
-          {/* OAuth Buttons — 2 column grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center gap-2 py-3 bg-surface-container-high rounded-lg hover:bg-surface-variant transition-colors border border-outline-variant/15">
-              <svg className="w-4 h-4" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-              </svg>
-              <span className="text-xs font-label text-on-surface-variant">Google</span>
-            </button>
-            <button className="flex items-center justify-center gap-2 py-3 bg-surface-container-high rounded-lg hover:bg-surface-variant transition-colors border border-outline-variant/15">
-              <span className="material-symbols-outlined text-lg text-on-surface-variant">terminal</span>
-              <span className="text-xs font-label text-on-surface-variant">SSO</span>
-            </button>
-          </div>
 
           {/* Admission Link */}
           <div className="text-center pt-2">
