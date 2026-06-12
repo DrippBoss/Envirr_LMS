@@ -257,6 +257,12 @@ export default function UploadIngest() {
         if (paper?.pdf_url) {
           clearInterval(poll); clearTimeout(t3); clearTimeout(t4);
           setPdfUrl(paper.pdf_url); setStep('done');
+        } else if (paper?.status === 'failed') {
+          // Generation failed server-side — surface the error and return to the
+          // build step instead of polling forever.
+          clearInterval(poll); clearTimeout(t3); clearTimeout(t4);
+          setError(paper.error_message || 'Paper compilation failed. Please try again.');
+          setStep('build');
         }
       } catch {}
     }, 3000);

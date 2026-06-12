@@ -328,6 +328,7 @@ export default function TeacherPanel() {
   const [compilingPaper, setCompilingPaper] = useState<{ id: number; title: string } | null>(null);
   const [compilingStep, setCompilingStep] = useState(0);
   const [paperDone, setPaperDone] = useState<{ id: number; title: string } | null>(null);
+  const [paperError, setPaperError] = useState<{ title: string; message: string } | null>(null);
 
   const AI_COMPILE_STEPS = ['Analyzing curriculum', 'Generating questions', 'Structuring paper', 'Compiling PDF'];
   const MANUAL_COMPILE_STEPS = ['Setting up sections', 'Compiling LaTeX', 'Building PDF'];
@@ -403,6 +404,13 @@ export default function TeacherPanel() {
           clearInterval(poll); timers.forEach(clearTimeout);
           setPapers(res.data);
           setPaperDone({ id: compilingPaper.id, title: compilingPaper.title });
+          setCompilingPaper(null);
+        } else if (found?.status === 'failed') {
+          // Generation failed server-side — stop polling and surface the error
+          // instead of spinning forever.
+          clearInterval(poll); timers.forEach(clearTimeout);
+          setPapers(res.data);
+          setPaperError({ title: compilingPaper.title, message: found.error_message || 'Paper generation failed. Please try again.' });
           setCompilingPaper(null);
         }
       } catch {}
@@ -659,7 +667,7 @@ export default function TeacherPanel() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
               <KpiCard icon="quiz"            label="Questions Available" value="1,248"                             sub="Across all subjects"    iconColor="text-primary" />
               <KpiCard icon="description"     label="Recent Papers"      value={String(papers.length)}             sub="Last 5 generated"       iconColor="text-secondary" />
-              <KpiCard icon="pending_actions" label="Compiling"          value={String(papers.filter(p => !p.pdf_url).length)} sub="In queue"   iconColor="text-tertiary" />
+              <KpiCard icon="pending_actions" label="Compiling"          value={String(papers.filter(p => !p.pdf_url && p.status !== 'failed').length)} sub="In queue"   iconColor="text-tertiary" />
             </div>
           )}
 
@@ -1025,8 +1033,28 @@ export default function TeacherPanel() {
                 </div>
               )}
 
-              {/* Hide rest of UI while compiling or done */}
-              {compilingPaper || paperDone ? null : <>
+              {/* ── Paper failed screen ── */}
+              {!compilingPaper && paperError && (
+                <div className="max-w-md mx-auto flex flex-col items-center justify-center min-h-[380px] gap-6 p-6 text-center">
+                  <div className="w-20 h-20 rounded-2xl bg-error/10 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-4xl text-error">error</span>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="font-black text-on-surface text-2xl">Generation Failed</p>
+                    <p className="text-sm text-outline max-w-xs">{paperError.title}</p>
+                    <p className="text-xs text-error/80 max-w-xs break-words mx-auto">{paperError.message}</p>
+                  </div>
+                  <button
+                    onClick={() => setPaperError(null)}
+                    className="w-full py-3 rounded-2xl border border-outline-variant/30 text-sm font-semibold text-on-surface-variant hover:border-primary/40 hover:text-on-surface transition-all"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              )}
+
+              {/* Hide rest of UI while compiling, done, or errored */}
+              {compilingPaper || paperDone || paperError ? null : <>
               {/* Mode Selector */}
               <div className="flex flex-wrap gap-2 mb-6 p-1.5 bg-surface-container rounded-2xl border border-outline-variant/10 w-fit max-w-full">
                 {[
@@ -1638,8 +1666,8 @@ export default function TeacherPanel() {
                     {papers.map(p => (
                       <div key={p.id} className="flex items-center gap-4 p-4 bg-surface-container-high rounded-xl border border-outline-variant/10 hover:border-outline-variant/20 transition-all">
                         <div className="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center shrink-0">
-                          <span className={`material-symbols-outlined text-xl ${p.pdf_url ? 'text-secondary' : 'text-primary'}`}>
-                            {p.pdf_url ? 'check_circle' : 'hourglass_top'}
+                          <span className={`material-symbols-outlined text-xl ${p.pdf_url ? 'text-secondary' : p.status === 'failed' ? 'text-error' : 'text-primary'}`}>
+                            {p.pdf_url ? 'check_circle' : p.status === 'failed' ? 'error' : 'hourglass_top'}
                           </span>
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1663,6 +1691,15 @@ export default function TeacherPanel() {
                           >
                             Download PDF
                           </button>
+                        ) : p.status === 'failed' ? (
+                          <div className="shrink-0 flex flex-col items-end gap-1 max-w-[45%]">
+                            <span className="text-xs font-bold text-error">Failed</span>
+                            {p.error_message && (
+                              <span className="text-[10px] text-outline text-right break-words line-clamp-2" title={p.error_message}>
+                                {p.error_message}
+                              </span>
+                            )}
+                          </div>
                         ) : (() => {
                           const elapsed = Math.floor((now - new Date(p.created_at).getTime()) / 1000);
                           const isStuck = elapsed > 90;
