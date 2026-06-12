@@ -131,9 +131,13 @@ REST_FRAMEWORK = {
         'user': '500/day',
         'ai_tutor': '30/hour',
         'login': '10/hour',
+        'account_recovery': '5/hour',
     },
     'EXCEPTION_HANDLER': 'envirr_backend.exceptions.envirr_exception_handler',
 }
+
+# Password-reset link validity (used by django's default_token_generator).
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 2  # 2 hours
 
 from datetime import timedelta
 SIMPLE_JWT = {

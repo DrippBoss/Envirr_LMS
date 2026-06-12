@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     RegisterView, UserDetailView, ChangePasswordView,
-    SendVerificationEmailView, VerifyEmailView,
+    SendVerificationEmailView, VerifyEmailView, ResendVerificationView,
+    PasswordResetRequestView, PasswordResetConfirmView,
     CookieTokenObtainPairView, CookieTokenRefreshView, LogoutView,
     AdminAnalyticsView, ToggleCourseBuilderView, ToggleQuestionEditorView,
     ToggleUserStatusView, DeleteUserView, AssignSubjectsView,
@@ -15,7 +16,10 @@ urlpatterns = [
     path('logout/',          LogoutView.as_view(),                 name='auth_logout'),
     path('change-password/',    ChangePasswordView.as_view(),         name='change_password'),
     path('send-verification/',  SendVerificationEmailView.as_view(),  name='send_verification'),
+    path('resend-verification/', ResendVerificationView.as_view(),    name='resend_verification'),
     path('verify-email/',       VerifyEmailView.as_view(),            name='verify_email'),
+    path('password-reset/',         PasswordResetRequestView.as_view(),  name='password_reset'),
+    path('password-reset/confirm/', PasswordResetConfirmView.as_view(),  name='password_reset_confirm'),
     path('admin/analytics/', AdminAnalyticsView.as_view(),        name='admin_analytics'),
     path('admin/users/<int:user_id>/toggle-course-builder/', ToggleCourseBuilderView.as_view(), name='toggle_course_builder'),
     path('admin/users/<int:user_id>/toggle-question-editor/', ToggleQuestionEditorView.as_view(), name='toggle_question_editor'),
