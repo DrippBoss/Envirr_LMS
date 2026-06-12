@@ -214,15 +214,36 @@ function QuizScreen({
   const [selfMark, setSelfMark] = useState<Record<number, boolean>>({});
   const [submitting, setSubmitting] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(timeLimit ?? null);
+  const [paused, setPaused] = useState(false);
   const startTs = useRef(Date.now());
+  // Track paused time so it's excluded from both the countdown and the reported
+  // time_taken — a break should never eat into the test allowance.
+  const pausedAccumMs = useRef(0);
+  const pauseStartedAt = useRef<number | null>(null);
 
-  // Timer
+  const togglePause = () => {
+    setPaused(p => {
+      if (p) {
+        // Resuming — fold the just-ended pause segment into the accumulator.
+        if (pauseStartedAt.current !== null) {
+          pausedAccumMs.current += Date.now() - pauseStartedAt.current;
+          pauseStartedAt.current = null;
+        }
+        return false;
+      }
+      // Pausing — remember when the break began.
+      pauseStartedAt.current = Date.now();
+      return true;
+    });
+  };
+
+  // Timer — frozen while paused (no tick scheduled), so paused time isn't consumed.
   useEffect(() => {
-    if (secondsLeft === null) return;
+    if (secondsLeft === null || paused) return;
     if (secondsLeft <= 0) { handleSubmit(); return; }
     const t = setTimeout(() => setSecondsLeft(s => (s ?? 1) - 1), 1000);
     return () => clearTimeout(t);
-  }, [secondsLeft]);
+  }, [secondsLeft, paused]);
 
   const q = questions[idx];
 
@@ -231,7 +252,9 @@ function QuizScreen({
 
   const handleSubmit = async () => {
     setSubmitting(true);
-    const timeTaken = Math.round((Date.now() - startTs.current) / 1000);
+    // Exclude paused time so a break never inflates the reported duration.
+    const pausedMs = pausedAccumMs.current + (pauseStartedAt.current !== null ? Date.now() - pauseStartedAt.current : 0);
+    const timeTaken = Math.round((Date.now() - startTs.current - pausedMs) / 1000);
     const allAnswers: Record<string, string> = {};
     const selfMarks: Record<string, boolean> = {};
     // Send the student's real answer text, and report self-marks separately so
@@ -255,6 +278,23 @@ function QuizScreen({
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary-container/30">
+      {/* Paused overlay — hides questions so a break can't be used to think ahead. */}
+      {paused && (
+        <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-5 bg-background/95 backdrop-blur-xl">
+          <span className="material-symbols-outlined text-6xl text-tertiary" style={{ fontVariationSettings:"'FILL' 1" }}>pause_circle</span>
+          <div className="text-center">
+            <h2 className="text-2xl font-black text-on-surface">Test paused</h2>
+            <p className="text-sm text-on-surface-variant mt-1">The timer is frozen. Your questions are hidden until you resume.</p>
+          </div>
+          <button
+            onClick={togglePause}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-black hover:brightness-110 transition-all"
+          >
+            <span className="material-symbols-outlined text-base" style={{ fontVariationSettings:"'FILL' 1" }}>play_arrow</span>
+            Resume Test
+          </button>
+        </div>
+      )}
       {/* Header */}
       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 h-14 bg-background/95 border-b border-outline-variant/10 backdrop-blur-xl">
         <div className="flex items-center gap-2">
@@ -263,12 +303,22 @@ function QuizScreen({
           <span className="text-xs text-outline">{answeredCount}/{questions.length} answered</span>
         </div>
         {secondsLeft !== null && (
-          <span className={`text-sm font-black tabular-nums px-3 py-1 rounded-full border ${
-            secondsLeft < 120 ? 'text-error border-error/30 bg-error/10' : 'text-tertiary border-tertiary/30 bg-tertiary/10'
-          }`}>
-            <span className="material-symbols-outlined text-xs mr-1" style={{ fontVariationSettings:"'FILL' 1" }}>timer</span>
-            {fmt(secondsLeft)}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={`text-sm font-black tabular-nums px-3 py-1 rounded-full border ${
+              secondsLeft < 120 ? 'text-error border-error/30 bg-error/10' : 'text-tertiary border-tertiary/30 bg-tertiary/10'
+            }`}>
+              <span className="material-symbols-outlined text-xs mr-1" style={{ fontVariationSettings:"'FILL' 1" }}>timer</span>
+              {fmt(secondsLeft)}
+            </span>
+            <button
+              onClick={togglePause} disabled={submitting}
+              title={paused ? 'Resume test' : 'Pause test'}
+              className="flex items-center gap-1 px-3 py-1 rounded-full border border-outline-variant/30 text-xs font-bold text-on-surface-variant hover:bg-surface-container-high disabled:opacity-50 transition-all"
+            >
+              <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings:"'FILL' 1" }}>{paused ? 'play_arrow' : 'pause'}</span>
+              {paused ? 'Resume' : 'Pause'}
+            </button>
+          </div>
         )}
         <button
           onClick={handleSubmit} disabled={submitting}
