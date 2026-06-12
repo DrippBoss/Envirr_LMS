@@ -218,17 +218,30 @@ export default function LearningMap() {
   const completedCount = nodes.filter((n) => n.status === "COMPLETED").length;
   const progressPct = nodes.length > 0 ? Math.round((completedCount / nodes.length) * 100) : 0;
 
-  // Insert revision nodes into the ordered node list by position
-  // Revision nodes go after half of all regular nodes (mid-unit)
-  const midPoint = Math.floor(nodes.length / 2);
+  // Place each revision node immediately after its anchor node. The backend owns
+  // the position via RevisionNode.appears_after_node (serialized as that node's id),
+  // so the frontend no longer guesses a mid-point — robust even for paths with 0–1
+  // nodes. Revisions whose anchor isn't in the visible list are appended at the end.
   type PathItem = { type: "node"; data: any } | { type: "revision"; data: any };
-  const pathItems: PathItem[] = [];
-  nodes.forEach((n, i) => {
-    pathItems.push({ type: "node", data: n });
-    if (i === midPoint - 1 && rnodes.length > 0) {
-      rnodes.forEach((r) => pathItems.push({ type: "revision", data: r }));
+  const nodeIds = new Set(nodes.map((n) => n.id));
+  const revByAnchor = new Map<number, any[]>();
+  const orphanRevisions: any[] = [];
+  rnodes.forEach((r) => {
+    const anchor = r.appears_after_node;
+    if (anchor != null && nodeIds.has(anchor)) {
+      const list = revByAnchor.get(anchor) ?? [];
+      list.push(r);
+      revByAnchor.set(anchor, list);
+    } else {
+      orphanRevisions.push(r);
     }
   });
+  const pathItems: PathItem[] = [];
+  nodes.forEach((n) => {
+    pathItems.push({ type: "node", data: n });
+    (revByAnchor.get(n.id) ?? []).forEach((r) => pathItems.push({ type: "revision", data: r }));
+  });
+  orphanRevisions.forEach((r) => pathItems.push({ type: "revision", data: r }));
 
   return (
     <div className="min-h-screen bg-background">
