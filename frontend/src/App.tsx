@@ -5,7 +5,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Login from './pages/Login';
 import StudentDashboard from './pages/StudentDashboard';
 import TeacherPanel from './pages/TeacherPanel';
-import CourseViewer from './pages/CourseViewer';
+// CourseViewer removed — called student/courses/:id which no longer exists (courses app deregistered)
 import Navbar from './components/Navbar';
 import LearningMap from './pages/LearningMap';
 import NodePage from './pages/NodePage';
@@ -43,7 +43,6 @@ function AppRoutes() {
                 <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/" element={<ProtectedRoute><RoleHome /></ProtectedRoute>} />
-                    <Route path="/course/:id" element={<ProtectedRoute><CourseViewer /></ProtectedRoute>} />
                     <Route path="/map/:pathId" element={<ProtectedRoute><LearningMap /></ProtectedRoute>} />
                     <Route path="/learn/:nodeId" element={<ProtectedRoute><NodePage /></ProtectedRoute>} />
                     <Route path="/teacher" element={<ProtectedRoute allowedRole="teacher"><TeacherPanel /></ProtectedRoute>} />

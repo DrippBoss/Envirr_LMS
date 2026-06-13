@@ -43,8 +43,8 @@ INSTALLED_APPS = [
 
     # Local Domain Apps
     'users.apps.UsersConfig',
-    'courses.apps.CoursesConfig',
-    'activity.apps.ActivityConfig',
+    # 'courses.apps.CoursesConfig',   # legacy — superseded by learning.CourseUnit
+    # 'activity.apps.ActivityConfig', # legacy — superseded by learning.NodeProgress
     'gamification.apps.GamificationConfig',
     'ai_engine.apps.AiEngineConfig',
     'learning.apps.LearningConfig',

@@ -9,8 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/metadata/', MetadataView.as_view()),
     path('api/auth/', include('users.urls')),
-    path('api/courses/', include('courses.urls')),
-    path('api/activity/', include('activity.urls')),
+    # courses and activity apps are legacy (superseded by learning/).
+    # Their URL registrations are removed; DB tables are retained.
     path('api/gamification/', include('gamification.urls')),
     path('api/ai/', include('ai_engine.urls')),
     path('api/student/', include('learning.urls')),
