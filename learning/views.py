@@ -486,7 +486,7 @@ class ChapterTestStartView(views.APIView):
     permission_classes = [IsStudent]
 
     def post(self, request, node_id):
-        node = get_object_or_404(LearningNode, pk=node_id, node_type='CHAPTER_TEST')
+        node = get_object_or_404(LearningNode, pk=node_id, node_type=NodeType.CHAPTER_TEST)
         err = _grade_check(node.path, request.user.profile)
         if err:
             return err
