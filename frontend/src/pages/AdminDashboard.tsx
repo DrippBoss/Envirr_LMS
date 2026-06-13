@@ -305,15 +305,7 @@ export default function AdminDashboard() {
                             />
                         </div>
                     </div>
-                    <div className="flex items-center gap-4 shrink-0">
-                        <button className="relative text-slate-400 hover:text-on-surface transition-colors">
-                            <span className="material-symbols-outlined">notifications</span>
-                            <span className="absolute top-0 right-0 w-2 h-2 bg-error rounded-full" />
-                        </button>
-                        <button className="text-slate-400 hover:text-on-surface transition-colors">
-                            <span className="material-symbols-outlined">settings</span>
-                        </button>
-                    </div>
+                    {/* Notifications and settings icons removed until backend models exist */}
                 </header>
 
                 <div className="p-6 md:p-8 space-y-8">
