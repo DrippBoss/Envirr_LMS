@@ -1,7 +1,10 @@
+import logging
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.throttling import ScopedRateThrottle
+
+security_logger = logging.getLogger('envirr.security')
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from django.conf import settings
@@ -207,12 +210,22 @@ class CookieTokenObtainPairView(APIView):
                     if locked.failed_login_attempts >= 10:
                         locked.is_active = False
                         locked.save(update_fields=['failed_login_attempts', 'is_active'])
+                        security_logger.error(
+                            'account_locked username=%r attempts=%d ip=%s',
+                            locked.username, locked.failed_login_attempts,
+                            request.META.get('REMOTE_ADDR', ''),
+                        )
                         return Response(
                             {'detail': 'Your account has been locked after too many failed attempts. '
                                        'Contact support to regain access.'},
                             status=403,
                         )
                     locked.save(update_fields=['failed_login_attempts'])
+                    security_logger.warning(
+                        'failed_login username=%r attempts=%d ip=%s',
+                        locked.username, locked.failed_login_attempts,
+                        request.META.get('REMOTE_ADDR', ''),
+                    )
             return Response(
                 {'detail': 'No active account found with the given credentials.'},
                 status=401,
@@ -534,6 +547,10 @@ class ToggleCourseBuilderView(APIView):
             return Response({'error': 'Only teachers can be granted course-builder access.'}, status=400)
         target.can_build_courses = not target.can_build_courses
         target.save(update_fields=['can_build_courses'])
+        security_logger.info(
+            'permission_change admin=%s target=%s can_build_courses=%s',
+            request.user.username, target.username, target.can_build_courses,
+        )
         return Response({'can_build_courses': target.can_build_courses})
 
 
@@ -551,6 +568,10 @@ class ToggleQuestionEditorView(APIView):
             return Response({'error': 'Only teachers can be granted question-editor access.'}, status=400)
         target.can_edit_questions = not target.can_edit_questions
         target.save(update_fields=['can_edit_questions'])
+        security_logger.info(
+            'permission_change admin=%s target=%s can_edit_questions=%s',
+            request.user.username, target.username, target.can_edit_questions,
+        )
         return Response({'can_edit_questions': target.can_edit_questions})
 
 
@@ -576,6 +597,10 @@ class ToggleUserStatusView(APIView):
         target.save(update_fields=['is_active', 'failed_login_attempts'])
 
         state = 'activated' if target.is_active else 'deactivated'
+        security_logger.warning(
+            'user_status_change admin=%s target=%s action=%s',
+            request.user.username, target.username, state,
+        )
         return Response({'is_active': target.is_active, 'detail': f'User {state} successfully.'}, status=200)
 
 
@@ -614,7 +639,12 @@ class DeleteUserView(APIView):
         if target.role == 'admin':
             return Response({'detail': 'Admin accounts cannot be deleted via this panel.'}, status=400)
         username = target.username
+        role = target.role
         target.delete()
+        security_logger.warning(
+            'user_deleted admin=%s target=%s role=%s',
+            request.user.username, username, role,
+        )
         return Response({'detail': f'User "{username}" has been permanently deleted.'}, status=200)
 
 

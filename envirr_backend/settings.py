@@ -147,7 +147,7 @@ PASSWORD_RESET_TIMEOUT = 60 * 60 * 2  # 2 hours
 
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),   # tightened from 8h; refresh token keeps session alive
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
     'AUTH_COOKIE': 'access_token',
     'AUTH_COOKIE_REFRESH': 'refresh_token',
@@ -246,7 +246,7 @@ LOGGING = {
         },
         'envirr.security': {
             'handlers': ['console'],
-            'level': 'WARNING',
+            'level': 'INFO',   # INFO: permission grants; WARNING: failures/bans; ERROR: lockouts
             'propagate': False,
         },
     },

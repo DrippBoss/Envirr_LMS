@@ -1,4 +1,7 @@
+import logging
 from django.http import JsonResponse
+
+security_logger = logging.getLogger('envirr.security')
 
 
 def _get_client_ip(request) -> str:
@@ -20,6 +23,7 @@ class IPBanMiddleware:
 
         ip = _get_client_ip(request)
         if ip and BannedIP.objects.filter(ip_address=ip).exists():
+            security_logger.warning('ip_ban_blocked ip=%s path=%s', ip, request.path)
             return JsonResponse(
                 {
                     'error': 'access_blocked',
