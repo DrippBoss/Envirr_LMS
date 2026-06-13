@@ -2,7 +2,6 @@ import hashlib
 from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
-from courses.models import Lesson
 
 class QuestionType(models.TextChoices):
     MCQ              = "MCQ",              "Multiple Choice"
@@ -304,7 +303,15 @@ class DoubtTicket(models.Model):
         ('resolved', 'Resolved'),
     )
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='doubts')
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='doubts')
+    # S4: was `courses.Lesson` (legacy app). Now points to the active learning
+    # model; nullable so existing rows survive and future doubts can be linked
+    # to the exact node the student is studying.
+    lesson = models.ForeignKey(
+        'learning.LearningNode',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='doubts',
+    )
     question_text = models.TextField()
     image_url = models.ImageField(upload_to='doubts/', null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
