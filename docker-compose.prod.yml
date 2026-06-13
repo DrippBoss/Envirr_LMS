@@ -1,0 +1,46 @@
+version: '3.8'
+
+# Production overrides — run with:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Prerequisites:
+#   1. Copy .env.production.example → .env.production and fill in all values.
+#   2. Build images:  docker compose -f docker-compose.yml -f docker-compose.prod.yml build
+#   3. The web container runs migrate + collectstatic automatically on start.
+
+services:
+  db:
+    env_file:
+      - .env.production
+    # In production, do NOT expose the DB port to the host.
+    ports: []
+
+  redis:
+    # No changes needed — Redis is internal only.
+
+  web:
+    command: []          # cleared — entrypoint.prod.sh takes over
+    entrypoint: ["/bin/sh", "/app/entrypoint.prod.sh"]
+    volumes: []          # no live-reload bind mount in prod
+    env_file:
+      - .env.production
+    restart: unless-stopped
+    environment:
+      - DEBUG=False
+
+  celery_worker:
+    command: ["celery", "-A", "envirr_backend", "worker", "--loglevel=info", "--concurrency=2"]
+    volumes: []
+    env_file:
+      - .env.production
+    restart: unless-stopped
+    environment:
+      - DEBUG=False
+
+  frontend:
+    # In production the frontend is a pre-built static bundle — not the Vite dev server.
+    # Build: cd frontend && npm run build
+    # Serve the dist/ folder via your reverse proxy (nginx / Caddy / Coolify).
+    # Remove this service from the prod stack and let your proxy handle it.
+    profiles:
+      - dev-only    # excluded from prod by default; override with --profile dev-only if needed

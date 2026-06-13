@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'users.middleware.IPBanMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -106,6 +107,11 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = (
+    'whitenoise.storage.CompressedManifestStaticFilesStorage' if not DEBUG
+    else 'django.contrib.staticfiles.storage.StaticFilesStorage'
+)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -194,6 +200,27 @@ OLLAMA_MODEL = env('OLLAMA_MODEL', default='llama3')
 # Cookie security — enforce HTTPS in production
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+
+# Production-only security headers
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_HSTS_SECONDS = 31_536_000          # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+
+# Warn loudly at startup if email is not configured in production.
+if not DEBUG and not EMAIL_HOST_USER:
+    import warnings
+    warnings.warn(
+        "EMAIL_HOST_USER is not set: email verification and password reset "
+        "will silently fail in production. Set EMAIL_HOST_USER and "
+        "EMAIL_HOST_PASSWORD in your production .env.",
+        RuntimeWarning,
+        stacklevel=2,
+    )
 
 # Security logging
 LOGGING = {
