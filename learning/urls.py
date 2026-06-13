@@ -7,6 +7,7 @@ from .views import (
     ChapterTestStartView, ChapterTestCompleteView, LabCompleteView,
     WeakConceptsView, ActivityFeedView,
     MockTestQuestionsView, MockTestCheckView,
+    StudentAnalyticsView,
 )
 from .mock_test_views import MockTestGenerateView, MockTestSubmitView, MockTestHistoryView
 from .study_group_views import (
@@ -21,6 +22,7 @@ from .study_group_views import (
 )
 
 urlpatterns = [
+    path('analytics/', StudentAnalyticsView.as_view(), name='student-analytics'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('weak-concepts/', WeakConceptsView.as_view(), name='weak-concepts'),
     path('activity/', ActivityFeedView.as_view(), name='activity-feed'),

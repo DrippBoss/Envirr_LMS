@@ -438,8 +438,8 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* Bento: AI Mock + Study Groups */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Bento: AI Mock + Study Groups + Analytics */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* AI Mock Test card */}
               <div
                 className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 flex flex-col justify-between hover:border-primary/30 transition-all group cursor-pointer"
@@ -453,6 +453,24 @@ export default function StudentDashboard() {
                   <p className="text-xs text-slate-500 mb-4 leading-relaxed">Personalized quiz based on your weak spots.</p>
                   <span className="text-primary font-bold text-xs uppercase tracking-wider flex items-center gap-1 group-hover:gap-2 transition-all">
                     Start Now
+                    <span className="material-symbols-outlined text-sm">chevron_right</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* My Progress card */}
+              <div
+                className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 flex flex-col justify-between hover:border-tertiary/30 transition-all group cursor-pointer"
+                onClick={() => navigate('/analytics')}
+              >
+                <div className="w-11 h-11 rounded-xl bg-tertiary/10 flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-tertiary text-2xl">insights</span>
+                </div>
+                <div>
+                  <h4 className="text-base font-black font-headline text-on-surface mb-1">My Progress</h4>
+                  <p className="text-xs text-slate-500 mb-4 leading-relaxed">Full report: XP, streaks, subjects & mock scores.</p>
+                  <span className="text-tertiary font-bold text-xs uppercase tracking-wider flex items-center gap-1 group-hover:gap-2 transition-all">
+                    View Report
                     <span className="material-symbols-outlined text-sm">chevron_right</span>
                   </span>
                 </div>
