@@ -4,7 +4,7 @@ import json
 import re
 from celery import shared_task
 from django.conf import settings
-from ai_engine.models import QuestionPaper, PaperSection, QuestionBank, PaperQuestion, DoubtTicket, DoubtResponse, MCQOption, CaseStudyPart
+from ai_engine.models import QuestionPaper, PaperSection, QuestionBank, PaperQuestion, MCQOption, CaseStudyPart
 from users.models import CustomUser
 
 def _run_pdflatex(tex_path, temp_dir):
