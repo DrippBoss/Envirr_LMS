@@ -388,23 +388,12 @@ export default function NodePage() {
               </button>
             </div>
 
-            {/* Center Tabs */}
+            {/* Center Tabs — only Curriculum tab implemented; Resources/Discussions removed until backed by real models */}
             <div className="hidden lg:flex gap-2">
-              {[
-                { icon: "menu_book", label: "Curriculum", active: true },
-                { icon: "folder_open", label: "Resources", active: false },
-                { icon: "forum", label: "Discussions", active: false },
-              ].map((tab) => (
-                <div
-                  key={tab.label}
-                  className={`flex flex-col items-center justify-center px-6 py-2 rounded-xl ${
-                    tab.active ? "bg-secondary/10 text-secondary" : "text-outline hover:text-on-surface"
-                  }`}
-                >
-                  <span className="material-symbols-outlined">{tab.icon}</span>
-                  <span className="font-label text-[10px] font-semibold uppercase tracking-widest mt-1">{tab.label}</span>
-                </div>
-              ))}
+              <div className="flex flex-col items-center justify-center px-6 py-2 rounded-xl bg-secondary/10 text-secondary">
+                <span className="material-symbols-outlined">menu_book</span>
+                <span className="font-label text-[10px] font-semibold uppercase tracking-widest mt-1">Curriculum</span>
+              </div>
             </div>
 
             {/* Primary CTA — Take Quiz / Start Challenge */}
