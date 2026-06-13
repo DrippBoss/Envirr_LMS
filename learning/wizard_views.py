@@ -1,9 +1,12 @@
+import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from django.db import transaction
 from django.contrib.auth import get_user_model
+
+security_logger = logging.getLogger('envirr.security')
 from .models import (
     CourseUnit, LearningPath, LearningNode, LessonQuestion,
     ContentTemplate, RevisionNode, Flashcard, FlashcardDeck, DeckCard,
@@ -305,6 +308,9 @@ class WizardReorderView(AdminWizardBaseView):
         return Response({'message': 'Reordered successfully'})
 
 
+MAX_VIDEO_BYTES = 500 * 1024 * 1024  # 500 MB hard cap on video uploads
+
+
 def _is_valid_mp4(f) -> bool:
     """Verify file is an MP4 by checking for the ISO Base Media 'ftyp' box in the header."""
     header = f.read(12)
@@ -328,7 +334,16 @@ class WizardBulkUploadView(AdminWizardBaseView):
             for f in files:
                 if not f.name.lower().endswith('.mp4'):
                     continue
+                if f.size > MAX_VIDEO_BYTES:
+                    return Response(
+                        {'error': f'"{f.name}" exceeds the 500 MB video size limit.'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
                 if not _is_valid_mp4(f):
+                    security_logger.warning(
+                        'invalid_mp4_upload user=%s node=%s filename=%r size=%s',
+                        request.user.id, node_id, f.name, f.size,
+                    )
                     return Response(
                         {'error': f'"{f.name}" is not a valid MP4 file.'},
                         status=status.HTTP_400_BAD_REQUEST,
