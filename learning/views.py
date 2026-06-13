@@ -16,7 +16,7 @@ class IsStudent(BasePermission):
 from .models import (
     CourseUnit, LearningPath, LearningNode, LessonQuestion, NodeProgress,
     FlashcardDeck, FlashcardProgress, SessionAnswer, RevisionNode, RevisionNodeProgress, UnitPrerequisiteSeen,
-    Flashcard, NodeType, CompletionStatus
+    Flashcard, NodeType, CompletionStatus, NodeStep
 )
 from .serializers import (
     CourseUnitSerializer, LearningPathSerializer, FlashcardDeckSerializer,
@@ -151,11 +151,11 @@ class NodeStartView(views.APIView):
             return err
         prog, _ = NodeProgress.objects.get_or_create(student=request.user.profile, node=node)
 
-        if prog.status == 'LOCKED':
+        if prog.status == CompletionStatus.LOCKED:
             return Response({'error': 'Node is locked'}, status=403)
-            
-        if prog.status == 'UNLOCKED':
-            prog.status = 'IN_PROGRESS'
+
+        if prog.status == CompletionStatus.UNLOCKED:
+            prog.status = CompletionStatus.IN_PROGRESS
         
         path = node.path
         unit = path.unit if path else None
@@ -168,7 +168,7 @@ class NodeStartView(views.APIView):
         }
 
         if node.node_type == NodeType.LAB:
-            prog.status = 'IN_PROGRESS'
+            prog.status = CompletionStatus.IN_PROGRESS
             prog.save()
             return Response({
                 'step': 'LAB',
@@ -178,15 +178,15 @@ class NodeStartView(views.APIView):
                 **breadcrumb,
             })
 
-        if node.node_type == 'CHAPTER_TEST':
-            prog.current_step = 'PRACTICE'
+        if node.node_type == NodeType.CHAPTER_TEST:
+            prog.current_step = NodeStep.PRACTICE
             prog.save()
             return Response({'step': 'PRACTICE', 'node_type': 'CHAPTER_TEST', **breadcrumb})
 
         # If no video exists, advance straight to practice so NodePracticeView won't block
         video_url = node.youtube_url or (node.video_file.url if node.video_file else None)
-        if not video_url and prog.current_step in ('NOT_STARTED', 'VIDEO_DONE'):
-            prog.current_step = 'PRACTICE'
+        if not video_url and prog.current_step in (NodeStep.NOT_STARTED, NodeStep.VIDEO_DONE):
+            prog.current_step = NodeStep.PRACTICE
             if prog.lives_remaining == 0:
                 prog.lives_remaining = node.starting_lives
         prog.save()
@@ -205,10 +205,10 @@ class NodeVideoCompleteView(views.APIView):
     def post(self, request, node_id):
         node = get_object_or_404(LearningNode, pk=node_id)
         prog = get_object_or_404(NodeProgress, student=request.user.profile, node=node)
-        if prog.current_step in ['VIDEO_DONE', 'NOT_STARTED']:
-            prog.current_step = 'PRACTICE'
+        if prog.current_step in (NodeStep.VIDEO_DONE, NodeStep.NOT_STARTED):
+            prog.current_step = NodeStep.PRACTICE
             # Reset lives if not completed
-            if prog.status != 'COMPLETED':
+            if prog.status != CompletionStatus.COMPLETED:
                 prog.lives_remaining = node.starting_lives
             prog.save()
         return Response({'step': 'PRACTICE', 'lives': prog.lives_remaining})
@@ -220,12 +220,12 @@ class NodePracticeView(views.APIView):
         node = get_object_or_404(LearningNode, pk=node_id)
         prog = get_object_or_404(NodeProgress, student=request.user.profile, node=node)
         
-        if prog.current_step not in ['PRACTICE', 'COMPLETED']:
+        if prog.current_step not in (NodeStep.PRACTICE, NodeStep.COMPLETED):
             return Response({'error': 'Finish the video lesson first!'}, status=403)
-            
+
         questions = list(node.questions.filter(is_archived=False))
         random.shuffle(questions)
-        count = node.test_question_count if node.node_type == 'CHAPTER_TEST' else node.practice_question_count
+        count = node.test_question_count if node.node_type == NodeType.CHAPTER_TEST else node.practice_question_count
         questions = questions[:count]
         return Response(LessonQuestionSerializer(questions, many=True).data)
 
@@ -312,10 +312,10 @@ class NodePracticeAnswerView(views.APIView):
         )
         
         node_failed = False
-        if not is_correct and prog.status != 'COMPLETED':
+        if not is_correct and prog.status != CompletionStatus.COMPLETED:
             # For tests, we still reduce lives. Frontend sets lives to 99 visually so tests don't break early.
             # However, if we want to let tests finish and evaluate at the end, we shouldn't fail early.
-            if node.node_type != 'CHAPTER_TEST':
+            if node.node_type != NodeType.CHAPTER_TEST:
                 prog.lives_remaining = max(0, prog.lives_remaining - 1)
                 prog.save()
                 if prog.lives_remaining == 0:
@@ -337,7 +337,7 @@ class NodePracticeRetryView(views.APIView):
         node = get_object_or_404(LearningNode, pk=node_id)
         prog = get_object_or_404(NodeProgress, student=request.user.profile, node=node)
         prog.lives_remaining = node.starting_lives
-        prog.current_step = 'NOT_STARTED'
+        prog.current_step = NodeStep.NOT_STARTED
         prog.attempts += 1
         prog.save()
         return Response({'status': 'reset'})
@@ -350,17 +350,17 @@ class NodePracticeCompleteView(views.APIView):
         prog = get_object_or_404(NodeProgress, student=request.user.profile, node=node)
         
         new_badge = None
-        if prog.status != 'COMPLETED':
-            if node.node_type == 'CHAPTER_TEST':
+        if prog.status != CompletionStatus.COMPLETED:
+            if node.node_type == NodeType.CHAPTER_TEST:
                 # Check pass percentage
                 total_questions = node.test_question_count
                 answers = SessionAnswer.objects.filter(student=request.user.profile, node=node).order_by('-answered_at')[:total_questions]
                 correct_count = sum(1 for a in answers if a.is_correct)
                 score_pct = (correct_count / total_questions * 100) if total_questions > 0 else 0
-                
+
                 if score_pct >= node.test_pass_percentage:
-                    prog.status = 'COMPLETED'
-                    prog.current_step = 'COMPLETED'
+                    prog.status = CompletionStatus.COMPLETED
+                    prog.current_step = NodeStep.COMPLETED
                     prog.stars = 3
                     prog.xp_earned = node.xp_reward
                     prog.save()
@@ -370,14 +370,14 @@ class NodePracticeCompleteView(views.APIView):
                     new_badge = award_node_xp(request.user.profile, node, node.xp_reward, is_test=True)
                     unlock_next_nodes(request.user.profile, node)
                 else:
-                    prog.status = 'IN_PROGRESS'
-                    prog.current_step = 'NOT_STARTED'
+                    prog.status = CompletionStatus.IN_PROGRESS
+                    prog.current_step = NodeStep.NOT_STARTED
                     prog.attempts += 1
                     prog.save()
                     return Response({'status': 'failed', 'score': score_pct})
             else:
-                prog.status = 'COMPLETED'
-                prog.current_step = 'COMPLETED'
+                prog.status = CompletionStatus.COMPLETED
+                prog.current_step = NodeStep.COMPLETED
                 wrong_answers = node.starting_lives - prog.lives_remaining
                 prog.stars = calculate_stars(wrong_answers, node.practice_question_count)
                 prog.xp_earned = node.xp_reward
@@ -486,7 +486,7 @@ class ChapterTestStartView(views.APIView):
     permission_classes = [IsStudent]
 
     def post(self, request, node_id):
-        node = get_object_or_404(LearningNode, pk=node_id, node_type='CHAPTER_TEST')
+        node = get_object_or_404(LearningNode, pk=node_id, node_type=NodeType.CHAPTER_TEST)
         err = _grade_check(node.path, request.user.profile)
         if err:
             return err
@@ -525,10 +525,10 @@ class ChapterTestCompleteView(views.APIView):
         score_pct = round(correct / total * 100, 1)
 
         passed = score_pct >= node.test_pass_percentage
-        if passed and prog.status != 'COMPLETED':
+        if passed and prog.status != CompletionStatus.COMPLETED:
             from django.utils import timezone
-            prog.status = 'COMPLETED'
-            prog.current_step = 'COMPLETED'
+            prog.status = CompletionStatus.COMPLETED
+            prog.current_step = NodeStep.COMPLETED
             prog.stars = 3
             prog.xp_earned = node.xp_reward
             prog.completed_at = timezone.now()
@@ -553,10 +553,10 @@ class LabCompleteView(views.APIView):
         if not artifact:
             return Response({'error': 'Lab artifact is required to complete this lab.'}, status=400)
 
-        if prog.status != 'COMPLETED':
+        if prog.status != CompletionStatus.COMPLETED:
             from django.utils import timezone
-            prog.status = 'COMPLETED'
-            prog.current_step = 'COMPLETED'
+            prog.status = CompletionStatus.COMPLETED
+            prog.current_step = NodeStep.COMPLETED
             prog.stars = 3
             prog.xp_earned = node.xp_reward
             prog.completed_at = timezone.now()
@@ -729,7 +729,7 @@ class StudyGroupsView(views.APIView):
         from django.db.models import Count
         active = (
             NodeProgress.objects
-            .filter(status='IN_PROGRESS')
+            .filter(status=CompletionStatus.IN_PROGRESS)
             .exclude(student=request.user.profile)
             .select_related('node__path__unit')
             .values(
@@ -814,4 +814,118 @@ class MetadataView(views.APIView):
             'auto_graded_types': AUTO_GRADED_TYPES,
             'ai_tutor': {'history_limit': AI_TUTOR_HISTORY_LIMIT},
             'paper_section_defaults': PAPER_SECTION_DEFAULTS,
+        })
+
+
+# --- Student analytics (#32 MF) ----------------------------------------------
+
+class StudentAnalyticsView(views.APIView):
+    """Aggregated progress report for a student: XP, streak, node completion,
+    subject breakdown, mock-test performance, weak spots, and recent activity.
+
+    GET /api/student/analytics/
+    """
+    permission_classes = [IsStudent]
+
+    def get(self, request):
+        from django.db.models import Avg, Max, F, FloatField, ExpressionWrapper
+        from gamification.models import StudentXP, Streak
+        from gamification.services import XP_PER_LEVEL, MAX_LEVEL
+
+        profile = request.user.profile
+
+        # ── XP & level ─────────────────────────────────────────────
+        xp_obj, _ = StudentXP.objects.get_or_create(student=request.user)
+        streak_obj, _ = Streak.objects.get_or_create(student=request.user)
+        xp_in_level = xp_obj.total_xp % XP_PER_LEVEL
+        xp_to_next = (XP_PER_LEVEL - xp_in_level) if xp_obj.current_level < MAX_LEVEL else 0
+
+        # ── Node completion ────────────────────────────────────────
+        progress_qs = (
+            NodeProgress.objects
+            .filter(student=profile)
+            .select_related('node__path__unit')
+        )
+        total_known = progress_qs.exclude(status=CompletionStatus.LOCKED).count()
+        completed_count = progress_qs.filter(status=CompletionStatus.COMPLETED).count()
+        in_progress_count = progress_qs.filter(status=CompletionStatus.IN_PROGRESS).count()
+
+        # ── Subject-wise breakdown ─────────────────────────────────
+        subject_map: dict = {}
+        for prog in progress_qs.filter(
+            status__in=(CompletionStatus.COMPLETED, CompletionStatus.IN_PROGRESS, CompletionStatus.UNLOCKED)
+        ):
+            unit = prog.node.path.unit if prog.node.path else None
+            subj = (unit.subject if unit else None) or 'General'
+            if subj not in subject_map:
+                subject_map[subj] = {'subject': subj, 'completed': 0, 'in_progress': 0}
+            if prog.status == CompletionStatus.COMPLETED:
+                subject_map[subj]['completed'] += 1
+            elif prog.status == CompletionStatus.IN_PROGRESS:
+                subject_map[subj]['in_progress'] += 1
+
+        # ── Mock-test stats ────────────────────────────────────────
+        attempts_qs = MockTestAttempt.objects.filter(student=profile, completed=True, total__gt=0)
+        mock_total = attempts_qs.count()
+        mock_avg = mock_best = 0.0
+        if mock_total:
+            pct_expr = ExpressionWrapper(
+                F('score') * 100.0 / F('total'), output_field=FloatField()
+            )
+            agg = attempts_qs.annotate(pct=pct_expr).aggregate(
+                avg=Avg('pct'), best=Max('pct')
+            )
+            mock_avg = round(agg['avg'] or 0, 1)
+            mock_best = round(agg['best'] or 0, 1)
+
+        # ── Weak spots (top 5) ─────────────────────────────────────
+        weak_spots = list(
+            profile.weak_spots
+            .filter(is_resolved=False)
+            .order_by('-wrong_count')[:5]
+            .values('concept', 'subject', 'chapter', 'wrong_count')
+        )
+
+        # ── Recent completed nodes (last 5) ───────────────────────
+        recent_completed = []
+        for prog in (
+            progress_qs.filter(status=CompletionStatus.COMPLETED, completed_at__isnull=False)
+            .order_by('-completed_at')[:5]
+        ):
+            unit = prog.node.path.unit if prog.node.path else None
+            recent_completed.append({
+                'node_id': prog.node_id,
+                'node_title': prog.node.title,
+                'subject': (unit.subject if unit else None) or 'General',
+                'stars': prog.stars,
+                'xp_earned': prog.xp_earned,
+                'completed_at': prog.completed_at,
+            })
+
+        return Response({
+            'xp': {
+                'total': xp_obj.total_xp,
+                'level': xp_obj.current_level,
+                'xp_in_level': xp_in_level,
+                'xp_to_next': xp_to_next,
+                'xp_per_level': XP_PER_LEVEL,
+                'max_level': MAX_LEVEL,
+            },
+            'streak': {
+                'current': streak_obj.current_streak,
+                'longest': streak_obj.longest_streak,
+            },
+            'completion': {
+                'total_known': total_known,
+                'completed': completed_count,
+                'in_progress': in_progress_count,
+            },
+            'subjects': sorted(subject_map.values(), key=lambda s: -s['completed']),
+            'mock_tests': {
+                'total': mock_total,
+                'avg_score': mock_avg,
+                'best_score': mock_best,
+            },
+            'weak_spots': weak_spots,
+            'recent_completed': recent_completed,
         })

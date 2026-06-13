@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useAuth, api } from "../context/AuthContext";
-
-const GRADES = ["9", "10", "11", "12"];
-const BOARDS = ["CBSE", "ICSE", "State", "Other"];
+import { useMetadata } from "../lib/metadata";
 
 function InputField({
   icon, label, type = "text", value, onChange, placeholder, disabled,
@@ -61,6 +59,7 @@ function Alert({ type, message, onClose }: { type: "error" | "success"; message:
 
 export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
+  const meta = useMetadata();
 
   // Profile form state
   const [name, setName]           = useState(user?.name ?? "");
@@ -338,7 +337,7 @@ export default function ProfilePage() {
                       className="w-full px-4 py-3.5 bg-surface-container-highest border border-outline-variant/10 rounded-xl text-sm text-on-surface focus:ring-0 focus:outline-none focus:border-primary/40 transition-all appearance-none cursor-pointer"
                     >
                       <option value="">Select class</option>
-                      {GRADES.map(g => <option key={g} value={g}>Class {g}</option>)}
+                      {meta.grades.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
                     </select>
                   </div>
                   <div className="space-y-1.5">
@@ -349,7 +348,7 @@ export default function ProfilePage() {
                       className="w-full px-4 py-3.5 bg-surface-container-highest border border-outline-variant/10 rounded-xl text-sm text-on-surface focus:ring-0 focus:outline-none focus:border-primary/40 transition-all appearance-none cursor-pointer"
                     >
                       <option value="">Select board</option>
-                      {BOARDS.map(b => <option key={b} value={b}>{b}</option>)}
+                      {meta.boards.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
                     </select>
                   </div>
                 </div>
