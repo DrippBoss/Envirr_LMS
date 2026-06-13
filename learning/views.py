@@ -815,3 +815,117 @@ class MetadataView(views.APIView):
             'ai_tutor': {'history_limit': AI_TUTOR_HISTORY_LIMIT},
             'paper_section_defaults': PAPER_SECTION_DEFAULTS,
         })
+
+
+# --- Student analytics (#32 MF) ----------------------------------------------
+
+class StudentAnalyticsView(views.APIView):
+    """Aggregated progress report for a student: XP, streak, node completion,
+    subject breakdown, mock-test performance, weak spots, and recent activity.
+
+    GET /api/student/analytics/
+    """
+    permission_classes = [IsStudent]
+
+    def get(self, request):
+        from django.db.models import Avg, Max, F, FloatField, ExpressionWrapper
+        from gamification.models import StudentXP, Streak
+        from gamification.services import XP_PER_LEVEL, MAX_LEVEL
+
+        profile = request.user.profile
+
+        # ── XP & level ─────────────────────────────────────────────
+        xp_obj, _ = StudentXP.objects.get_or_create(student=request.user)
+        streak_obj, _ = Streak.objects.get_or_create(student=request.user)
+        xp_in_level = xp_obj.total_xp % XP_PER_LEVEL
+        xp_to_next = (XP_PER_LEVEL - xp_in_level) if xp_obj.current_level < MAX_LEVEL else 0
+
+        # ── Node completion ────────────────────────────────────────
+        progress_qs = (
+            NodeProgress.objects
+            .filter(student=profile)
+            .select_related('node__path__unit')
+        )
+        total_known = progress_qs.exclude(status=CompletionStatus.LOCKED).count()
+        completed_count = progress_qs.filter(status=CompletionStatus.COMPLETED).count()
+        in_progress_count = progress_qs.filter(status=CompletionStatus.IN_PROGRESS).count()
+
+        # ── Subject-wise breakdown ─────────────────────────────────
+        subject_map: dict = {}
+        for prog in progress_qs.filter(
+            status__in=(CompletionStatus.COMPLETED, CompletionStatus.IN_PROGRESS, CompletionStatus.UNLOCKED)
+        ):
+            unit = prog.node.path.unit if prog.node.path else None
+            subj = (unit.subject if unit else None) or 'General'
+            if subj not in subject_map:
+                subject_map[subj] = {'subject': subj, 'completed': 0, 'in_progress': 0}
+            if prog.status == CompletionStatus.COMPLETED:
+                subject_map[subj]['completed'] += 1
+            elif prog.status == CompletionStatus.IN_PROGRESS:
+                subject_map[subj]['in_progress'] += 1
+
+        # ── Mock-test stats ────────────────────────────────────────
+        attempts_qs = MockTestAttempt.objects.filter(student=profile, completed=True, total__gt=0)
+        mock_total = attempts_qs.count()
+        mock_avg = mock_best = 0.0
+        if mock_total:
+            pct_expr = ExpressionWrapper(
+                F('score') * 100.0 / F('total'), output_field=FloatField()
+            )
+            agg = attempts_qs.annotate(pct=pct_expr).aggregate(
+                avg=Avg('pct'), best=Max('pct')
+            )
+            mock_avg = round(agg['avg'] or 0, 1)
+            mock_best = round(agg['best'] or 0, 1)
+
+        # ── Weak spots (top 5) ─────────────────────────────────────
+        weak_spots = list(
+            profile.weak_spots
+            .filter(is_resolved=False)
+            .order_by('-wrong_count')[:5]
+            .values('concept', 'subject', 'chapter', 'wrong_count')
+        )
+
+        # ── Recent completed nodes (last 5) ───────────────────────
+        recent_completed = []
+        for prog in (
+            progress_qs.filter(status=CompletionStatus.COMPLETED, completed_at__isnull=False)
+            .order_by('-completed_at')[:5]
+        ):
+            unit = prog.node.path.unit if prog.node.path else None
+            recent_completed.append({
+                'node_id': prog.node_id,
+                'node_title': prog.node.title,
+                'subject': (unit.subject if unit else None) or 'General',
+                'stars': prog.stars,
+                'xp_earned': prog.xp_earned,
+                'completed_at': prog.completed_at,
+            })
+
+        return Response({
+            'xp': {
+                'total': xp_obj.total_xp,
+                'level': xp_obj.current_level,
+                'xp_in_level': xp_in_level,
+                'xp_to_next': xp_to_next,
+                'xp_per_level': XP_PER_LEVEL,
+                'max_level': MAX_LEVEL,
+            },
+            'streak': {
+                'current': streak_obj.current_streak,
+                'longest': streak_obj.longest_streak,
+            },
+            'completion': {
+                'total_known': total_known,
+                'completed': completed_count,
+                'in_progress': in_progress_count,
+            },
+            'subjects': sorted(subject_map.values(), key=lambda s: -s['completed']),
+            'mock_tests': {
+                'total': mock_total,
+                'avg_score': mock_avg,
+                'best_score': mock_best,
+            },
+            'weak_spots': weak_spots,
+            'recent_completed': recent_completed,
+        })

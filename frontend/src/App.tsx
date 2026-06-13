@@ -17,6 +17,7 @@ import ProfilePage from './pages/ProfilePage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import StudentAnalyticsPage from './pages/StudentAnalyticsPage';
 
 const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode, allowedRole?: string }) => {
     const { user, isAuthenticated, loading } = useAuth();
@@ -52,6 +53,7 @@ function AppRoutes() {
                     <Route path="/study-groups" element={<ProtectedRoute><StudyGroupsPage /></ProtectedRoute>} />
                     <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                     <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
+                    <Route path="/analytics" element={<ProtectedRoute><StudentAnalyticsPage /></ProtectedRoute>} />
                     <Route path="/verify-email" element={<VerifyEmailPage />} />
                     <Route path="/reset-password" element={<ResetPasswordPage />} />
                 </Routes>
