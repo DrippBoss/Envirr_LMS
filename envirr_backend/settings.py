@@ -197,6 +197,11 @@ CORS_ALLOW_CREDENTIALS = True
 OLLAMA_URL   = env('OLLAMA_URL',   default='http://host.docker.internal:11434/api/generate')
 OLLAMA_MODEL = env('OLLAMA_MODEL', default='llama3')
 
+# AI Tutor provider selection: 'ollama' (default) or 'gemini'
+AI_TUTOR_PROVIDER = env('AI_TUTOR_PROVIDER', default='ollama')
+# When using Gemini for the tutor, choose the model (e.g., gemini-flash)
+GEMINI_TUTOR_MODEL = env('GEMINI_TUTOR_MODEL', default='gemini-flash')
+
 # Cookie security — enforce HTTPS in production
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
