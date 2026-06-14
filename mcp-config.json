@@ -1,0 +1,22 @@
+{
+  "projectRoot": ".",
+  "autoConsultation": {
+    "enabled": true,
+    "provider": "gemini",
+    "model": "gemini-1.5-pro",
+    "fallback": "claude",
+    "prompt": "Use Gemini Pro for complex coding decisions and consult as needed."
+  },
+  "providers": [
+    {
+      "name": "gemini",
+      "type": "gemini",
+      "apiKeyEnv": "GEMINI_API_KEY"
+    },
+    {
+      "name": "claude",
+      "type": "anthropic",
+      "apiKeyEnv": "CLAUDE_API_KEY"
+    }
+  ]
+}
