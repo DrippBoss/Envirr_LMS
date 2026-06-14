@@ -3,7 +3,7 @@
   "autoConsultation": {
     "enabled": true,
     "provider": "gemini",
-    "model": "gemini-1.5-pro",
+    "model": "gemini-flash",
     "fallback": "claude",
     "prompt": "Use Gemini Pro for complex coding decisions and consult as needed."
   },
