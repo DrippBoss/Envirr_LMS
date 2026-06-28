@@ -169,7 +169,35 @@
   }
 }
 
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* Accessibility: honour reduced-motion — collapse animations/transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @layer components {
+  /* Loading shimmer — put `.shimmer` on a skeleton block for a sweeping glow. */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(var(--color-surface-bright) / 0.45), transparent);
+    animation: shimmer 1.6s infinite;
+  }
+
   .glass-panel {
     @apply bg-surface-container/70 backdrop-blur-xl border border-outline-variant/15 rounded-2xl;
     box-shadow: 0 4px 30px var(--shadow-glass);
