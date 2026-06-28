@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { api } from '../context/AuthContext';
 import MarkdownMessage from './MarkdownMessage';
 import MathText from './MathText';
@@ -46,6 +46,31 @@ export default function FlashcardModal({
 }: FlashcardModalProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
+
+    // Swipe-to-navigate (horizontal) vs tap-to-flip on the card.
+    const touchStart = useRef<{ x: number; y: number } | null>(null);
+    const didSwipe = useRef(false);
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        const t = e.touches[0];
+        touchStart.current = { x: t.clientX, y: t.clientY };
+        didSwipe.current = false;
+    };
+    const onTouchEnd = (e: React.TouchEvent) => {
+        if (!touchStart.current) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStart.current.x;
+        const dy = t.clientY - touchStart.current.y;
+        touchStart.current = null;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+            didSwipe.current = true;       // suppress the tap-flip that follows this gesture
+            if (dx < 0) handleNext(); else handlePrev();
+        }
+    };
+    const handleCardTap = () => {
+        if (didSwipe.current) { didSwipe.current = false; return; }
+        setIsFlipped(f => !f);
+    };
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -143,7 +168,9 @@ export default function FlashcardModal({
             <div
                 className="w-full max-w-2xl cursor-pointer select-none"
                 style={{ perspective: '1500px', height: '340px' }}
-                onClick={() => setIsFlipped(f => !f)}
+                onClick={handleCardTap}
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
             >
                 <div
                     className="relative w-full h-full transition-transform duration-500"
