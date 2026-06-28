@@ -171,7 +171,7 @@ export default function AdminDashboard() {
             const res = await api.post(`/auth/admin/users/${subjectEditorUserId}/assign-subjects/`, { subjects: subjectEditorValue });
             setLocalUsers(prev => prev.map(u => u.id === subjectEditorUserId ? { ...u, assigned_subjects: res.data.assigned_subjects } : u));
             setSubjectEditorUserId(null);
-        } catch { }
+        } catch { /* ignore; editor state is reset in finally */ }
         finally { setSavingSubjects(false); }
     };
 

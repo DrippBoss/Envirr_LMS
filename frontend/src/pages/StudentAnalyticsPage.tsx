@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { api } from "../context/AuthContext";
-import { useMetadata } from "../lib/metadata";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -96,7 +95,6 @@ export default function StudentAnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const meta = useMetadata();
 
   useEffect(() => {
     api

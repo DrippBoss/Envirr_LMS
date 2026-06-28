@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from courses.models import Subject, Course
 from learning.models import (
     CourseUnit, LearningPath, LearningNode, LessonQuestion,
     Flashcard, FlashcardDeck, DeckCard, RevisionNode, NodeType,
@@ -20,13 +19,6 @@ class Command(BaseCommand):
             defaults={'is_superuser': True, 'is_staff': True, 'email': 'admin@example.com'}
         )
 
-        subj, _ = Subject.objects.get_or_create(
-            name='Mathematics', defaults={'created_by': admin_user}
-        )
-        Course.objects.get_or_create(
-            name='Chapter 10: Circles', subject=subj,
-            defaults={'status': 'published', 'created_by': admin_user}
-        )
 
         unit, _ = CourseUnit.objects.get_or_create(
             title='Chapter 10: Circles', subject='Mathematics',

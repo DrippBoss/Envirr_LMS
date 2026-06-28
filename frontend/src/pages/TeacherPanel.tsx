@@ -413,7 +413,7 @@ export default function TeacherPanel() {
           setPaperError({ title: compilingPaper.title, message: found.error_message || 'Paper generation failed. Please try again.' });
           setCompilingPaper(null);
         }
-      } catch {}
+      } catch { /* transient poll error — keep polling until timeout */ }
     }, 3000);
     return () => { clearInterval(poll); timers.forEach(clearTimeout); };
   }, [compilingPaper]);
