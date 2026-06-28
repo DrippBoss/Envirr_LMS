@@ -483,6 +483,16 @@ def _sanitize_question_filter(raw):
 
 
 class ChapterTestStartView(views.APIView):
+    """In-app interactive chapter test.
+
+    Serves QuestionBank questions (filtered by the node's ``question_filter``)
+    as JSON for the student to answer live in the app. This is deliberately a
+    separate flow from the printed-paper generator
+    (``ai_engine.views.GeneratePaperAPIView`` -> ``generate_paper_task``),
+    which renders a LaTeX PDF for download. Both read from QuestionBank but
+    serve different products (interactive test vs printable exam) and are
+    intentionally NOT converged (see OQ2).
+    """
     permission_classes = [IsStudent]
 
     def post(self, request, node_id):
