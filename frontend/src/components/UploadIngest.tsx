@@ -264,7 +264,7 @@ export default function UploadIngest() {
           setError(paper.error_message || 'Paper compilation failed. Please try again.');
           setStep('build');
         }
-      } catch {}
+      } catch { /* transient poll error — keep polling until timeout */ }
     }, 3000);
     return () => { clearInterval(poll); clearTimeout(t3); clearTimeout(t4); };
   }, [step, paperId]);

@@ -248,7 +248,7 @@ function QuizScreen({
   const q = questions[idx];
 
   const setAnswer = (val: string) => setAnswers(p => ({ ...p, [q.id]: val }));
-  const toggleFlag = () => setFlagged(p => { const s = new Set(p); s.has(q.id) ? s.delete(q.id) : s.add(q.id); return s; });
+  const toggleFlag = () => setFlagged(p => { const s = new Set(p); if (s.has(q.id)) s.delete(q.id); else s.add(q.id); return s; });
 
   const handleSubmit = async () => {
     setSubmitting(true);
