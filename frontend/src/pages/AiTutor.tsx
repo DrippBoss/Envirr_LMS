@@ -21,8 +21,8 @@ interface Message {
 const NAV_LINKS = [
     { icon: 'dashboard', label: 'Dashboard', path: '/' },
     { icon: 'psychology', label: 'Ask AI Tutor', path: '/tutor', active: true },
-    { icon: 'menu_book', label: 'Curriculum', path: '/course' },
-    { icon: 'leaderboard', label: 'Rankings', path: '#' },
+    { icon: 'menu_book', label: 'Curriculum', path: '/curriculum' },
+    { icon: 'leaderboard', label: 'Rankings', path: '/leaderboard' },
 ];
 
 function formatTime(d: Date) {

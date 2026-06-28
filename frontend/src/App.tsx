@@ -9,6 +9,7 @@ import Login from './pages/Login';
 // bundle stays small. Navbar + Login are eager (layout / unauth entry point);
 // labs are already lazy-loaded via LabDispatcher.
 const StudentDashboard = lazy(() => import('./pages/StudentDashboard'));
+const CurriculumPage = lazy(() => import('./pages/CurriculumPage'));
 const TeacherPanel = lazy(() => import('./pages/TeacherPanel'));
 const LearningMap = lazy(() => import('./pages/LearningMap'));
 const NodePage = lazy(() => import('./pages/NodePage'));
@@ -47,6 +48,7 @@ function AppRoutes() {
                     <Routes>
                         <Route path="/login" element={<Login />} />
                         <Route path="/" element={<ProtectedRoute><RoleHome /></ProtectedRoute>} />
+                        <Route path="/curriculum" element={<ProtectedRoute><CurriculumPage /></ProtectedRoute>} />
                         <Route path="/map/:pathId" element={<ProtectedRoute><LearningMap /></ProtectedRoute>} />
                         <Route path="/learn/:nodeId" element={<ProtectedRoute><NodePage /></ProtectedRoute>} />
                         <Route path="/teacher" element={<ProtectedRoute allowedRole="teacher"><TeacherPanel /></ProtectedRoute>} />

@@ -540,15 +540,15 @@ export default function NodePage() {
           {/* Nav */}
           <nav className="flex-1 space-y-0.5">
             {[
-              { icon: "grid_view",      label: "Mission Control" },
-              { icon: "account_tree",   label: "Curriculum",    active: true },
-              { icon: "leaderboard",    label: "Rankings" },
-              { icon: "science",        label: "Laboratory" },
-              { icon: "settings",       label: "Settings" },
+              { icon: "grid_view",      label: "Dashboard",   route: "/" },
+              { icon: "account_tree",   label: "Curriculum",  route: "/curriculum", active: true },
+              { icon: "leaderboard",    label: "Rankings",    route: "/leaderboard" },
+              { icon: "settings",       label: "Settings",    route: "/profile" },
             ].map((item) => (
-              <div
+              <button
                 key={item.label}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                onClick={() => navigate(item.route)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
                   item.active
                     ? "bg-primary/10 text-primary"
                     : "text-outline hover:text-on-surface hover:bg-surface-container-high"
@@ -556,7 +556,7 @@ export default function NodePage() {
               >
                 <span className="material-symbols-outlined text-lg">{item.icon}</span>
                 {item.label}
-              </div>
+              </button>
             ))}
           </nav>
         </aside>
