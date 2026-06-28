@@ -762,3 +762,72 @@ class QuestionBankEditorListView(generics.ListAPIView):
             'page_size': page_size,
             'results': serializer.data,
         })
+
+
+# ── Doubts: student raises a doubt, teacher answers it ───────────────────────
+from ai_engine.models import DoubtTicket, DoubtResponse
+from ai_engine.serializers import DoubtTicketSerializer
+
+
+class StudentDoubtView(views.APIView):
+    """Student raises and lists their own doubts."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        if request.user.role != 'student':
+            return response.Response({'detail': 'Students only.'}, status=status.HTTP_403_FORBIDDEN)
+        qs = (DoubtTicket.objects.filter(student=request.user)
+              .select_related('lesson', 'lesson__path', 'lesson__path__unit')
+              .prefetch_related('responses', 'responses__responder')
+              .order_by('-created_at'))
+        return response.Response(DoubtTicketSerializer(qs, many=True).data)
+
+    def post(self, request):
+        if request.user.role != 'student':
+            return response.Response({'detail': 'Students only.'}, status=status.HTTP_403_FORBIDDEN)
+        text = (request.data.get('question_text') or '').strip()
+        if not text:
+            return response.Response({'detail': 'A question is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        lesson = None
+        lesson_id = request.data.get('lesson')
+        if lesson_id:
+            from learning.models import LearningNode
+            lesson = LearningNode.objects.filter(pk=lesson_id).first()
+        ticket = DoubtTicket.objects.create(student=request.user, question_text=text, lesson=lesson)
+        return response.Response(DoubtTicketSerializer(ticket).data, status=status.HTTP_201_CREATED)
+
+
+class TeacherDoubtListView(views.APIView):
+    """Teacher/admin lists doubts to answer (teachers scoped to assigned subjects)."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        if request.user.role not in ('teacher', 'admin'):
+            return response.Response({'detail': 'Teachers/admins only.'}, status=status.HTTP_403_FORBIDDEN)
+        qs = (DoubtTicket.objects
+              .select_related('student', 'lesson', 'lesson__path', 'lesson__path__unit')
+              .prefetch_related('responses', 'responses__responder')
+              .order_by('-created_at'))
+        if request.user.role == 'teacher':
+            subjects = getattr(request.user, 'assigned_subjects', None) or []
+            if subjects:
+                from django.db.models import Q
+                qs = qs.filter(Q(lesson__isnull=True) | Q(lesson__path__unit__subject__in=subjects))
+        return response.Response(DoubtTicketSerializer(qs, many=True).data)
+
+
+class TeacherDoubtRespondView(views.APIView):
+    """Teacher/admin posts a response to a doubt and marks it answered/resolved."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        if request.user.role not in ('teacher', 'admin'):
+            return response.Response({'detail': 'Teachers/admins only.'}, status=status.HTTP_403_FORBIDDEN)
+        doubt = get_object_or_404(DoubtTicket, pk=pk)
+        text = (request.data.get('response_text') or '').strip()
+        if not text:
+            return response.Response({'detail': 'A response is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        DoubtResponse.objects.create(doubt=doubt, responder=request.user, response_text=text)
+        doubt.status = 'resolved' if request.data.get('resolve') else 'answered'
+        doubt.save(update_fields=['status', 'updated_at'])
+        return response.Response(DoubtTicketSerializer(doubt).data)
