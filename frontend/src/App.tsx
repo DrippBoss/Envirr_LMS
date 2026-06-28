@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import FloatingAIButton from './components/FloatingAIButton';
+import MobileBottomNav from './components/MobileBottomNav';
 import Login from './pages/Login';
 
 // Route-level code splitting: each page is fetched on demand so the initial
@@ -65,6 +66,7 @@ function AppRoutes() {
                     </Routes>
                 </Suspense>
                 <FloatingAIButton />
+                <MobileBottomNav />
             </div>
         </Router>
     );
