@@ -22,7 +22,7 @@ export default function FloatingAIButton() {
     <button
       onClick={() => navigate('/tutor')}
       aria-label="Ask the AI tutor"
-      className="fixed z-40 bottom-5 right-5 md:bottom-6 md:right-6 flex items-center gap-2 h-14 px-5
+      className="fixed z-40 bottom-20 right-5 lg:bottom-6 lg:right-6 flex items-center gap-2 h-14 px-5
                  rounded-full bg-primary text-on-primary font-black shadow-xl shadow-primary/30
                  hover:brightness-110 active:scale-95 transition-all"
     >
