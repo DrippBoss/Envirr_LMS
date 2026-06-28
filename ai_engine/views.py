@@ -207,43 +207,33 @@ class AiTutorView(views.APIView):
         prompt = "\n".join(context_lines)
 
         try:
-            # Support routing to Gemini (cloud) or Ollama (local) based on settings
-            provider = getattr(settings, 'AI_TUTOR_PROVIDER', 'ollama')
-            if provider == 'gemini':
-                api_key = getattr(settings, 'GEMINI_API_KEY', None)
-                if not api_key:
-                    raise Exception('GEMINI_API_KEY not configured.')
-                model_alias = getattr(settings, 'GEMINI_TUTOR_MODEL', 'gemini-2.0-flash')
-                # Map friendly aliases to valid v1beta model ids; pass specific ids through unchanged.
-                _MODEL_ALIASES = {
-                    'gemini-flash': 'gemini-2.0-flash',
-                    'flash': 'gemini-2.0-flash',
-                    'gemini-pro': 'gemini-2.5-pro',
-                }
-                api_model = _MODEL_ALIASES.get(model_alias, model_alias)
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/{api_model}:generateContent?key={api_key}"
-                payload = {"contents": [{"parts": [{"text": prompt}]}]}
-                res = http_requests.post(url, json=payload, timeout=60)
-                res.raise_for_status()
-                data = res.json()
-                raw = ''
-                if isinstance(data, dict) and data.get('candidates'):
-                    try:
-                        raw = data['candidates'][0]['content']['parts'][0]['text']
-                    except Exception:
-                        raw = json.dumps(data)
-                else:
-                    raw = data.get('output', '') or data.get('response', '') or json.dumps(data)
-                raw = str(raw).strip()
+            # AI tutor runs on Gemini (cloud). Paper generation / ingestion use Groq.
+            api_key = getattr(settings, 'GEMINI_API_KEY', None)
+            if not api_key:
+                raise Exception('GEMINI_API_KEY not configured.')
+            model_alias = getattr(settings, 'GEMINI_TUTOR_MODEL', 'gemini-2.0-flash')
+            # Map friendly aliases to valid v1beta model ids; pass specific ids through unchanged.
+            _MODEL_ALIASES = {
+                'gemini-flash': 'gemini-2.0-flash',
+                'flash': 'gemini-2.0-flash',
+                'gemini-pro': 'gemini-2.5-pro',
+            }
+            api_model = _MODEL_ALIASES.get(model_alias, model_alias)
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{api_model}:generateContent?key={api_key}"
+            payload = {"contents": [{"parts": [{"text": prompt}]}]}
+            res = http_requests.post(url, json=payload, timeout=60)
+            res.raise_for_status()
+            data = res.json()
+            raw = ''
+            if isinstance(data, dict) and data.get('candidates'):
+                try:
+                    raw = data['candidates'][0]['content']['parts'][0]['text']
+                except Exception:
+                    raw = json.dumps(data)
             else:
-                res = http_requests.post(
-                    settings.OLLAMA_URL,
-                    json={"model": settings.OLLAMA_MODEL, "prompt": prompt, "stream": False},
-                    timeout=60,
-                )
-                res.raise_for_status()
-                raw = res.json().get('response', '').strip()
-        except Exception as e:
+                raw = data.get('output', '') or data.get('response', '') or json.dumps(data)
+            raw = str(raw).strip()
+        except Exception:
             logger.exception('AI tutor request failed')
             # Keep the detailed error (which may include the upstream URL + API key) in the
             # server log only; return a generic message so secrets never reach the client.

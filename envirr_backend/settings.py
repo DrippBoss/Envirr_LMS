@@ -192,15 +192,9 @@ CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['http://localhost:5173'])
 CORS_ALLOW_CREDENTIALS = True
 
-# Local LLM (Ollama) for the AI tutor — endpoint and model are env-configurable
-# so the host/port/model can change per environment without code edits.
-OLLAMA_URL   = env('OLLAMA_URL',   default='http://host.docker.internal:11434/api/generate')
-OLLAMA_MODEL = env('OLLAMA_MODEL', default='llama3')
-
-# AI Tutor provider selection: 'ollama' (default) or 'gemini'
-AI_TUTOR_PROVIDER = env('AI_TUTOR_PROVIDER', default='ollama')
-# When using Gemini for the tutor, choose the model (e.g., gemini-flash)
-GEMINI_TUTOR_MODEL = env('GEMINI_TUTOR_MODEL', default='gemini-flash')
+# AI Tutor runs on Gemini (cloud). Paper generation / ingestion use Groq.
+# Choose the tutor model (e.g., gemini-2.0-flash); aliases are mapped in AiTutorView.
+GEMINI_TUTOR_MODEL = env('GEMINI_TUTOR_MODEL', default='gemini-2.0-flash')
 
 # Cookie security — enforce HTTPS in production
 SESSION_COOKIE_SECURE = not DEBUG
