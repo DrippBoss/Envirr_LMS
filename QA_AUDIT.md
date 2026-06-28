@@ -1,255 +1,112 @@
 # Envirr LMS — QA Audit & Open Issues
-> Full audit performed: 2026-06-07
-> See also: KNOWLEDGE_BASE.md
+> Original full audit: 2026-06-07.
+> **Reconciled against the codebase 2026-06-28 — every item below is now RESOLVED.**
+> Remediation landed across PRs #43–#96. See also: KNOWLEDGE_BASE.md, DOCUMENTATION.md.
 
 ---
 
-## BROKEN / HIGH-PRIORITY BUGS
+## STATUS SUMMARY (2026-06-28)
 
-### B1: Celery Task Failures Are Silent
-**Where**: `ai_engine/tasks.py` — `generate_paper_task`, `compile_manual_paper_task`
-**Issue**: No try/catch around `pdflatex` subprocess or Groq API calls. If either fails, the Celery task throws an unhandled exception, `QuestionPaper.secure_pdf_path` is never set, and the user sees the status spinner indefinitely. No error status is written back to the paper record.
-**Impact**: Paper generation is effectively broken if Groq is down or pdflatex is not installed.
-**Fix needed**: Wrap in try/except, update paper status to "failed" with error message.
-**Status**: OPEN
-
-### B2: NodeProgress Status Enum Mismatch
-**Where**: `learning/views.py` — `UnitPrerequisitesView` (POST handler, ~line 77)
-**Issue**: Code sets `status='UNLOCKED'` as a plain string instead of using the CompletionStatus enum constant. This may silently fail or save incorrectly depending on field type.
-**Status**: OPEN
-
-### B3: Mock Test Self-Marking Has No Backend Validation
-**Where**: `frontend/src/pages/MockTestPage.tsx` lines 393-401
-**Issue**: For LONG/SHORT answer questions, the user marks their own answer correct or wrong. There is no backend validation — the self-assessment is sent directly to the submit endpoint. Students can mark all long-form answers correct to inflate scores.
-**Status**: OPEN
-
-### B4: Admin Dashboard KPI Cards Show Hardcoded Mock Data
-**Where**: `frontend/src/pages/AdminDashboard.tsx` lines 6-21
-**Issue**: `DAY_BARS`, `SUBJECT_SCORES`, `WEAK_CONCEPTS` arrays are statically defined and never updated from the API response even though the API returns real data. The charts always show the same fake values.
-**Status**: OPEN
-
-### B5: Video Completion Not Enforced Before Practice
-**Where**: `frontend/src/pages/NodePage.tsx` ~line 275-294
-**Issue**: If `video_url` is empty, a placeholder is shown but the user can still click to proceed to practice questions. The backend `NodeVideoCompleteView` is never called, so the node advances to PRACTICE step without the video being recorded as watched.
-**Status**: OPEN
-
-### B6: OAuth / Google / SSO Buttons Are Non-Functional Placeholders
-**Where**: `frontend/src/pages/Login.tsx`
-**Issue**: "Continue with Google" and "SSO" buttons exist in the UI but have no `onClick` handlers. Clicking them does nothing.
-**Status**: OPEN (feature not built)
-
-### B7: Forgot Password Flow Not Wired
-**Where**: `frontend/src/pages/Login.tsx` ~line 370
-**Issue**: "Forgot Password?" button exists but is not connected to any handler or route. No password reset endpoint exists in the backend either.
-**Status**: OPEN (feature not built)
-
-### B8: Voice Input & Photo Upload in AI Tutor Are Non-Functional
-**Where**: `frontend/src/pages/AiTutor.tsx` lines 310-316
-**Issue**: Voice ask and photo upload buttons exist but have no `onClick` handlers.
-**Status**: OPEN (feature not built)
-
-### B9: "Show More Users" in Admin Dashboard Is Non-Functional
-**Where**: `frontend/src/pages/AdminDashboard.tsx` ~line 882
-**Issue**: Button exists but is not wired to any pagination logic.
-**Status**: OPEN
-
-### B10: StudyGroup MAX_MEMBERS Inconsistency
-**Where**: `learning/models.py` — StudyGroup model
-**Issue**: `max_members` default is 10, but `MAX_MEMBERS` class constant is 6. The frontend uses `Math.min(..., StudyGroup.MAX_MEMBERS)` which conflicts with the model default. Groups could be created with up to 10 members via the API.
-**Status**: OPEN
+All originally-logged issues are fixed. Full page audit complete (13 frontend
+pages — no dead/broken interactive elements remain). The only outstanding items
+are content/ops tasks, listed under **OUTSTANDING** at the bottom — none are
+open bugs.
 
 ---
 
-## SECURITY CONCERNS
+## BROKEN / HIGH-PRIORITY BUGS — ALL RESOLVED ✓
 
-### S1: Race Condition on Failed Login Attempts
-**Where**: `users/views.py` — `CookieTokenObtainPairView`
-**Issue**: `failed_login_attempts` is incremented without `select_for_update()`. Concurrent simultaneous login attempts from different sessions could bypass the 10-attempt lockout.
-**Status**: OPEN
-
-### S2: Hardcoded Localhost URLs (Not Production-Ready)
-**Where**: Multiple files
-- `ai_engine/views.py`: `http://host.docker.internal:11434/api/generate` (Ollama)
-- `settings.py`: `redis://localhost:6379/1` (Celery broker — should be `REDIS_URL` env var)
-- `settings.py`: `FRONTEND_URL = 'http://localhost:5173'`
-- `settings.py`: `ALLOWED_HOSTS = ['*']`
-**Status**: OPEN
-
-### S3: question_filter JSONField ORM Injection Risk
-**Where**: `learning/views.py` — `ChapterTestStartView`
-**Issue**: `LearningNode.question_filter` (JSONField) is unpacked directly as `QuestionBank.objects.filter(**question_filter)`. A malformed or adversarially crafted JSON could probe internal data. No whitelist validation of allowed filter keys.
-**Status**: OPEN
-
-### S4: DoubtTicket References Legacy `courses.Lesson` Not `learning.LessonQuestion`
-**Where**: `ai_engine/models.py` — `DoubtTicket.lesson`
-**Issue**: FK points to `courses.Lesson` (the old Course app), not `learning.LessonQuestion` (the active learning flow). Doubt tickets cannot be linked to actual lessons in use.
-**Status**: OPEN
-
-### S5: TeacherPapersView Returns All Papers (Missing Ownership Filter)
-**Where**: `learning/study_group_views.py` — `TeacherPapersView`
-**Issue**: Marked with `IsStudent` permission but returns ALL QuestionPapers, not scoped to the current teacher or student's grade. Students could see papers they shouldn't.
-**Status**: OPEN
+- **B1 Celery task failures silent** — ✅ paper tasks wrap body in try/except; persist `status='failed'` + `error_message`; frontend shows an error screen.
+- **B2 NodeProgress status enum mismatch** — ✅ replaced bare string literals with `CompletionStatus.*` / `NodeStep.*` / `NodeType.*` (PR #61).
+- **B3 Mock-test self-marking unvalidated** — ✅ `_grade()` returns `is_correct=None` for self-marked types; the official score counts only `is_correct is True`, so self-marks cannot inflate it (`learning/mock_test_views.py`).
+- **B4 Admin KPI cards hardcoded** — ✅ charts are API-driven from `GET /auth/admin/analytics/`.
+- **B5 Video completion not enforced** — ✅ `NodePracticeView` 403s unless step ∈ {PRACTICE, COMPLETED}; `NodeStartView` auto-advances only when there is no video.
+- **B6 OAuth/SSO dead buttons** — ✅ removed (PR #48/#49); verified no remnants remain in `Login.tsx`.
+- **B7 Forgot-password not wired** — ✅ `POST /auth/password-reset/` (+ confirm, 2h token) + frontend modal/route (PR #48/#49).
+- **B8 Voice/photo in AI Tutor** — ✅ feature DEFERRED (issue #8); the non-functional buttons were removed so the UI isn't misleading (PR #95). Re-add when the feature is built.
+- **B9 "Show More Users" dead** — ✅ paginated `AdminUsersListView` + wired button (PR #50/#51).
+- **B10 StudyGroup MAX_MEMBERS inconsistency** — ✅ field default == `MAX_MEMBERS` (6) via migration 0016.
 
 ---
 
-## DATA INTEGRITY ISSUES
+## SECURITY CONCERNS — ALL RESOLVED ✓
 
-### D1: WeakSpot Never Cleared on Correct Answer
-**Where**: `learning/models.py` — `SessionAnswer.save()`
-**Issue**: `WeakSpot` records are only created/incremented on wrong answers; they are never decremented or cleared when the same concept is answered correctly in future sessions. WeakSpots accumulate indefinitely.
-**Status**: OPEN
+- **S1 Race on failed-login counter** — ✅ `select_for_update()` row lock before increment.
+- **S2 Hardcoded localhost URLs** — ✅ env-driven (`ALLOWED_HOSTS` fail-closed, `REDIS_URL`/`CACHE_URL`, `FRONTEND_URL`). Ollama removed entirely (PR #73).
+- **S3 question_filter ORM injection** — ✅ `_sanitize_question_filter()` whitelists fields/lookups before unpacking into ORM kwargs.
+- **S4 DoubtTicket legacy FK** — ✅ retargeted to `learning.LearningNode` (migration 0007); the model is now fully wired to a doubt API (PR #92/#93).
+- **S5 TeacherPapersView returns all papers** — ✅ scoped to the student's grade.
 
-### D2: QuestionBank Hash Collision Not Handled
-**Where**: `ai_engine/models.py` — `QuestionBank.save()`
-**Issue**: `question_hash` is SHA256 of (subject + chapter + question_text) only — `question_type` is NOT included. Same question text in different types generates the same hash. The `except Exception: pass` on hash collision silently drops the question.
-**Status**: OPEN
-
-### D3: XP Level Has No Upper Bound
-**Where**: `learning/services.py` — `award_node_xp()`
-**Issue**: `current_level = max(1, total_xp // 500 + 1)` — there is no cap. With enough XP, students reach level 10000+.
-**Status**: OPEN
-
-### D4: GroupSessionProgress Created Without get_or_create
-**Where**: `learning/study_group_views.py` — `GroupSessionCreateView`
-**Issue**: Progress records created without `get_or_create`. Network retries create duplicate (session, student) entries.
-**Status**: OPEN
-
-### D5: Cascading Delete Risk
-**Where**: Django ORM — `CourseUnit` delete
-**Issue**: `CourseUnit.delete()` cascades to `LearningPath → LearningNode → SessionAnswer`, deleting all student progress for that unit silently. No soft-delete protection.
-**Status**: OPEN
-
-### D6: WeakSpot Transaction Without on_commit
-**Where**: `learning/models.py` — `SessionAnswer.save()`
-**Issue**: `WeakSpot` created inside a request transaction without `transaction.on_commit()` guard. If the outer transaction rolls back, orphaned WeakSpot records remain.
-**Status**: OPEN
+> Note (not in original audit): committed secrets — `mcp-config.json` currently
+> holds live API keys in the working tree (uncommitted). See OUTSTANDING.
 
 ---
 
-## FRONTEND HARDCODING (Should Be API-Driven)
+## DATA INTEGRITY — ALL RESOLVED ✓
 
-| Hardcoded Value | Location | Should Come From |
-|----------------|----------|-----------------|
-| 500 XP per level | StudentDashboard:132 | API `/gamification/stats/` or config |
-| 3 initial lives | NodePage:25 | API `node/start/` response |
-| Class grades [9,10,11,12] | Login:320 | API `/grades/` metadata endpoint |
-| Board options [CBSE, ICSE...] | Login:333 | API metadata endpoint |
-| Subject colors & icons | StudentDashboard:27-32 | API subject metadata |
-| 120 message AI tutor cache limit | AiTutor:37 | Config constant |
-| Auto-graded question types list | MockTestPage:50 | API metadata endpoint |
-| Paper section templates (A/B/C/D) | UploadIngest:144 | User-configurable or API defaults |
-| Lab node hex colors (#6366f1) | NodeCard:33-44 | Design system tokens or API |
-| DAY_BARS / SUBJECT_SCORES (admin) | AdminDashboard:6-21 | Replace with live API data |
+- **D1 WeakSpot not cleared on correct** — ✅ decremented/resolved on correct answer (`on_commit`).
+- **D2 QuestionBank hash collision** — ✅ `compute_hash()` includes `question_type`.
+- **D3 XP level unbounded** — ✅ `level_for_xp()` capped at `MAX_LEVEL` (100); covered by tests.
+- **D4 GroupSessionProgress duplicates** — ✅ all creation sites use `get_or_create`.
+- **D5 Cascading delete wipes progress** — ✅ `LearningPath.unit` is `SET_NULL`.
+- **D6 WeakSpot without on_commit** — ✅ wrapped in `transaction.on_commit`.
 
 ---
 
-## PERFORMANCE CONCERNS
-
-### P1: No Pagination on High-Traffic Views
-**Where**: `DashboardView`, `QuestionBankListView`, `LeaderboardView`
-**Issue**: Returns all results without pagination. Will degrade with large datasets.
-**Status**: OPEN
-
-### P2: N+1 Queries in Serializers
-**Where**: `learning/serializers.py` — LearningPathSerializer
-**Issue**: Iterates nodes without confirmed `select_related`/`prefetch_related`.
-**Status**: OPEN — needs profiling
-
-### P3: No Caching on Frequently-Read Data
-**Where**: `DashboardView`, `QuestionBankMetaView`
-**Issue**: Fresh DB query on every dashboard load. No Redis caching despite Redis being available.
-**Status**: OPEN
-
-### P4: Image URL Object Leak in QuestionEditor
-**Where**: `frontend/src/components/QuestionEditor.tsx` ~line 109
-**Issue**: `URL.createObjectURL()` called but `URL.revokeObjectURL()` never called. Memory leak.
-**Status**: OPEN
+## FRONTEND HARDCODING — ALL RESOLVED ✓
+`GET /api/metadata/` is the single source of truth for grades, boards, XP/level
+config, initial lives, subjects, auto-graded types, tutor history limit, paper
+section defaults. Lab hex colors are intentional design tokens. The last stray
+value — the teacher panel's fake "Questions Available: 1,248" KPI — was replaced
+with a real metric (PR #96).
 
 ---
 
-## MISSING FEATURES (UI Exists, Backend Absent)
-
-| Feature | Status |
-|---------|--------|
-| Password reset flow | Backend endpoint missing; UI button dead |
-| Google OAuth / SSO login | Placeholder buttons; not wired |
-| Voice input in AI Tutor | Button exists; no handler |
-| Photo upload in AI Tutor | Button exists; no handler |
-| "Browse All" study groups link | Link exists; not wired |
-| Discussion forums (in NavItems) | Not implemented |
-| Resource downloads (in NodePage) | ResourceBrowser not wired |
-| Notifications system | No bell icon or real-time alert |
-| Student analytics/progress report | No dedicated page |
-| User settings/preferences page | Theme toggle is the only setting |
+## PERFORMANCE — ALL RESOLVED ✓
+P1 pagination, P2 N+1 (prefetched context maps), P3 Redis caching, P4
+`URL.revokeObjectURL()` — all addressed (PR #44/#45).
 
 ---
 
-## UX ISSUES
-
-### U1: Login Email Verification Requires Full Re-Login for Resend
-**Where**: `Login.tsx` ~line 78-83
-**Issue**: `handleResendVerification()` performs a temporary login to call `send-verification/`. Should use a token-based resend endpoint that doesn't require full credentials.
-
-### U2: Revision Node Insertion Logic Is Fragile
-**Where**: `LearningMap.tsx` ~line 223
-**Issue**: Frontend inserts revision nodes at `midPoint - 1`. If path has < 2 nodes, breaks rendering. Backend should control ordering.
-
-### U3: Missing Markdown in AI Tutor Responses
-**Where**: `AiTutor.tsx`
-**Issue**: AI responses are plain text. Code blocks, LaTeX, lists, tables are not rendered.
-
-### U4: Mock Test Timer Has No Pause Feature
-**Where**: `MockTestPage.tsx` ~line 218
-**Issue**: Timer starts immediately with no pause/resume.
-
-### U5: REARRANGE Answer Format Inconsistency (Likely Active Bug)
-**Where**: `QuestionCard.tsx` ~line 40; `NodePracticeAnswerView` backend
-**Issue**: Frontend may send rearranged chip indices while backend expects raw chip text. All REARRANGE answers may be marked wrong silently. **Needs manual test to confirm.**
+## MISSING FEATURES — RESOLVED ✓ (or deferred)
+Password reset ✓ · OAuth removed ✓ · "Browse All" study groups ✓ · dead
+forums/resources/notifications removed ✓ · student analytics page ✓ (500 also
+fixed, PR #86) · settings/profile ✓ · **Doubt solver built end-to-end** (student
+asks on a lesson → teacher answers, PR #92/#93). Voice/photo tutor input remains
+DEFERRED (issue #8).
 
 ---
 
-## OPEN QUESTIONS FOR DEVELOPER
-
-### OQ1: Legacy `courses` App Status
-Is the `courses` app (referenced by `activity` models and `DoubtTicket.lesson`) still in use, deprecated, or being migrated to `learning` app models?
-
-### OQ2: Two Parallel Question Flow Paths
-`ChapterTestStartView` pulls directly from `QuestionBank`. `GeneratePaperAPIView` runs a full Celery + LaTeX pipeline. Are these intentionally separate workflows (quick in-app test vs printed paper) or should they converge?
-
-### OQ3: Lab Node Content Storage
-`LearningNode.node_type = LAB` exists in models and views (`LabCompleteView`), and frontend has `LabDispatcher`. But there are no Lab content models. Where is the lab template/content stored? Is `lab_artifact` the student's submission or the template?
-
-### OQ4: `concerns.md` File Contents
-There is a `concerns.md` in the project root (not committed). What does it contain? It may have important context about known issues.
-
-### OQ5: `fix_ap_latex.py` Script
-Standalone script in root. Is it a one-time migration script or still in active use?
-
-### OQ6: StudyGroup Chat Moderation Enforcement
-Is profanity/contact-info blocking enforced server-side before messages are saved to `GroupChatMessage`, or is it client-side only? If client-side, the backend endpoint can still receive raw unmoderated content via API.
-
-### OQ7: REARRANGE Answer Format Contract
-What format does `NodePracticeAnswerView` expect for REARRANGE answers — the raw chip text strings, or array indices? The frontend `QuestionCard.tsx` behavior may not match. This could be causing all REARRANGE questions to be marked wrong silently.
-
-### OQ8: Ollama vs Groq Strategy
-AI Tutor uses Ollama/LLaMA 3 locally. Paper generation/ingestion uses Groq. Is this intentional (local for privacy, cloud for throughput)? Is there a plan to consolidate?
-
-### OQ9: Email in Production
-`EMAIL_BACKEND` falls back to console if SMTP not configured. Has SMTP been tested end-to-end in production? Are verification emails actually delivered?
-
-### OQ10: `frontend/src/labs/` Directory
-What is in `frontend/src/labs/`? These appear to be interactive lab components referenced by `LabDispatcher` but were not audited.
+## UX ISSUES — ALL RESOLVED ✓
+U1 token-based resend · U2 backend-controlled revision ordering · U3 AI-tutor
+markdown/KaTeX · U4 mock-test timer pause · U5 REARRANGE format.
 
 ---
 
-## RESOLVED
+## OPEN QUESTIONS — ALL ANSWERED ✓
+- **OQ1** legacy `courses`/`activity` apps — deregistered (PR #67).
+- **OQ2** two question-flow paths — intentionally separate (in-app test vs printed paper); documented (PR #74).
+- **OQ3 / OQ10** lab content & `frontend/src/labs/` — audited: labs are client-side React components keyed by `lab_type` (no server template); `lab_artifact` = student submission; `LabCompleteView` awards 3★+XP. Healthy.
+- **OQ4** `concerns.md` — reviewed; surfaced gaps fixed (PR #68).
+- **OQ5** `fix_ap_latex.py` — one-time utility script; safe to keep/delete.
+- **OQ6** chat moderation — enforced server-side before persisting `GroupChatMessage`.
+- **OQ7** REARRANGE format — verified; whitespace/connector-insensitive matching with commutative fallback.
+- **OQ8** Ollama vs Groq — consolidated: **Gemini** for the tutor, **Groq** for paper gen/ingestion; Ollama removed (PR #73).
+- **OQ9** email in production — hardened (gunicorn, STATIC_ROOT, FRONTEND_URL, security headers; PR #66).
 
-### R1: Login Error Message (2026-04-12)
-**Issue**: Login showed "An error occurred" because handler looked for `data.error` but DRF returns `data.detail` or `data.non_field_errors`.
-**Fix**: Updated `Login.tsx` error catch to check `data.detail`, `data.non_field_errors`, then `data.error`.
-**Status**: RESOLVED ✓
+---
 
-### R2: JWT in localStorage → httpOnly Cookies
-**Issue**: Prior version stored access tokens in localStorage (XSS risk).
-**Fix**: Migrated to httpOnly cookie-based JWT storage.
-**Status**: RESOLVED ✓
+## OUTSTANDING (content/ops — not open bugs)
+
+1. **🔐 `mcp-config.json` API keys** — live Gemini/NVIDIA/Groq keys are pasted into the `apiKeyEnv` fields in the working tree (the file is unused/orphaned). Restore env-var names or delete, and **rotate the keys**. The only item with a real security dimension.
+2. **📝 Chapter-test content gap** — "Chapter 10: Circles" and the Grade-9 units have no scoped test filter because `QuestionBank` has no grade field and lacks matching questions. Needs grade-9 / Circles questions authored (and ideally a `class_grade` field on QuestionBank). Migration 0017 scoped all G10 tests with a real pool.
+3. **⚠️ Seeder re-break** — `learning/management/commands/seed_*.py` create CHAPTER_TEST nodes without a `question_filter`, so a fresh re-seed re-introduces empty filters (migration 0017 only fixed existing rows). Update the seed `test()` helper to set the chapter filter.
+4. **🎨 Flashcard Phase 3** — the model + UI now support markdown/KaTeX, formula/example blocks, and an image field, but seeded cards are still plain title+body. Populate richer content/diagrams.
+5. **🧪 Backend test coverage** — 23 tests cover auth, gamification, the core learning flow, and the analytics endpoint. Study groups + moderation, mock tests, paper generation/ingestion, the wizard, and admin endpoints are still untested.
+
+---
+
+## RESOLVED HISTORY (selected)
+- 2026-04-12 R1 login error message; (earlier) R2 JWT → httpOnly cookies.
+- 2026-06-07 → 06-13: data-integrity, performance, config-hardening, auth-recovery, enum, FK, dead-UI, student-analytics batches (PRs #43–#67).
+- 2026-06-28 session (PRs #69–#96): green build + real CI + 23 backend tests; AI provider consolidation (Gemini tutor, Ollama removed); route code-splitting; G10 chapter-test scoping; flashcard markdown/KaTeX + images; Curriculum page + sidebar-nav fixes; Review-Foundations fix; My-Progress 500 fix; mock-test hardening; study-group polish; **doubt feature built**; full 13-page audit (dead Analytics tab, admin search, tutor voice/photo, fake KPI all removed/fixed).
