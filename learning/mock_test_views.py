@@ -74,7 +74,9 @@ class MockTestGenerateView(views.APIView):
         subject    = request.data.get('subject', 'Mathematics')
         chapters   = request.data.get('chapters', [])
         count      = min(int(request.data.get('count', 10)), 40)
-        difficulty = request.data.get('difficulty', 'mixed')
+        # `or 'mixed'` (not just a get-default) so an explicit null/empty from the
+        # client also falls back — MockTestAttempt.difficulty is NOT NULL.
+        difficulty = request.data.get('difficulty') or 'mixed'
         time_limit = request.data.get('time_limit')
         types      = request.data.get('types') or ['MCQ', 'ASSERTION_REASON', 'VERY_SHORT', 'SHORT', 'LONG']
 
