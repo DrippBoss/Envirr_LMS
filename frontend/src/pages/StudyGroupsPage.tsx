@@ -127,7 +127,7 @@ function CreateJoinModal({ onClose, onDone }: { onClose: () => void; onDone: (g:
             <input className={inputCls} placeholder="6-character invite code" value={code}
               onChange={e => setCode(e.target.value.toUpperCase())} maxLength={8} />
           )}
-          {error && <p className="text-xs text-red-400 font-bold">{error}</p>}
+          {error && <p className="text-xs text-error font-bold">{error}</p>}
           <button onClick={tab === 'create' ? handleCreate : handleJoin} disabled={loading}
             className="w-full py-3 rounded-xl bg-primary text-on-primary text-sm font-black hover:bg-primary/90 disabled:opacity-50 transition-all">
             {loading ? 'Please wait…' : tab === 'create' ? 'Create Group' : 'Join Group'}
@@ -249,7 +249,7 @@ function StartSessionModal({
                 </button>
               ))}
               {pdfMode && selectedPaper && !selectedPaper.has_pdf && (
-                <p className="text-[11px] text-orange-400 font-bold">⚠ This paper has no PDF. Will use question mode instead.</p>
+                <p className="text-[11px] text-tertiary font-bold">⚠ This paper has no PDF. Will use question mode instead.</p>
               )}
             </div>
           )}
@@ -342,7 +342,7 @@ function StartSessionModal({
         </div>
 
         <div className="px-5 py-4 shrink-0">
-          {error && <p className="text-xs text-red-400 font-bold mb-2">{error}</p>}
+          {error && <p className="text-xs text-error font-bold mb-2">{error}</p>}
           <button onClick={handleStart} disabled={loading || (tab === 'teacher' && !selectedPaper)}
             className="w-full py-3 rounded-xl bg-secondary text-on-secondary text-sm font-black hover:bg-secondary/90 disabled:opacity-50 transition-all">
             {loading ? 'Starting…' : 'Start Session'}
@@ -448,7 +448,7 @@ function ChatPanel({
           Group Chat
         </button>
         <button onClick={() => onTabChange('key')}
-          className={`flex-1 py-2.5 text-xs font-black flex items-center justify-center gap-1.5 transition-all ${rightTab === 'key' ? 'text-green-400 border-b-2 border-green-400' : 'text-outline hover:text-on-surface'}`}>
+          className={`flex-1 py-2.5 text-xs font-black flex items-center justify-center gap-1.5 transition-all ${rightTab === 'key' ? 'text-secondary border-b-2 border-secondary' : 'text-outline hover:text-on-surface'}`}>
           <span className="material-symbols-outlined text-sm">key</span>
           Answer Key
         </button>
@@ -463,7 +463,7 @@ function ChatPanel({
           ) : answerKey.map(k => (
             <div key={k.question_number} className="flex gap-3 items-start bg-surface-container-high rounded-xl px-3 py-2.5 border border-outline-variant/10">
               <span className="text-[11px] font-black text-outline shrink-0 w-7">Q{k.question_number}</span>
-              <span className="text-[11px] text-green-400 font-bold leading-relaxed break-words">{k.answer || '—'}</span>
+              <span className="text-[11px] text-secondary font-bold leading-relaxed break-words">{k.answer || '—'}</span>
             </div>
           ))}
         </div>
@@ -473,11 +473,11 @@ function ChatPanel({
       {rightTab === 'chat' && <>
       {/* Doubt escalation cards */}
       {doubts.filter(d => d.can_escalate).length > 0 && (
-        <div className="border-b border-orange-500/20 bg-orange-500/5 px-3 py-2 space-y-1.5 shrink-0">
-          <p className="text-[10px] font-black text-orange-400 uppercase tracking-widest">Group Doubts</p>
+        <div className="border-b border-tertiary/20 bg-tertiary/5 px-3 py-2 space-y-1.5 shrink-0">
+          <p className="text-[10px] font-black text-tertiary uppercase tracking-widest">Group Doubts</p>
           {doubts.filter(d => d.can_escalate).map(d => (
-            <div key={d.question_number} className="bg-orange-500/10 border border-orange-500/20 rounded-lg px-2.5 py-2">
-              <p className="text-[11px] font-black text-orange-300 mb-1.5">{d.doubt_count} students stuck on Q{d.question_number}</p>
+            <div key={d.question_number} className="bg-tertiary/10 border border-tertiary/20 rounded-lg px-2.5 py-2">
+              <p className="text-[11px] font-black text-tertiary mb-1.5">{d.doubt_count} students stuck on Q{d.question_number}</p>
               <div className="flex gap-1.5">
                 <button onClick={() => escalate(d.question_number, 'ai')}
                   className="flex-1 py-1 rounded-lg bg-secondary/15 text-secondary text-[10px] font-black border border-secondary/20 hover:bg-secondary/25 transition-all">
@@ -508,7 +508,7 @@ function ChatPanel({
             )}
             <div className={`max-w-[82%] space-y-1 flex flex-col ${msg.is_me ? 'items-end' : 'items-start'}`}>
               {(msg.is_doubt || msg.question_number) && !msg.is_system && (
-                <span className="text-[9px] font-black text-orange-400 uppercase tracking-wider flex items-center gap-1">
+                <span className="text-[9px] font-black text-tertiary uppercase tracking-wider flex items-center gap-1">
                   <span className="material-symbols-outlined text-xs">help</span>
                   Doubt {msg.question_number ? `· Q${msg.question_number}` : ''}
                 </span>
@@ -522,7 +522,7 @@ function ChatPanel({
               <div className={`px-3 py-2 rounded-2xl text-xs leading-relaxed ${
                 msg.is_system ? 'bg-secondary/10 border border-secondary/20 text-slate-200 rounded-tl-sm max-w-full' :
                 msg.is_me ? 'bg-primary/20 text-on-surface rounded-tr-sm' :
-                msg.is_doubt ? 'bg-orange-500/15 border border-orange-500/20 text-on-surface rounded-tl-sm' :
+                msg.is_doubt ? 'bg-tertiary/15 border border-tertiary/20 text-on-surface rounded-tl-sm' :
                 'bg-surface-container-high text-on-surface-variant rounded-tl-sm'
               }`}>
                 {!msg.is_me && !msg.is_system && <p className="text-[10px] font-black text-outline/60 mb-0.5">{msg.username}</p>}
@@ -539,14 +539,14 @@ function ChatPanel({
         {/* Raise doubt */}
         <div className="flex gap-1.5 items-center">
           <input
-            className="flex-1 bg-surface-container-highest border border-orange-500/20 rounded-lg px-2.5 py-1.5 text-[11px] text-on-surface focus:outline-none focus:border-orange-500/40 placeholder:text-outline/30"
+            className="flex-1 bg-surface-container-highest border border-tertiary/20 rounded-lg px-2.5 py-1.5 text-[11px] text-on-surface focus:outline-none focus:border-tertiary/40 placeholder:text-outline/30"
             placeholder="Q number (e.g. 3)"
             value={questionNumber}
             onChange={e => setQuestionNumber(e.target.value)}
             type="number" min="1"
           />
           <button onClick={raiseDoubt} disabled={!questionNumber}
-            className="px-2.5 py-1.5 rounded-lg bg-orange-500/15 text-orange-400 text-[10px] font-black border border-orange-500/20 hover:bg-orange-500/25 disabled:opacity-40 transition-all whitespace-nowrap">
+            className="px-2.5 py-1.5 rounded-lg bg-tertiary/15 text-tertiary text-[10px] font-black border border-tertiary/20 hover:bg-tertiary/25 disabled:opacity-40 transition-all whitespace-nowrap">
             Raise Doubt
           </button>
         </div>
@@ -745,7 +745,7 @@ function SessionRoom({
           {memberProgress.map(m => (
             <div key={m.student_id} title={`${m.username}${m.submitted ? ' ✓' : ''}`}
               className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-[9px] font-black transition-all ${
-                m.submitted ? 'border-green-500 bg-green-500/20 text-green-400' :
+                m.submitted ? 'border-secondary bg-secondary/20 text-secondary' :
                 m.answered > 0 ? 'border-primary/60 bg-primary/10 text-primary' :
                 'border-outline-variant/30 bg-surface-container-high text-outline'
               } ${m.is_me ? 'ring-2 ring-secondary ring-offset-1 ring-offset-surface-container' : ''}`}>
@@ -757,8 +757,8 @@ function SessionRoom({
         {/* Timer */}
         {isTimed && timeLeft !== null ? (
           <div className={`flex items-center gap-1 px-2 md:px-3 py-1.5 rounded-xl text-xs md:text-sm font-black font-mono border ${
-            timerWarning ? 'text-red-400 bg-red-500/10 border-red-500/30 animate-pulse' :
-            timeLeft < 300 ? 'text-orange-400 bg-orange-500/10 border-orange-500/20' :
+            timerWarning ? 'text-error bg-error/10 border-error/30 animate-pulse' :
+            timeLeft < 300 ? 'text-tertiary bg-tertiary/10 border-tertiary/20' :
             'text-on-surface bg-surface-container-high border-outline-variant/20'
           }`}>
             <span className="material-symbols-outlined text-sm">timer</span>
@@ -778,7 +778,7 @@ function SessionRoom({
           </button>
         )}
         {submitted && (
-          <span className="px-2 md:px-3 py-2 rounded-xl bg-green-500/10 text-green-400 text-xs font-black border border-green-500/20 shrink-0">Done ✓</span>
+          <span className="px-2 md:px-3 py-2 rounded-xl bg-secondary/10 text-secondary text-xs font-black border border-secondary/20 shrink-0">Done ✓</span>
         )}
       </div>
 
@@ -804,7 +804,7 @@ function SessionRoom({
               </div>
             )}
             {submitted && (
-              <div className="absolute top-3 left-3 bg-green-500/20 border border-green-500/40 rounded-xl px-3 py-2 text-green-400 text-xs font-black">
+              <div className="absolute top-3 left-3 bg-secondary/20 border border-secondary/40 rounded-xl px-3 py-2 text-secondary text-xs font-black">
                 Marked as done — check the answer key when session ends
               </div>
             )}
@@ -826,8 +826,8 @@ function SessionRoom({
 
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
               {submitted && (
-                <div className="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3 text-center">
-                  <p className="text-green-400 font-black text-sm">Submitted! Waiting for others…</p>
+                <div className="bg-secondary/10 border border-secondary/30 rounded-xl px-4 py-3 text-center">
+                  <p className="text-secondary font-black text-sm">Submitted! Waiting for others…</p>
                 </div>
               )}
 
@@ -941,7 +941,7 @@ function SessionRoom({
         >
           <span className="material-symbols-outlined text-2xl">chat</span>
           {doubts.filter(d => d.can_escalate).length > 0 && (
-            <span className="absolute top-1 right-1 w-3 h-3 rounded-full bg-orange-400 border-2 border-background" />
+            <span className="absolute top-1 right-1 w-3 h-3 rounded-full bg-tertiary border-2 border-background" />
           )}
         </button>
       )}
@@ -1020,7 +1020,7 @@ function SessionResults({ groupId, sessionId, onBack }: { groupId: number; sessi
         {sorted.map((m: any, i: number) => (
           <div key={m.student_id}
             className={`bg-surface-container rounded-2xl border p-3.5 flex items-center gap-3 ${m.is_me ? 'border-secondary/30' : 'border-outline-variant/10'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black shrink-0 ${i === 0 ? 'bg-yellow-500/20 text-yellow-400' : i === 1 ? 'bg-slate-400/20 text-on-surface-variant' : i === 2 ? 'bg-orange-600/20 text-orange-400' : 'bg-surface-container-high text-outline'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black shrink-0 ${i === 0 ? 'bg-yellow-500/20 text-yellow-400' : i === 1 ? 'bg-slate-400/20 text-on-surface-variant' : i === 2 ? 'bg-tertiary/20 text-tertiary' : 'bg-surface-container-high text-outline'}`}>
               {i + 1}
             </div>
             <Avatar url={m.avatar_url} name={m.username} size={9} />
@@ -1037,7 +1037,7 @@ function SessionResults({ groupId, sessionId, onBack }: { groupId: number; sessi
             </div>
             <div className="text-right shrink-0">
               {isPdf ? (
-                <p className="text-sm font-black">{m.submitted ? <span className="text-green-400">Done ✓</span> : <span className="text-outline">Pending</span>}</p>
+                <p className="text-sm font-black">{m.submitted ? <span className="text-secondary">Done ✓</span> : <span className="text-outline">Pending</span>}</p>
               ) : (
                 <>
                   <p className="text-sm font-black text-on-surface">{m.submitted ? `${m.score}/${m.total}` : '—'}</p>
@@ -1058,8 +1058,8 @@ function SessionResults({ groupId, sessionId, onBack }: { groupId: number; sessi
               <div key={q.id} className="bg-surface-container rounded-xl border border-outline-variant/10 p-3">
                 <p className="text-xs font-black text-outline mb-1">Q{i + 1} · {q.question_type.replace('_', ' ')} · {q.marks}M</p>
                 <div className="text-sm text-on-surface mb-2"><MathText text={q.question_text} /></div>
-                {q.correct_key && <p className="text-xs text-green-400 font-bold">Answer: {q.correct_key}: {q.options_json[q.correct_key]}</p>}
-                {!q.correct_key && q.answer_text && <p className="text-xs text-green-400 font-bold">Model answer: {q.answer_text.slice(0, 120)}{q.answer_text.length > 120 ? '…' : ''}</p>}
+                {q.correct_key && <p className="text-xs text-secondary font-bold">Answer: {q.correct_key}: {q.options_json[q.correct_key]}</p>}
+                {!q.correct_key && q.answer_text && <p className="text-xs text-secondary font-bold">Model answer: {q.answer_text.slice(0, 120)}{q.answer_text.length > 120 ? '…' : ''}</p>}
               </div>
             ))}
           </div>
@@ -1135,7 +1135,7 @@ function GroupDetailView({ groupId, onBack }: { groupId: number; onBack: () => v
   if (loading) return <div className="flex items-center justify-center py-20"><div className="w-8 h-8 rounded-full border-2 border-secondary border-t-transparent animate-spin" /></div>;
   if (error) return (
     <div className="text-center py-16 space-y-3">
-      <p className="text-red-400 text-sm font-bold">{error}</p>
+      <p className="text-error text-sm font-bold">{error}</p>
       <button onClick={onBack} className="px-4 py-2 rounded-xl bg-surface-container text-sm font-bold border border-outline-variant/20">Go Back</button>
     </div>
   );
@@ -1155,7 +1155,7 @@ function GroupDetailView({ groupId, onBack }: { groupId: number; onBack: () => v
           {group.subject && <p className="text-xs text-secondary font-bold">{group.subject}</p>}
         </div>
         <button onClick={leaveGroup} disabled={leaving}
-          className="px-3 py-1.5 rounded-xl border border-red-500/30 text-red-400 text-xs font-bold hover:bg-red-500/10 transition-all disabled:opacity-40">
+          className="px-3 py-1.5 rounded-xl border border-error/30 text-error text-xs font-bold hover:bg-error/10 transition-all disabled:opacity-40">
           Leave
         </button>
       </div>
@@ -1166,7 +1166,7 @@ function GroupDetailView({ groupId, onBack }: { groupId: number; onBack: () => v
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2 mb-0.5">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
                 <p className="text-xs font-black uppercase tracking-widest text-outline">Active Session</p>
                 {activeSession.session_type === 'pdf' && (
                   <span className="text-[9px] font-black bg-secondary/20 text-secondary px-1.5 py-0.5 rounded-full">PDF Mode</span>
@@ -1256,7 +1256,7 @@ function GroupDetailView({ groupId, onBack }: { groupId: number; onBack: () => v
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-black">Lv{m.level} · {m.total_xp.toLocaleString()} XP</span>
                 {m.current_node && <p className="text-[10px] text-outline/50 mt-1 truncate">Studying: {m.current_node.title}</p>}
               </div>
-              {m.streak > 0 && <div className="text-center shrink-0"><p className="text-lg">🔥</p><p className="text-[10px] font-black text-orange-400">{m.streak}d</p></div>}
+              {m.streak > 0 && <div className="text-center shrink-0"><p className="text-lg">🔥</p><p className="text-[10px] font-black text-tertiary">{m.streak}d</p></div>}
             </div>
           ))}
         </div>
@@ -1267,7 +1267,7 @@ function GroupDetailView({ groupId, onBack }: { groupId: number; onBack: () => v
           {leaderboard.map((entry: any) => (
             <div key={entry.student_id}
               className={`bg-surface-container rounded-2xl border p-3.5 flex items-center gap-3 ${entry.is_me ? 'border-secondary/30' : 'border-outline-variant/10'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black shrink-0 ${entry.rank === 1 ? 'bg-yellow-500/20 text-yellow-400' : entry.rank === 2 ? 'bg-slate-400/20 text-on-surface-variant' : entry.rank === 3 ? 'bg-orange-600/20 text-orange-400' : 'bg-surface-container-high text-outline'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black shrink-0 ${entry.rank === 1 ? 'bg-yellow-500/20 text-yellow-400' : entry.rank === 2 ? 'bg-slate-400/20 text-on-surface-variant' : entry.rank === 3 ? 'bg-tertiary/20 text-tertiary' : 'bg-surface-container-high text-outline'}`}>
                 {entry.rank}
               </div>
               <Avatar url={entry.avatar_url} name={entry.username} size={9} />
@@ -1278,7 +1278,7 @@ function GroupDetailView({ groupId, onBack }: { groupId: number; onBack: () => v
                 </div>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-black">Lv{entry.level} · {entry.total_xp.toLocaleString()} XP</span>
               </div>
-              {entry.streak > 0 && <div className="text-center shrink-0"><p>🔥</p><p className="text-[10px] font-black text-orange-400">{entry.streak}d</p></div>}
+              {entry.streak > 0 && <div className="text-center shrink-0"><p>🔥</p><p className="text-[10px] font-black text-tertiary">{entry.streak}d</p></div>}
             </div>
           ))}
         </div>
@@ -1302,8 +1302,8 @@ function GroupCard({ group, onClick }: { group: GroupSummary; onClick: () => voi
         <div className="flex flex-col items-end gap-1">
           <span className="text-[10px] font-black uppercase tracking-widest text-outline/60">{group.member_count}/{group.max_members}</span>
           {group.active_session && (
-            <span className="flex items-center gap-1 text-[9px] font-black text-green-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            <span className="flex items-center gap-1 text-[9px] font-black text-secondary">
+              <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
               {group.active_session.session_type === 'pdf' ? 'Live · PDF' : 'Live'}
             </span>
           )}
@@ -1402,12 +1402,12 @@ export default function StudyGroupsPage() {
         {liveSessions.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <p className="text-xs font-black uppercase tracking-widest text-green-400">Live Now</p>
+              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+              <p className="text-xs font-black uppercase tracking-widest text-secondary">Live Now</p>
             </div>
             {liveSessions.map(s => (
               <div key={s.session_id}
-                className="bg-surface-container rounded-2xl border border-green-500/20 p-4 flex items-center gap-3">
+                className="bg-surface-container rounded-2xl border border-secondary/20 p-4 flex items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <p className="text-sm font-black text-on-surface truncate">{s.group_name}</p>
@@ -1420,7 +1420,7 @@ export default function StudyGroupsPage() {
                   </p>
                 </div>
                 <button onClick={() => quickJoin(s)} disabled={joiningId === s.session_id}
-                  className="px-4 py-2 rounded-xl bg-green-500/15 text-green-400 border border-green-500/30 text-xs font-black hover:bg-green-500/25 transition-all disabled:opacity-50 shrink-0">
+                  className="px-4 py-2 rounded-xl bg-secondary/15 text-secondary border border-secondary/30 text-xs font-black hover:bg-secondary/25 transition-all disabled:opacity-50 shrink-0">
                   {joiningId === s.session_id ? '…' : s.is_member ? 'Rejoin' : 'Join'}
                 </button>
               </div>
