@@ -48,6 +48,22 @@ export default function NodePage() {
   const [streak, setStreak] = useState(0);
   const [pathId, setPathId] = useState<number | null>(null);
   const [labType, setLabType] = useState("");
+  const [showDoubt, setShowDoubt] = useState(false);
+  const [doubtText, setDoubtText] = useState("");
+  const [doubtState, setDoubtState] = useState<"idle" | "sending" | "sent">("idle");
+
+  const submitDoubt = async () => {
+    if (!doubtText.trim()) return;
+    setDoubtState("sending");
+    try {
+      await api.post("ai/doubts/", { question_text: doubtText.trim(), lesson: nodeId });
+      setDoubtState("sent");
+      setDoubtText("");
+    } catch {
+      setDoubtState("idle");
+      alert("Could not send your doubt. Please try again.");
+    }
+  };
 
   useEffect(() => {
     if (result?.is_correct) {
@@ -364,6 +380,15 @@ export default function NodePage() {
                 >
                   <span className="material-symbols-outlined text-base">photo_camera</span>
                   Ask AI Doubt
+                </button>
+
+                {/* Ask the teacher (creates a DoubtTicket for this lesson) */}
+                <button
+                  className="w-full flex items-center justify-center gap-2 mt-2 bg-surface-container-high text-on-surface py-3 rounded-xl font-bold text-sm border border-outline-variant/15 hover:bg-surface-container-highest transition-all active:scale-95"
+                  onClick={() => { setShowDoubt(true); setDoubtState('idle'); }}
+                >
+                  <span className="material-symbols-outlined text-base">contact_support</span>
+                  Ask Your Teacher
                 </button>
               </div>
             </aside>
@@ -958,6 +983,48 @@ export default function NodePage() {
             <div className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-yellow-500 to-amber-400 rounded-full shadow-lg text-on-surface font-black text-sm whitespace-nowrap">
               <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>{badgeToast.icon}</span>
               🏅 Badge Unlocked: {badgeToast.name}!
+            </div>
+          </div>
+        )}
+
+        {/* ── Ask-your-teacher doubt modal ──────────────────────────── */}
+        {showDoubt && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/90 backdrop-blur-xl px-4"
+            onClick={() => setShowDoubt(false)}>
+            <div className="bg-surface-container rounded-3xl border border-outline-variant/10 p-6 w-full max-w-md shadow-2xl"
+              onClick={e => e.stopPropagation()}>
+              {doubtState === 'sent' ? (
+                <div className="text-center py-4">
+                  <span className="material-symbols-outlined text-secondary text-5xl mb-3" style={{ fontVariationSettings: "'FILL' 1" }}>task_alt</span>
+                  <h3 className="text-lg font-black font-headline text-on-surface mb-1">Doubt sent!</h3>
+                  <p className="text-on-surface-variant text-sm mb-5">Your teacher will reply soon — check back later.</p>
+                  <button onClick={() => setShowDoubt(false)}
+                    className="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-bold text-sm hover:brightness-110 transition-all">Close</button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="material-symbols-outlined text-primary">contact_support</span>
+                    <h3 className="text-lg font-black font-headline text-on-surface">Ask your teacher</h3>
+                  </div>
+                  <p className="text-on-surface-variant text-xs mb-4">About this lesson — your teacher will see it in their Doubt queue.</p>
+                  <textarea
+                    autoFocus rows={4} value={doubtText}
+                    onChange={e => setDoubtText(e.target.value)}
+                    placeholder="Type your question…"
+                    className="w-full bg-surface-container-lowest rounded-xl px-4 py-3 text-sm text-on-surface border border-outline-variant/15 focus:outline-none focus:border-primary/50 resize-none placeholder:text-outline/50 mb-4"
+                  />
+                  <div className="flex gap-2 justify-end">
+                    <button onClick={() => setShowDoubt(false)}
+                      className="px-4 py-2.5 rounded-xl text-outline text-sm font-bold hover:text-on-surface transition-all">Cancel</button>
+                    <button onClick={submitDoubt} disabled={!doubtText.trim() || doubtState === 'sending'}
+                      className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-black hover:brightness-110 transition-all disabled:opacity-50">
+                      <span className="material-symbols-outlined text-base">send</span>
+                      {doubtState === 'sending' ? 'Sending…' : 'Send to Teacher'}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
