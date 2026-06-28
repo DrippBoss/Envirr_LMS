@@ -67,6 +67,7 @@ class Command(BaseCommand):
             return LearningNode.objects.create(
                 path=path, title=title, node_type=NodeType.CHAPTER_TEST, order=order,
                 xp_reward=xp, test_question_count=10, test_pass_percentage=70,
+                question_filter={'subject': 'Mathematics', 'chapter': 'Chapter 6: Triangles'},
             )
 
         MCQ   = QuestionType.MCQ
