@@ -16,7 +16,7 @@ class IsStudent(BasePermission):
 from .models import (
     CourseUnit, LearningPath, LearningNode, LessonQuestion, NodeProgress,
     FlashcardDeck, FlashcardProgress, SessionAnswer, RevisionNode, RevisionNodeProgress, UnitPrerequisiteSeen,
-    Flashcard, NodeType, CompletionStatus, NodeStep
+    Flashcard, NodeType, CompletionStatus, NodeStep, MockTestAttempt
 )
 from .serializers import (
     CourseUnitSerializer, LearningPathSerializer, FlashcardDeckSerializer,
