@@ -267,6 +267,85 @@ class AiTutorView(views.APIView):
         return response.Response({'reply': reply_text, 'concept_key': concept_key})
 
 
+class AiLessonPlannerView(views.APIView):
+    """Teacher/admin → AI-generated structured lesson plan (Gemini-backed)."""
+    permission_classes = [permissions.IsAuthenticated]
+    throttle_classes = [AiTutorRateThrottle]
+
+    def post(self, request):
+        if request.user.role not in ('teacher', 'admin'):
+            return response.Response({'error': 'Teachers/admins only.'}, status=status.HTTP_403_FORBIDDEN)
+
+        subject = (request.data.get('subject') or '').strip()
+        grade = (request.data.get('grade') or '').strip()
+        topic = (request.data.get('topic') or '').strip()
+        board = (request.data.get('board') or 'CBSE').strip()
+        duration = request.data.get('duration_mins') or 45
+        notes = (request.data.get('notes') or '').strip()
+        if not topic:
+            return response.Response({'error': 'A topic is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            duration = max(15, min(180, int(duration)))
+        except (TypeError, ValueError):
+            duration = 45
+
+        prompt = (
+            "You are an expert Indian secondary-school teacher building a single class lesson plan. "
+            f"Board: {board}. Grade: {grade or 'secondary'}. Subject: {subject or 'general'}. "
+            f"Topic: {topic}. Class length: {duration} minutes. "
+            + (f"Teacher notes: {notes}. " if notes else "")
+            + "Respond with ONLY valid minified JSON (no markdown, no prose) matching exactly this schema: "
+            '{"title": str, "summary": str, "objectives": [str], "materials": [str], '
+            '"timeline": [{"phase": str, "minutes": int, "activity": str}], '
+            '"key_concepts": [str], "assessment": [str], "homework": [str]}. '
+            "The timeline minutes must sum to the class length. Keep it concise, practical and age-appropriate."
+        )
+
+        try:
+            api_key = getattr(settings, 'GEMINI_API_KEY', None)
+            if not api_key:
+                raise Exception('GEMINI_API_KEY not configured.')
+            model_alias = getattr(settings, 'GEMINI_TUTOR_MODEL', 'gemini-2.0-flash')
+            _MODEL_ALIASES = {
+                'gemini-flash': 'gemini-2.0-flash',
+                'flash': 'gemini-2.0-flash',
+                'gemini-pro': 'gemini-2.5-pro',
+            }
+            api_model = _MODEL_ALIASES.get(model_alias, model_alias)
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{api_model}:generateContent?key={api_key}"
+            payload = {"contents": [{"parts": [{"text": prompt}]}]}
+            res = http_requests.post(url, json=payload, timeout=60)
+            res.raise_for_status()
+            data = res.json()
+            raw = data['candidates'][0]['content']['parts'][0]['text']
+        except Exception:
+            logger.exception('AI lesson planner request failed')
+            return response.Response(
+                {'error': 'AI service is temporarily unavailable. Please try again shortly.'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+        # Strip ```json fences the model sometimes adds, then parse.
+        cleaned = str(raw).strip()
+        if cleaned.startswith('```'):
+            cleaned = cleaned.split('```', 2)[1] if '```' in cleaned[3:] else cleaned[3:]
+            cleaned = cleaned.lstrip('json').strip().strip('`').strip()
+        try:
+            plan = json.loads(cleaned)
+        except (json.JSONDecodeError, ValueError):
+            # Fallback: surface the raw text so the teacher still gets a plan.
+            return response.Response({
+                'plan': {'title': topic, 'summary': cleaned, 'objectives': [],
+                         'materials': [], 'timeline': [], 'key_concepts': [],
+                         'assessment': [], 'homework': []},
+                'raw': True,
+            })
+        return response.Response({'plan': plan, 'meta': {
+            'subject': subject, 'grade': grade, 'topic': topic,
+            'board': board, 'duration_mins': duration,
+        }})
+
+
 class PaperDownloadView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 

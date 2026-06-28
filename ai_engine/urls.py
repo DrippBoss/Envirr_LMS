@@ -5,6 +5,7 @@ from ai_engine.views import (
     QuestionBankDetailView, MCQOptionsUpdateView, QuestionBankEditorListView,
     IngestUploadView, CompileIngestPaperView, DetectDocumentView, GapFillView,
     StudentDoubtView, TeacherDoubtListView, TeacherDoubtRespondView,
+    AiLessonPlannerView,
 )
 
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
     path('questions/<int:pk>/options/', MCQOptionsUpdateView.as_view(), name='question_options_update'),
     path('manual-paper/', ManualPaperCreateView.as_view(), name='manual_paper_create'),
     path('tutor/', AiTutorView.as_view(), name='ai_tutor'),
+    path('lesson-planner/', AiLessonPlannerView.as_view(), name='ai_lesson_planner'),
     path('ingest-upload/', IngestUploadView.as_view(), name='ingest_upload'),
     path('ingest-upload/detect/', DetectDocumentView.as_view(), name='ingest_detect'),
     path('ingest-upload/gap-fill/', GapFillView.as_view(), name='ingest_gap_fill'),

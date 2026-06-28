@@ -11,8 +11,10 @@ from .wizard_views import (
     WizardAssignedCoursesView,
     WizardCourseStructureView,
 )
+from .teacher_dashboard_views import TeacherDashboardView
 
 urlpatterns = [
+    path('dashboard/', TeacherDashboardView.as_view(), name='teacher-dashboard'),
     path('templates/', WizardTemplateListView.as_view(), name='wizard-templates'),
     path('course/create/', WizardCourseCreateView.as_view(), name='wizard-course-create'),
     path('course/reorder/', WizardReorderView.as_view(), name='wizard-course-reorder'),
