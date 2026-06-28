@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import MathText from '../components/MathText';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -1333,6 +1334,7 @@ interface LiveSession {
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function StudyGroupsPage() {
   const navigate = useNavigate();
+  const { error: toastError } = useToast();
   const [groups, setGroups] = useState<GroupSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -1361,7 +1363,7 @@ export default function StudyGroupsPage() {
       setGroups(prev => prev.find(x => x.id === r.data.id) ? prev : [r.data, ...prev]);
       setSelectedId(r.data.id);
     } catch (e: any) {
-      alert(e.response?.data?.detail || 'Could not join.');
+      toastError(e.response?.data?.detail || 'Could not join.');
     } finally { setJoiningId(null); }
   }
 
