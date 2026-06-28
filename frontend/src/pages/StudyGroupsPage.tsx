@@ -1372,7 +1372,7 @@ export default function StudyGroupsPage() {
   }
 
   if (selectedId) return (
-    <div className="min-h-screen bg-background pt-20 pb-16 px-4">
+    <div className="min-h-screen bg-background pt-20 pb-24 lg:pb-16 px-4">
       <div className="max-w-xl mx-auto">
         <GroupDetailView groupId={selectedId} onBack={() => { setSelectedId(null); fetchGroups(); }} />
       </div>
@@ -1380,7 +1380,7 @@ export default function StudyGroupsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-16 px-4">
+    <div className="min-h-screen bg-background pt-20 pb-24 lg:pb-16 px-4">
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

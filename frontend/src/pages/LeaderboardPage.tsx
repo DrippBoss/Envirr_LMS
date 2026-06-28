@@ -30,7 +30,7 @@ export default function LeaderboardPage() {
   const myEntry = entries.find(e => e.is_me);
 
   return (
-    <div className="min-h-screen bg-background pt-16 pb-16">
+    <div className="min-h-screen bg-background pt-16 pb-24 lg:pb-16">
       <div className="max-w-2xl mx-auto px-4 md:px-6">
 
         {/* Header */}
