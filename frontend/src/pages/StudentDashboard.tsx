@@ -426,6 +426,8 @@ export default function StudentDashboard() {
                     {weakConcepts.map(spot => (
                       <button
                         key={spot.id}
+                        onClick={() => navigate('/mock-test')}
+                        title="Practice your weak spots in a mock test"
                         className="px-3.5 py-1.5 bg-surface-container-high rounded-full text-sm font-medium border border-outline-variant/20 hover:border-error/40 hover:text-error transition-all flex items-center gap-1.5"
                       >
                         <span className="text-error text-xs font-black">{spot.wrong_count}×</span>
