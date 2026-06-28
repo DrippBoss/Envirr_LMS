@@ -175,9 +175,16 @@ class LearningPathSerializer(serializers.ModelSerializer):
         return []
 
 class FlashcardSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Flashcard
-        fields = ('id', 'title', 'body', 'card_type', 'has_formula', 'formula_text', 'example_text')
+        fields = ('id', 'title', 'body', 'card_type', 'has_formula', 'formula_text',
+                  'example_text', 'image', 'image_description')
+
+    def get_image(self, obj):
+        # Relative /media/... URL; the frontend reaches it through the same-origin proxy.
+        return obj.image.url if obj.image else None
 
 class FlashcardDeckSerializer(serializers.ModelSerializer):
     cards = FlashcardSerializer(many=True, read_only=True)
