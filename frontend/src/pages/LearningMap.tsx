@@ -176,11 +176,14 @@ export default function LearningMap() {
   };
 
   const handleReviewFoundations = async () => {
+    const unitId = pathData?.unit_id;
+    if (!unitId) return;
     try {
-      const unitId = pathData.unit_id || 1;
+      // GET returns the deck even when already seen, so review works post-enrollment.
       const res = await api.get(`student/units/${unitId}/prerequisites/`);
-      if (res.data.deck?.cards) {
-        setPrereqCards(res.data.deck.cards);
+      const cards = res.data.deck?.cards;
+      if (cards?.length) {
+        setPrereqCards(cards);
         setShowPrereqModal(true);
       }
     } catch (e) { console.error(e); }

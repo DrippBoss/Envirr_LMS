@@ -143,10 +143,15 @@ class LearningPathSerializer(serializers.ModelSerializer):
     revision_nodes = serializers.SerializerMethodField()
     subject = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
+    unit_id = serializers.IntegerField(read_only=True)
+    unit_title = serializers.SerializerMethodField()
 
     class Meta:
         model = LearningPath
-        fields = ('id', 'title', 'description', 'subject', 'grade', 'nodes', 'revision_nodes')
+        fields = ('id', 'title', 'description', 'subject', 'grade', 'unit_id', 'unit_title', 'nodes', 'revision_nodes')
+
+    def get_unit_title(self, obj):
+        return obj.unit.title if obj.unit else ''
 
     def get_subject(self, obj):
         return obj.unit.subject if obj.unit else 'Mathematics'
