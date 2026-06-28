@@ -308,15 +308,6 @@ export default function AiTutor() {
 
                         {/* Quick action pills */}
                         <div className="flex flex-wrap items-center gap-2">
-                            <button className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-full border border-outline-variant/10 text-on-surface-variant text-xs font-bold hover:bg-surface-container-highest transition-all active:scale-95">
-                                <span className="material-symbols-outlined text-sm">photo_camera</span>
-                                Upload Photo of Problem
-                            </button>
-                            <button className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-high rounded-full border border-outline-variant/10 text-on-surface-variant text-xs font-bold hover:bg-surface-container-highest transition-all active:scale-95">
-                                <span className="material-symbols-outlined text-sm">mic</span>
-                                Voice Ask
-                            </button>
-                            <div className="h-4 w-px bg-outline-variant/20 hidden md:block" />
                             <button
                                 className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low rounded-full border border-outline-variant/10 text-slate-400 text-xs font-bold hover:text-on-surface hover:bg-surface-container transition-all"
                                 onClick={() => {
