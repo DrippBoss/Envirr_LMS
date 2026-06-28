@@ -163,6 +163,69 @@ class LearningFlowTests(TestCase):
             self.assertIn(key, resp.data)
 
 
+@override_settings(CACHES=LOCMEM_CACHE)
+class TeacherDashboardTests(TestCase):
+    """Teacher dashboard aggregate: real analytics scoped to assigned subjects."""
+
+    def setUp(self):
+        cache.clear()
+        self.client = APIClient()
+        # A student who has completed a Maths node and answered questions.
+        self.student_user = User.objects.create_user(
+            username="dashstudent", email="ds@x.io", password="pw", role="student",
+        )
+        self.profile = self.student_user.profile
+        self.profile.class_grade = "10"
+        self.profile.save()
+
+        self.unit = CourseUnit.objects.create(
+            title="Algebra", subject="Mathematics", class_grade="10",
+            board="CBSE", order=1, is_published=True,
+        )
+        self.path = LearningPath.objects.create(
+            unit=self.unit, title="Polynomials", class_grade="10", is_active=True,
+        )
+        self.node = LearningNode.objects.create(
+            path=self.path, title="Intro to Polynomials", node_type=NodeType.LESSON,
+            order=1, xp_reward=10,
+        )
+        from django.utils import timezone
+        NodeProgress.objects.create(
+            student=self.profile, node=self.node, status=CompletionStatus.COMPLETED,
+            completed_at=timezone.now(), last_attempted_at=timezone.now(),
+        )
+        q = LessonQuestion.objects.create(
+            node=self.node, question_type="MCQ", question_text="q",
+            options_json={"A": "a", "B": "b"}, correct_answer="A",
+        )
+        from learning.models import SessionAnswer
+        SessionAnswer.objects.create(student=self.profile, node=self.node,
+                                     question=q, given_answer="A", is_correct=True)
+
+        self.teacher = User.objects.create_user(
+            username="dashteacher", email="dt@x.io", password="pw", role="teacher",
+        )
+        self.teacher.assigned_subjects = ["Mathematics"]
+        self.teacher.save()
+
+    def test_dashboard_returns_scoped_analytics(self):
+        self.client.force_authenticate(user=self.teacher)
+        resp = self.client.get("/api/teacher/dashboard/")
+        self.assertEqual(resp.status_code, 200)
+        for key in ("kpis", "subjects", "weak_topics", "activity", "scope"):
+            self.assertIn(key, resp.data)
+        self.assertEqual(resp.data["kpis"]["students"], 1)
+        self.assertEqual(resp.data["kpis"]["avg_completion"], 100)
+        self.assertEqual(resp.data["kpis"]["avg_accuracy"], 100)
+        # Recent activity should include the completion event.
+        self.assertTrue(any(e["type"] == "completion" for e in resp.data["activity"]))
+
+    def test_dashboard_denied_for_students(self):
+        self.client.force_authenticate(user=self.student_user)
+        resp = self.client.get("/api/teacher/dashboard/")
+        self.assertEqual(resp.status_code, 403)
+
+
 class ChatModerationTests(TestCase):
     """Server-side study-group chat moderation (check_message)."""
 

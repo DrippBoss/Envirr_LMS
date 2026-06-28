@@ -3,10 +3,12 @@ import { api, useAuth } from '../context/AuthContext';
 import CourseBuilder from '../components/CourseBuilder';
 import QuestionEditor from '../components/QuestionEditor';
 import UploadIngest from '../components/UploadIngest';
+import TeacherDashboardHome from '../components/teacher/TeacherDashboardHome';
+import TeacherLessonPlanner from '../components/teacher/TeacherLessonPlanner';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type ExamMode = 'ai' | 'manual' | 'hybrid' | 'course' | 'upload';
-type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions';
+type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions' | 'planner';
 
 // ─── Paper structure: mirrors backend calculate_marks_distribution exactly ─────
 interface DistRow { type: string; label: string; count: number; marks: number; sec: string; }
@@ -178,8 +180,9 @@ function MarksDistributionPanel({ marks }: { marks: number }) {
 
 // ─── Sidebar nav items ────────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { id: 'overview',   icon: 'grid_view',      label: 'Overview' },
+  { id: 'overview',   icon: 'grid_view',      label: 'Dashboard' },
   { id: 'exam',       icon: 'science',        label: 'Exam Factory' },
+  { id: 'planner',    icon: 'edit_calendar',  label: 'Lesson Planner' },
   { id: 'doubts',     icon: 'help_outline',   label: 'Doubt Solver' },
   { id: 'questions',  icon: 'quiz',           label: 'Question Editor' },
   { id: 'assigned',   icon: 'edit_note',      label: 'Edit Courses' },
@@ -678,17 +681,8 @@ export default function TeacherPanel() {
 
         <div className="max-w-6xl mx-auto">
 
-          {/* ── KPI Row (Overview) ── */}
-          {navTab === 'overview' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-              <KpiCard icon="pending_actions" label="Pending Doubts"    value={String(pendingDoubts.length)}  sub="Awaiting your reply"   iconColor="text-error" />
-              <KpiCard icon="task_alt"        label="Doubts Resolved"   value={String(resolvedDoubts.length)} sub="Answered by you"       iconColor="text-secondary" />
-              <KpiCard icon="forum"           label="Total Doubts"      value={String(doubts.length)}         sub="From your students"    iconColor="text-primary" />
-            </div>
-          )}
-
           {/* ── KPI Row (Exam/other tabs) ── */}
-          {navTab !== 'overview' && (
+          {navTab !== 'overview' && navTab !== 'planner' && navTab !== 'doubts' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
               <KpiCard icon="menu_book"       label="Assigned Courses"   value={String(assignedCourses.length)}    sub="Courses you teach"      iconColor="text-primary" />
               <KpiCard icon="description"     label="Recent Papers"      value={String(papers.length)}             sub="Last 5 generated"       iconColor="text-secondary" />
@@ -696,117 +690,97 @@ export default function TeacherPanel() {
             </div>
           )}
 
-          {/* ── Overview Tab ── */}
+          {/* ── Dashboard (workspace home) ── */}
           {navTab === 'overview' && (
-            <div className="grid lg:grid-cols-[1fr_300px] gap-6">
-              {/* Left column */}
+            <TeacherDashboardHome
+              userName={user?.username || 'Educator'}
+              pendingDoubts={pendingDoubts.length}
+              onNavigate={(tab, mode) => { setNavTab(tab as NavTab); if (mode) setExamMode(mode as ExamMode); }}
+            />
+          )}
+
+          {/* ── AI Lesson Planner ── */}
+          {navTab === 'planner' && (user?.role === 'teacher' || user?.role === 'admin') && (
+            <TeacherLessonPlanner />
+          )}
+
+          {/* ── Doubt Solver (live queue) ── */}
+          {navTab === 'doubts' && (
+            <div className="grid lg:grid-cols-[1fr_320px] gap-6">
+              {/* Left: pending doubts */}
               <div className="space-y-4">
-
-                {/* Generate Exam Paper */}
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="material-symbols-outlined text-primary text-xl">auto_awesome</span>
-                  <h2 className="text-lg font-black font-headline text-on-surface">Generate Exam Paper</h2>
+                <div className="flex items-center justify-between mb-1">
+                  <h2 className="text-lg font-black font-headline text-on-surface">Pending Doubts</h2>
+                  <span className="text-[10px] text-outline font-bold uppercase tracking-widest">{pendingDoubts.length} pending</span>
                 </div>
-                <p className="text-outline text-xs mb-5">Create assessments tailored to current chapter progress.</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {[
-                    { id: 'manual', icon: 'list_alt',    title: 'Manual Picker',   desc: 'Total control. Browse our exhaustive question bank and hand-pick every problem for the paper.',             cta: 'Start Manual Session', color: 'border-outline-variant/15' },
-                    { id: 'hybrid', icon: 'tune',         title: 'Smart Hybrid',    desc: "Define difficulty and chapter weightings. We'll suggest a mix of classic and new AI-refined questions.",   cta: 'Launch Configurator',  color: 'border-primary/30', badge: 'RECOMMENDED', btnCls: 'bg-primary text-on-primary' },
-                    { id: 'ai',     icon: 'auto_awesome', title: 'Full AI',         desc: 'Instant generation. Describe your learning goal, and our LLM will build a completely unique assessment.',   cta: 'Generate via AI',      color: 'border-outline-variant/15' },
-                    { id: 'upload', icon: 'upload_file',  title: 'Upload & Create', desc: 'Upload any PDF or image — AI extracts questions from your content. You pick what goes in the paper.',      cta: 'Upload Document',      color: 'border-secondary/30' },
-                  ].map(mode => (
-                    <div
-                      key={mode.id}
-                      className={`bg-surface-container rounded-2xl border p-5 flex flex-col gap-3 hover:bg-surface-container-high transition-all cursor-pointer ${mode.color}`}
-                      onClick={() => { setNavTab('exam'); setExamMode(mode.id as ExamMode); }}
-                    >
-                      {mode.badge && (
-                        <span className="self-start text-[9px] font-black uppercase tracking-widest bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">{mode.badge}</span>
-                      )}
-                      <span className="material-symbols-outlined text-on-surface-variant text-2xl">{mode.icon}</span>
-                      <div>
-                        <h4 className="text-sm font-black text-on-surface mb-1">{mode.title}</h4>
-                        <p className="text-[11px] text-outline leading-relaxed">{mode.desc}</p>
-                      </div>
-                      <button className={`mt-auto w-full py-2 rounded-lg text-xs font-bold border border-outline-variant/20 hover:border-primary/30 transition-all ${mode.btnCls ?? 'text-on-surface-variant bg-surface-container-highest hover:text-on-surface'}`}>
-                        {mode.cta}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Pending Doubts */}
-                <div className="mt-8">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-black font-headline text-on-surface">Pending Doubts</h2>
-                    <span className="text-[10px] text-outline font-bold uppercase tracking-widest">{pendingDoubts.length} pending</span>
+                {pendingDoubts.length === 0 && (
+                  <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-10 flex flex-col items-center justify-center text-center">
+                    <span className="material-symbols-outlined text-3xl text-secondary mb-2" style={{ fontVariationSettings: "'FILL' 1" }}>task_alt</span>
+                    <p className="text-outline text-sm">No pending doubts — you're all caught up! 🎉</p>
                   </div>
-                  {pendingDoubts.length === 0 && (
-                    <p className="text-outline text-sm py-6 text-center">No pending doubts — you're all caught up! 🎉</p>
-                  )}
-                  {pendingDoubts.map(doubt => (
-                    <div key={doubt.id} className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 space-y-3 mb-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                            <span className="text-primary font-black text-xs">{doubt.student[0]}</span>
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-on-surface leading-none">{doubt.student}</p>
-                            <p className="text-[10px] text-outline mt-0.5">{doubt.subject} · {doubt.topic}</p>
-                          </div>
+                )}
+                {pendingDoubts.map(doubt => (
+                  <div key={doubt.id} className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                          <span className="text-primary font-black text-xs">{doubt.student[0]}</span>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          {doubt.priority === 'high' && (
-                            <span className="text-[9px] font-black uppercase tracking-widest bg-error/10 text-error px-2 py-0.5 rounded-full border border-error/20">High</span>
-                          )}
-                          <span className="text-[10px] text-outline">{doubt.age}</span>
+                        <div>
+                          <p className="text-sm font-bold text-on-surface leading-none">{doubt.student}</p>
+                          <p className="text-[10px] text-outline mt-0.5">{doubt.subject} · {doubt.topic}</p>
                         </div>
                       </div>
-                      <p className="text-sm text-on-surface-variant leading-relaxed line-clamp-3">{doubt.text}</p>
-                      {replyingTo === doubt.id ? (
-                        <div className="space-y-2">
-                          <textarea
-                            className="w-full bg-surface-container-lowest rounded-xl px-4 py-3 text-sm text-on-surface border border-outline-variant/15 focus:outline-none focus:border-primary/50 resize-none placeholder:text-outline/50"
-                            rows={3} value={replyText} onChange={e => setReplyText(e.target.value)}
-                            placeholder="Type your expert explanation here..."
-                          />
-                          <div className="flex gap-2">
-                            <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-bold hover:brightness-110 transition-all disabled:opacity-50"
-                              disabled={!replyText.trim()}
-                              onClick={() => submitReply(doubt.id, false)}>
-                              <span className="material-symbols-outlined text-sm">send</span>
-                              Send Reply
-                            </button>
-                            <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-secondary text-on-secondary text-xs font-bold hover:brightness-110 transition-all disabled:opacity-50"
-                              disabled={!replyText.trim()}
-                              onClick={() => submitReply(doubt.id, true)}>
-                              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                              Reply &amp; Resolve
-                            </button>
-                            <button className="px-4 py-2 rounded-lg text-outline text-xs font-bold hover:text-on-surface transition-all"
-                              onClick={() => { setReplyingTo(null); setReplyText(''); }}>
-                              Cancel
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-all"
-                          onClick={() => setReplyingTo(doubt.id)}>
-                          <span className="material-symbols-outlined text-sm">reply</span>
-                          Reply
-                        </button>
-                      )}
+                      <div className="flex items-center gap-2 shrink-0">
+                        {doubt.priority === 'high' && (
+                          <span className="text-[9px] font-black uppercase tracking-widest bg-error/10 text-error px-2 py-0.5 rounded-full border border-error/20">High</span>
+                        )}
+                        <span className="text-[10px] text-outline">{doubt.age}</span>
+                      </div>
                     </div>
-                  ))}
-                </div>
+                    <p className="text-sm text-on-surface-variant leading-relaxed line-clamp-3">{doubt.text}</p>
+                    {replyingTo === doubt.id ? (
+                      <div className="space-y-2">
+                        <textarea
+                          className="w-full bg-surface-container-lowest rounded-xl px-4 py-3 text-sm text-on-surface border border-outline-variant/15 focus:outline-none focus:border-primary/50 resize-none placeholder:text-outline/50"
+                          rows={3} value={replyText} onChange={e => setReplyText(e.target.value)}
+                          placeholder="Type your expert explanation here..."
+                        />
+                        <div className="flex gap-2 flex-wrap">
+                          <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-bold hover:brightness-110 transition-all disabled:opacity-50"
+                            disabled={!replyText.trim()}
+                            onClick={() => submitReply(doubt.id, false)}>
+                            <span className="material-symbols-outlined text-sm">send</span>
+                            Send Reply
+                          </button>
+                          <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-secondary text-on-secondary text-xs font-bold hover:brightness-110 transition-all disabled:opacity-50"
+                            disabled={!replyText.trim()}
+                            onClick={() => submitReply(doubt.id, true)}>
+                            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                            Reply &amp; Resolve
+                          </button>
+                          <button className="px-4 py-2 rounded-lg text-outline text-xs font-bold hover:text-on-surface transition-all"
+                            onClick={() => { setReplyingTo(null); setReplyText(''); }}>
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-bold hover:bg-primary/20 transition-all"
+                        onClick={() => setReplyingTo(doubt.id)}>
+                        <span className="material-symbols-outlined text-sm">reply</span>
+                        Reply
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
 
               {/* Right: Resolved History */}
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-base font-black font-headline text-on-surface">Resolved History</h2>
-                  <button className="text-primary text-xs font-bold hover:underline">View Full Archive</button>
+                  <span className="text-[10px] text-outline font-bold uppercase tracking-widest">{resolvedDoubts.length} resolved</span>
                 </div>
                 <div className="space-y-3">
                   {resolvedDoubts.length === 0 && (
@@ -824,24 +798,6 @@ export default function TeacherPanel() {
                   ))}
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* ── Doubt Solver ── */}
-          {navTab === 'doubts' && (
-            <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-10 flex flex-col items-center justify-center min-h-[40vh] text-center">
-              <div className="w-16 h-16 rounded-2xl bg-surface-container-highest flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-3xl text-primary">help_outline</span>
-              </div>
-              <h2 className="text-xl font-black font-headline text-on-surface mb-2">Doubt Queue</h2>
-              <p className="text-outline text-sm max-w-xs mb-5">
-                You have <span className="text-error font-black">{pendingDoubts.length}</span> pending and{' '}
-                <span className="text-secondary font-black">{resolvedDoubts.length}</span> resolved student doubt(s).
-              </p>
-              <button onClick={() => setNavTab('overview')}
-                className="px-6 py-3 rounded-xl bg-primary/10 text-primary font-black border border-primary/20 hover:bg-primary/20 transition-all">
-                Open Doubt Queue
-              </button>
             </div>
           )}
 
