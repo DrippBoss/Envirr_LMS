@@ -132,10 +132,17 @@
     padding: 0;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     @apply bg-background text-on-background font-body min-h-screen;
     font-family: "Inter", sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4 {
@@ -144,6 +151,21 @@
 
   ::selection {
     @apply bg-primary/30;
+  }
+
+  /* Mobile touch ergonomics: snappy taps (drop the 300ms delay / double-tap
+     zoom) and remove the grey tap-flash on touch devices. */
+  button, [role="button"], a, label, select, summary {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Touch + typography: form text must be >= 16px on phones or iOS Safari
+     auto-zooms the viewport when the field is focused. */
+  @media (max-width: 768px) {
+    input, textarea, select {
+      font-size: 16px;
+    }
   }
 }
 
