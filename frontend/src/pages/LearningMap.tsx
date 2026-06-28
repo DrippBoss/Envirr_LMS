@@ -6,10 +6,9 @@ import FlashcardModal from "../components/FlashcardModal";
 // ── Sidebar nav items ───────────────────────────────────────────
 const NAV_ITEMS = [
   { icon: "grid_view", label: "Dashboard", route: "/" },
-  { icon: "account_tree", label: "Curriculum", route: null, active: true },
-  { icon: "auto_stories", label: "Codex", route: null },
-  { icon: "leaderboard", label: "Rankings", route: null },
-  { icon: "settings", label: "Settings", route: null },
+  { icon: "account_tree", label: "Curriculum", route: "/curriculum", active: true },
+  { icon: "leaderboard", label: "Rankings", route: "/leaderboard" },
+  { icon: "settings", label: "Settings", route: "/profile" },
 ];
 
 // ── Single node row — circle + always-visible floating card ─────
