@@ -7,7 +7,13 @@ interface QuestionCardProps {
     result?: { is_correct: boolean, correct_answer: string, hint: string, explanation: string } | null;
 }
 
-const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+const getOptionLabel = (index: number): string => {
+    const charCodeA = 'A'.charCodeAt(0);
+    if (index < 26) {
+        return String.fromCharCode(charCodeA + index);
+    }
+    return (index + 1).toString(); // Fallback to numbers for more than 26 options
+};
 
 export default function QuestionCard({ question, onSubmit, result }: QuestionCardProps) {
     const [selected, setSelected] = useState('');
@@ -117,7 +123,7 @@ export default function QuestionCard({ question, onSubmit, result }: QuestionCar
                             className={`group flex items-center p-6 rounded-2xl transition-all duration-200 text-left ${getOptionClasses(val as string)}`}
                         >
                             <div className={`w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl font-bold mr-4 transition-colors ${getLetterClasses(val as string)}`}>
-                                {OPTION_LETTERS[i] || key}
+                                {getOptionLabel(i) || key}
                             </div>
                             <span className={`text-lg font-medium ${selected === val ? 'font-bold text-primary-container' : 'text-on-surface-variant group-hover:text-on-surface'}`}>
                                 <MathText text={val as string} />
@@ -148,7 +154,7 @@ export default function QuestionCard({ question, onSubmit, result }: QuestionCar
                             className={`group flex items-center p-6 rounded-2xl transition-all duration-200 text-left ${getOptionClasses(val)}`}
                         >
                             <div className={`w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl font-bold mr-4 transition-colors ${getLetterClasses(val)}`}>
-                                {OPTION_LETTERS[i]}
+                                {getOptionLabel(i)}
                             </div>
                             <span className={`text-xl font-medium ${selected === val ? 'font-bold text-primary-container' : 'text-on-surface-variant group-hover:text-on-surface'}`}>
                                 {val}

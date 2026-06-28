@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('courses', '0001_initial'),
+        ('learning', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 ('status', models.CharField(choices=[('open', 'Open'), ('answered', 'Answered'), ('resolved', 'Resolved')], default='open', max_length=20)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='doubts', to='courses.lesson')),
+                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='doubts', to='learning.learningnode')),
                 ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='doubts', to=settings.AUTH_USER_MODEL)),
             ],
         ),

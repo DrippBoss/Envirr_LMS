@@ -213,12 +213,14 @@ class AiTutorView(views.APIView):
                 api_key = getattr(settings, 'GEMINI_API_KEY', None)
                 if not api_key:
                     raise Exception('GEMINI_API_KEY not configured.')
-                model_alias = getattr(settings, 'GEMINI_TUTOR_MODEL', 'gemini-flash')
-                # map friendly alias to full model id if needed
-                if 'flash' in model_alias:
-                    api_model = 'gemini-1.5-flash-latest'
-                else:
-                    api_model = model_alias
+                model_alias = getattr(settings, 'GEMINI_TUTOR_MODEL', 'gemini-2.0-flash')
+                # Map friendly aliases to valid v1beta model ids; pass specific ids through unchanged.
+                _MODEL_ALIASES = {
+                    'gemini-flash': 'gemini-2.0-flash',
+                    'flash': 'gemini-2.0-flash',
+                    'gemini-pro': 'gemini-2.5-pro',
+                }
+                api_model = _MODEL_ALIASES.get(model_alias, model_alias)
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{api_model}:generateContent?key={api_key}"
                 payload = {"contents": [{"parts": [{"text": prompt}]}]}
                 res = http_requests.post(url, json=payload, timeout=60)
@@ -243,7 +245,12 @@ class AiTutorView(views.APIView):
                 raw = res.json().get('response', '').strip()
         except Exception as e:
             logger.exception('AI tutor request failed')
-            return response.Response({'error': f'AI service unavailable: {str(e)}'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            # Keep the detailed error (which may include the upstream URL + API key) in the
+            # server log only; return a generic message so secrets never reach the client.
+            return response.Response(
+                {'error': 'AI service is temporarily unavailable. Please try again shortly.'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
 
         # Parse optional CONCEPT_KEY block
         concept_key = None
