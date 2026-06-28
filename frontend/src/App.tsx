@@ -1,23 +1,26 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import Login from './pages/Login';
-import StudentDashboard from './pages/StudentDashboard';
-import TeacherPanel from './pages/TeacherPanel';
-// CourseViewer removed — called student/courses/:id which no longer exists (courses app deregistered)
 import Navbar from './components/Navbar';
-import LearningMap from './pages/LearningMap';
-import NodePage from './pages/NodePage';
-import AiTutor from './pages/AiTutor';
-import AdminDashboard from './pages/AdminDashboard';
-import MockTestPage from './pages/MockTestPage';
-import StudyGroupsPage from './pages/StudyGroupsPage';
-import ProfilePage from './pages/ProfilePage';
-import VerifyEmailPage from './pages/VerifyEmailPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import LeaderboardPage from './pages/LeaderboardPage';
-import StudentAnalyticsPage from './pages/StudentAnalyticsPage';
+import Login from './pages/Login';
+
+// Route-level code splitting: each page is fetched on demand so the initial
+// bundle stays small. Navbar + Login are eager (layout / unauth entry point);
+// labs are already lazy-loaded via LabDispatcher.
+const StudentDashboard = lazy(() => import('./pages/StudentDashboard'));
+const TeacherPanel = lazy(() => import('./pages/TeacherPanel'));
+const LearningMap = lazy(() => import('./pages/LearningMap'));
+const NodePage = lazy(() => import('./pages/NodePage'));
+const AiTutor = lazy(() => import('./pages/AiTutor'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const MockTestPage = lazy(() => import('./pages/MockTestPage'));
+const StudyGroupsPage = lazy(() => import('./pages/StudyGroupsPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
+const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage'));
+const StudentAnalyticsPage = lazy(() => import('./pages/StudentAnalyticsPage'));
 
 const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode, allowedRole?: string }) => {
     const { user, isAuthenticated, loading } = useAuth();
@@ -40,22 +43,24 @@ function AppRoutes() {
         <Router>
             <div className="app-container">
                 <Navbar />
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/" element={<ProtectedRoute><RoleHome /></ProtectedRoute>} />
-                    <Route path="/map/:pathId" element={<ProtectedRoute><LearningMap /></ProtectedRoute>} />
-                    <Route path="/learn/:nodeId" element={<ProtectedRoute><NodePage /></ProtectedRoute>} />
-                    <Route path="/teacher" element={<ProtectedRoute allowedRole="teacher"><TeacherPanel /></ProtectedRoute>} />
-                    <Route path="/tutor" element={<ProtectedRoute><AiTutor /></ProtectedRoute>} />
-                    <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><AdminDashboard /></ProtectedRoute>} />
-                    <Route path="/mock-test" element={<ProtectedRoute><MockTestPage /></ProtectedRoute>} />
-                    <Route path="/study-groups" element={<ProtectedRoute><StudyGroupsPage /></ProtectedRoute>} />
-                    <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-                    <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
-                    <Route path="/analytics" element={<ProtectedRoute><StudentAnalyticsPage /></ProtectedRoute>} />
-                    <Route path="/verify-email" element={<VerifyEmailPage />} />
-                    <Route path="/reset-password" element={<ResetPasswordPage />} />
-                </Routes>
+                <Suspense fallback={<div className="loading-container">Loading…</div>}>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/" element={<ProtectedRoute><RoleHome /></ProtectedRoute>} />
+                        <Route path="/map/:pathId" element={<ProtectedRoute><LearningMap /></ProtectedRoute>} />
+                        <Route path="/learn/:nodeId" element={<ProtectedRoute><NodePage /></ProtectedRoute>} />
+                        <Route path="/teacher" element={<ProtectedRoute allowedRole="teacher"><TeacherPanel /></ProtectedRoute>} />
+                        <Route path="/tutor" element={<ProtectedRoute><AiTutor /></ProtectedRoute>} />
+                        <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><AdminDashboard /></ProtectedRoute>} />
+                        <Route path="/mock-test" element={<ProtectedRoute><MockTestPage /></ProtectedRoute>} />
+                        <Route path="/study-groups" element={<ProtectedRoute><StudyGroupsPage /></ProtectedRoute>} />
+                        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                        <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
+                        <Route path="/analytics" element={<ProtectedRoute><StudentAnalyticsPage /></ProtectedRoute>} />
+                        <Route path="/verify-email" element={<VerifyEmailPage />} />
+                        <Route path="/reset-password" element={<ResetPasswordPage />} />
+                    </Routes>
+                </Suspense>
             </div>
         </Router>
     );
