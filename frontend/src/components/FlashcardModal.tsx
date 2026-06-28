@@ -11,6 +11,8 @@ export interface Flashcard {
     has_formula: boolean;
     formula_text: string;
     example_text: string;
+    image?: string | null;
+    image_description?: string;
 }
 
 interface FlashcardModalProps {
@@ -174,6 +176,14 @@ export default function FlashcardModal({
                         className="absolute inset-0 flex flex-col items-start justify-start p-8 rounded-3xl bg-surface-container border border-outline-variant/10 shadow-2xl overflow-y-auto"
                         style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                     >
+                        {currentCard.image && (
+                            <img
+                                src={currentCard.image}
+                                alt={currentCard.image_description || currentCard.title}
+                                className="w-full max-h-52 object-contain rounded-2xl border border-outline-variant/10 bg-surface-container-lowest mb-4"
+                            />
+                        )}
+
                         <MarkdownMessage content={currentCard.body} className="text-base text-on-surface-variant leading-relaxed mb-4" />
 
                         {currentCard.has_formula && currentCard.formula_text && (

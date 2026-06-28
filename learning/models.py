@@ -265,6 +265,9 @@ class Flashcard(models.Model):
     has_formula = models.BooleanField(default=False)
     formula_text = models.TextField(blank=True)
     example_text = models.TextField(blank=True)
+    # Optional diagram/visual for the card (e.g. number line, factor tree, graph).
+    image = models.ImageField(upload_to='flashcard_images/', null=True, blank=True)
+    image_description = models.TextField(blank=True, help_text='Alt text / caption for the image')
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
