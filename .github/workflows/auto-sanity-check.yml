@@ -10,8 +10,15 @@ on:
 jobs:
   sanity-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     env:
       PYTHONUNBUFFERED: 1
+      # CI has no .env; provide a key + DEBUG so settings.py doesn't fail closed
+      # (the insecure-default-SECRET_KEY guard only trips when DEBUG is False).
+      DEBUG: 'True'
+      SECRET_KEY: ci-test-secret-key-not-for-production
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
