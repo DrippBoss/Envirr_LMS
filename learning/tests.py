@@ -161,3 +161,24 @@ class LearningFlowTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         for key in ("xp", "streak", "completion", "subjects", "mock_tests"):
             self.assertIn(key, resp.data)
+
+
+class ChatModerationTests(TestCase):
+    """Server-side study-group chat moderation (check_message)."""
+
+    def test_clean_message_allowed(self):
+        from learning.moderation import check_message
+        self.assertFalse(check_message("What is the distance formula?").blocked)
+
+    def test_blank_message_allowed(self):
+        from learning.moderation import check_message
+        self.assertFalse(check_message("   ").blocked)
+
+    def test_contact_info_is_blocked(self):
+        from learning.moderation import check_message
+        # at least one common contact form should be caught
+        results = [
+            check_message("call me at 9876543210").blocked,
+            check_message("email me at foo@bar.com").blocked,
+        ]
+        self.assertTrue(any(results))
