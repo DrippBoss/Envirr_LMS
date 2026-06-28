@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ai_engine.models import QuestionBank, MCQOption, CaseStudyPart
+from ai_engine.models import QuestionBank, MCQOption, CaseStudyPart, DoubtTicket, DoubtResponse
 
 class MCQOptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -103,3 +103,42 @@ class GeneratePaperSerializer(serializers.Serializer):
         data['chapters'] = chapters
         data['chapter']  = chapters[0]   # keep single-chapter field for LaTeX title fallback
         return data
+
+
+class DoubtResponseSerializer(serializers.ModelSerializer):
+    responder_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DoubtResponse
+        fields = ('id', 'response_text', 'is_ai_generated', 'responder_name', 'created_at')
+
+    def get_responder_name(self, obj):
+        if obj.is_ai_generated:
+            return 'AI'
+        u = obj.responder
+        return (u.name or u.username) if u else ''
+
+
+class DoubtTicketSerializer(serializers.ModelSerializer):
+    student_name = serializers.SerializerMethodField()
+    lesson_title = serializers.SerializerMethodField()
+    subject = serializers.SerializerMethodField()
+    responses = DoubtResponseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = DoubtTicket
+        fields = ('id', 'question_text', 'status', 'student_name', 'lesson_title',
+                  'subject', 'responses', 'created_at')
+
+    def get_student_name(self, obj):
+        u = obj.student
+        return (u.name or u.username) if u else ''
+
+    def get_lesson_title(self, obj):
+        return obj.lesson.title if obj.lesson else ''
+
+    def get_subject(self, obj):
+        lesson = obj.lesson
+        if lesson and lesson.path and lesson.path.unit:
+            return lesson.path.unit.subject
+        return ''

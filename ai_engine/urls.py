@@ -4,6 +4,7 @@ from ai_engine.views import (
     ManualPaperCreateView, AiTutorView, PaperDownloadView,
     QuestionBankDetailView, MCQOptionsUpdateView, QuestionBankEditorListView,
     IngestUploadView, CompileIngestPaperView, DetectDocumentView, GapFillView,
+    StudentDoubtView, TeacherDoubtListView, TeacherDoubtRespondView,
 )
 
 urlpatterns = [
@@ -20,4 +21,7 @@ urlpatterns = [
     path('ingest-upload/detect/', DetectDocumentView.as_view(), name='ingest_detect'),
     path('ingest-upload/gap-fill/', GapFillView.as_view(), name='ingest_gap_fill'),
     path('ingest-upload/compile/', CompileIngestPaperView.as_view(), name='ingest_upload_compile'),
+    path('doubts/', StudentDoubtView.as_view(), name='student_doubts'),
+    path('doubts/teacher/', TeacherDoubtListView.as_view(), name='teacher_doubts'),
+    path('doubts/<int:pk>/respond/', TeacherDoubtRespondView.as_view(), name='teacher_doubt_respond'),
 ]

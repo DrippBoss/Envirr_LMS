@@ -187,22 +187,7 @@ const NAV_ITEMS = [
   { id: 'approvals',  icon: 'fact_check',     label: 'Approvals' },
 ];
 
-// ─── Static doubt data (until a doubt backend model exists) ──────────────────
-const PENDING_DOUBTS = [
-  { id: 1, student: 'Arjun K.', subject: 'Physics', topic: 'Electromagnetic Induction', age: '1h ago', priority: 'high',
-    text: "Could you explain why the induced current direction opposes the change in magnetic flux according to Lenz's law? The diagram in Figure 4.2 seems to contradict the right-hand rule..." },
-  { id: 2, student: 'Sneha R.', subject: 'Mathematics', topic: 'Calculus: Integrals', age: '3h ago', priority: 'normal',
-    text: "I'm struggling with the substitution method in question 14. When I set u = cos(x), the du part becomes problematic with the power of sin..." },
-];
-
-const RESOLVED_DOUBTS = [
-  { id: 10, student: 'Rohan M.', subject: 'Chemistry', time: 'Yesterday, 6:20 PM',
-    text: '"The oxidation state of Manganese here is..." ' },
-  { id: 11, student: 'Priya G.', subject: 'Biology', time: 'Yesterday, 3:45 PM',
-    text: '"The process of DNA transcription starts..."' },
-  { id: 12, student: 'Kabir S.', subject: 'Physics', time: 'Wednesday, 12:30 PM',
-    text: '"For a body in circular motion, the tension..."' },
-];
+// Doubts are fetched live from /ai/doubts/teacher/ (see TeacherPanel state).
 
 // ─── KPI Card ─────────────────────────────────────────────────────────────────
 function KpiCard({ icon, label, value, sub, iconColor }: { icon: string; label: string; value: string; sub?: string; iconColor: string }) {
@@ -246,6 +231,7 @@ export default function TeacherPanel() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyText, setReplyText] = useState('');
+  const [doubts, setDoubts] = useState<any[]>([]);
   const [examMode, setExamMode] = useState<ExamMode>('ai');
   const [loading, setLoading] = useState(false);
 
@@ -362,9 +348,32 @@ export default function TeacherPanel() {
     }
   };
 
+  const fetchDoubts = async () => {
+    if (user?.role !== 'teacher' && user?.role !== 'admin') return;
+    try {
+      const res = await api.get('/ai/doubts/teacher/');
+      setDoubts(res.data);
+    } catch (err) {
+      console.error('Failed to fetch doubts', err);
+    }
+  };
+
+  const submitReply = async (id: number, resolve: boolean) => {
+    if (!replyText.trim()) return;
+    try {
+      await api.post(`/ai/doubts/${id}/respond/`, { response_text: replyText, resolve });
+      setReplyingTo(null);
+      setReplyText('');
+      fetchDoubts();
+    } catch (err) {
+      console.error('Failed to send reply', err);
+    }
+  };
+
   useEffect(() => {
     fetchPendingCourses();
     fetchAssignedCourses();
+    fetchDoubts();
   }, [user?.role]);
 
   const handleReview = async (id: number, action: 'approve' | 'reject') => {
@@ -574,6 +583,23 @@ export default function TeacherPanel() {
   // ─── Render ────────────────────────────────────────────────────────────────
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
 
+  const relAge = (iso: string) => {
+    const h = Math.floor((Date.now() - new Date(iso).getTime()) / 3_600_000);
+    if (h < 1) return 'just now';
+    if (h < 24) return `${h}h ago`;
+    return `${Math.floor(h / 24)}d ago`;
+  };
+  const pendingDoubts = doubts
+    .filter((d: any) => d.status !== 'resolved')
+    .map((d: any) => ({ id: d.id, student: d.student_name || 'Student', subject: d.subject || '—',
+      topic: d.lesson_title || 'General', age: relAge(d.created_at), priority: 'normal',
+      text: d.question_text }));
+  const resolvedDoubts = doubts
+    .filter((d: any) => d.status === 'resolved')
+    .map((d: any) => ({ id: d.id, student: d.student_name || 'Student', subject: d.subject || '—',
+      time: new Date(d.created_at).toLocaleString(),
+      text: (d.responses && d.responses.length) ? d.responses[0].response_text : d.question_text }));
+
   return (
     <div className="min-h-screen bg-background flex pt-16">
 
@@ -655,9 +681,9 @@ export default function TeacherPanel() {
           {/* ── KPI Row (Overview) ── */}
           {navTab === 'overview' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-              <KpiCard icon="pending_actions" label="Pending Doubts"    value={String(PENDING_DOUBTS.length)}      sub="4 High Priority"         iconColor="text-error" />
-              <KpiCard icon="task_alt"        label="Doubts Resolved"   value={String(RESOLVED_DOUBTS.length + 139)} sub="+12% from last week"   iconColor="text-secondary" />
-              <KpiCard icon="schedule"        label="Avg Response Time" value="18m"                                 sub="Top 5% of Educators"    iconColor="text-primary" />
+              <KpiCard icon="pending_actions" label="Pending Doubts"    value={String(pendingDoubts.length)}  sub="Awaiting your reply"   iconColor="text-error" />
+              <KpiCard icon="task_alt"        label="Doubts Resolved"   value={String(resolvedDoubts.length)} sub="Answered by you"       iconColor="text-secondary" />
+              <KpiCard icon="forum"           label="Total Doubts"      value={String(doubts.length)}         sub="From your students"    iconColor="text-primary" />
             </div>
           )}
 
@@ -713,9 +739,12 @@ export default function TeacherPanel() {
                 <div className="mt-8">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-black font-headline text-on-surface">Pending Doubts</h2>
-                    <span className="text-[10px] text-outline font-bold uppercase tracking-widest">Auto-refresh in 30s</span>
+                    <span className="text-[10px] text-outline font-bold uppercase tracking-widest">{pendingDoubts.length} pending</span>
                   </div>
-                  {PENDING_DOUBTS.map(doubt => (
+                  {pendingDoubts.length === 0 && (
+                    <p className="text-outline text-sm py-6 text-center">No pending doubts — you're all caught up! 🎉</p>
+                  )}
+                  {pendingDoubts.map(doubt => (
                     <div key={doubt.id} className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 space-y-3 mb-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-2.5">
@@ -743,10 +772,17 @@ export default function TeacherPanel() {
                             placeholder="Type your expert explanation here..."
                           />
                           <div className="flex gap-2">
-                            <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-secondary text-on-secondary text-xs font-bold hover:brightness-110 transition-all"
-                              onClick={() => { setReplyingTo(null); setReplyText(''); }}>
+                            <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-bold hover:brightness-110 transition-all disabled:opacity-50"
+                              disabled={!replyText.trim()}
+                              onClick={() => submitReply(doubt.id, false)}>
+                              <span className="material-symbols-outlined text-sm">send</span>
+                              Send Reply
+                            </button>
+                            <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-secondary text-on-secondary text-xs font-bold hover:brightness-110 transition-all disabled:opacity-50"
+                              disabled={!replyText.trim()}
+                              onClick={() => submitReply(doubt.id, true)}>
                               <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                              Mark as Resolved
+                              Reply &amp; Resolve
                             </button>
                             <button className="px-4 py-2 rounded-lg text-outline text-xs font-bold hover:text-on-surface transition-all"
                               onClick={() => { setReplyingTo(null); setReplyText(''); }}>
@@ -773,7 +809,10 @@ export default function TeacherPanel() {
                   <button className="text-primary text-xs font-bold hover:underline">View Full Archive</button>
                 </div>
                 <div className="space-y-3">
-                  {RESOLVED_DOUBTS.map(r => (
+                  {resolvedDoubts.length === 0 && (
+                    <p className="text-outline text-xs py-4 text-center">No resolved doubts yet.</p>
+                  )}
+                  {resolvedDoubts.map(r => (
                     <div key={r.id} className="bg-surface-container rounded-2xl border border-outline-variant/10 p-4">
                       <div className="flex items-center justify-between mb-2">
                         <p className="text-sm font-bold text-on-surface">{r.student}</p>
@@ -795,7 +834,14 @@ export default function TeacherPanel() {
                 <span className="material-symbols-outlined text-3xl text-primary">help_outline</span>
               </div>
               <h2 className="text-xl font-black font-headline text-on-surface mb-2">Doubt Queue</h2>
-              <p className="text-outline text-sm max-w-xs">Student doubt resolution will appear here once students start submitting questions from their lesson pages.</p>
+              <p className="text-outline text-sm max-w-xs mb-5">
+                You have <span className="text-error font-black">{pendingDoubts.length}</span> pending and{' '}
+                <span className="text-secondary font-black">{resolvedDoubts.length}</span> resolved student doubt(s).
+              </p>
+              <button onClick={() => setNavTab('overview')}
+                className="px-6 py-3 rounded-xl bg-primary/10 text-primary font-black border border-primary/20 hover:bg-primary/20 transition-all">
+                Open Doubt Queue
+              </button>
             </div>
           )}
 
