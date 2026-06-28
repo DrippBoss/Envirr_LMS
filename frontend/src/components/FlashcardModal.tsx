@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../context/AuthContext';
+import MarkdownMessage from './MarkdownMessage';
+import MathText from './MathText';
 
 export interface Flashcard {
     id: number;
@@ -20,6 +22,16 @@ interface FlashcardModalProps {
     showSkip?: boolean;
     finalButtonText?: string;
 }
+
+// Per-card-type visual identity (icon + colour). Classes are static so Tailwind
+// keeps them through purging.
+const TYPE_META: Record<string, { label: string; icon: string; text: string; bg: string; border: string }> = {
+    CONCEPT:  { label: 'Concept',  icon: 'lightbulb',  text: 'text-primary',   bg: 'bg-primary/10',   border: 'border-primary/20' },
+    FORMULA:  { label: 'Formula',  icon: 'functions',  text: 'text-secondary', bg: 'bg-secondary/10', border: 'border-secondary/20' },
+    EXAMPLE:  { label: 'Example',  icon: 'science',    text: 'text-tertiary',  bg: 'bg-tertiary/10',  border: 'border-tertiary/20' },
+    MNEMONIC: { label: 'Mnemonic', icon: 'psychology', text: 'text-tertiary',  bg: 'bg-tertiary/10',  border: 'border-tertiary/20' },
+    SUMMARY:  { label: 'Summary',  icon: 'summarize',  text: 'text-primary',   bg: 'bg-primary/10',   border: 'border-primary/20' },
+};
 
 export default function FlashcardModal({
     title = "Quick Revision",
@@ -86,6 +98,7 @@ export default function FlashcardModal({
 
     const currentCard = cards[currentIndex];
     const isLast = currentIndex === cards.length - 1;
+    const typeMeta = TYPE_META[(currentCard.card_type || 'CONCEPT').toUpperCase()] ?? TYPE_META.CONCEPT;
 
     return (
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background/92 backdrop-blur-xl px-4 py-8">
@@ -142,12 +155,13 @@ export default function FlashcardModal({
                         className="absolute inset-0 flex flex-col items-center justify-center p-8 rounded-3xl bg-surface-container border border-outline-variant/10 shadow-2xl"
                         style={{ backfaceVisibility: 'hidden' }}
                     >
-                        {/* Card type badge */}
-                        <span className="text-[10px] font-black uppercase tracking-widest text-primary mb-6 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
-                            {currentCard.card_type || 'Concept'}
+                        {/* Card type visual identity */}
+                        <span className={`material-symbols-outlined text-5xl mb-4 ${typeMeta.text}`} style={{ fontVariationSettings: "'FILL' 1" }}>{typeMeta.icon}</span>
+                        <span className={`text-[10px] font-black uppercase tracking-widest mb-5 px-3 py-1 rounded-full border ${typeMeta.text} ${typeMeta.bg} ${typeMeta.border}`}>
+                            {typeMeta.label}
                         </span>
                         <h3 className="text-2xl md:text-3xl font-black font-headline text-on-surface text-center leading-tight mb-6">
-                            {currentCard.title}
+                            <MathText text={currentCard.title} />
                         </h3>
                         <div className="flex items-center gap-2 text-slate-600 text-xs mt-auto">
                             <span className="material-symbols-outlined text-base">touch_app</span>
@@ -160,21 +174,19 @@ export default function FlashcardModal({
                         className="absolute inset-0 flex flex-col items-start justify-start p-8 rounded-3xl bg-surface-container border border-outline-variant/10 shadow-2xl overflow-y-auto"
                         style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                     >
-                        <p className="text-base text-on-surface-variant leading-relaxed mb-4">
-                            {currentCard.body}
-                        </p>
+                        <MarkdownMessage content={currentCard.body} className="text-base text-on-surface-variant leading-relaxed mb-4" />
 
                         {currentCard.has_formula && currentCard.formula_text && (
                             <div className="w-full mt-2 px-5 py-4 bg-primary/8 border border-primary/20 rounded-2xl">
                                 <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Formula</p>
-                                <p className="text-primary font-bold text-lg font-headline">{currentCard.formula_text}</p>
+                                <MathText text={currentCard.formula_text} className="text-primary font-bold text-lg font-headline block" />
                             </div>
                         )}
 
                         {currentCard.example_text && (
                             <div className="w-full mt-3 px-5 py-4 bg-secondary/8 border-l-4 border-secondary rounded-r-2xl">
                                 <p className="text-[10px] font-black uppercase tracking-widest text-secondary mb-2">Example</p>
-                                <p className="text-on-surface-variant text-sm italic leading-relaxed">{currentCard.example_text}</p>
+                                <MarkdownMessage content={currentCard.example_text} className="text-on-surface-variant text-sm italic leading-relaxed" />
                             </div>
                         )}
 
