@@ -283,8 +283,8 @@ export default function LearningMap() {
           className="w-full py-3 px-4 rounded-xl bg-primary text-on-primary font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-lg"
           onClick={() => navigate("/")}
         >
-          <span className="material-symbols-outlined text-base">bolt</span>
-          Start Daily Mission
+          <span className="material-symbols-outlined text-base">grid_view</span>
+          Back to Dashboard
         </button>
       </aside>
 
@@ -360,39 +360,10 @@ export default function LearningMap() {
                 );
               })}
 
-              {/* Chapter Final Test */}
-              {pathData.final_test && (
-                <div className="flex justify-center pt-4">
-                  <div className="w-72 p-6 rounded-3xl bg-gradient-to-br from-tertiary-container/15 to-surface-container-highest border border-tertiary-container/25 text-center relative overflow-hidden">
-                    <div className="absolute -right-6 -top-6 w-24 h-24 bg-tertiary-container/10 blur-2xl rounded-full" />
-                    <div className="w-12 h-12 bg-tertiary-container/20 rounded-xl flex items-center justify-center mx-auto mb-3 border border-tertiary-container/30">
-                      <span
-                        className="material-symbols-outlined text-tertiary-container text-2xl"
-                        style={{ fontVariationSettings: "'FILL' 1" }}
-                      >
-                        emoji_events
-                      </span>
-                    </div>
-                    <h3 className="text-base font-black font-headline text-on-surface mb-1 uppercase tracking-wide">
-                      Chapter Final Test
-                    </h3>
-                    <p className="text-outline text-xs mb-4 px-2 leading-relaxed">
-                      Demonstrate your mastery to unlock the "Mathematician" badge.
-                    </p>
-                    <div className="flex items-center justify-center gap-6">
-                      <div className="text-center">
-                        <p className="text-[9px] text-outline uppercase font-bold tracking-widest">Reward</p>
-                        <p className="text-tertiary font-black text-base">+1,000 XP</p>
-                      </div>
-                      <div className="h-6 w-px bg-outline-variant/25" />
-                      <div className="text-center">
-                        <p className="text-[9px] text-outline uppercase font-bold tracking-widest">Questions</p>
-                        <p className="text-on-surface font-black text-base">25</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Note: the chapter test is rendered inline as a CHAPTER_TEST node
+                  above (NodeRow). A separate hardcoded "final test" card was
+                  removed — it relied on pathData.final_test, which the API never
+                  returns, and advertised fixed XP/question counts that weren't real. */}
             </div>
           </div>
         </div>
