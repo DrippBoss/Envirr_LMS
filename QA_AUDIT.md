@@ -100,9 +100,9 @@ markdown/KaTeX · U4 mock-test timer pause · U5 REARRANGE format.
 
 1. **🔐 `mcp-config.json` API keys** — live Gemini/NVIDIA/Groq keys are pasted into the `apiKeyEnv` fields in the working tree (the file is unused/orphaned). Restore env-var names or delete, and **rotate the keys**. The only item with a real security dimension.
 2. **📝 Chapter-test content gap** — "Chapter 10: Circles" and the Grade-9 units have no scoped test filter because `QuestionBank` has no grade field and lacks matching questions. Needs grade-9 / Circles questions authored (and ideally a `class_grade` field on QuestionBank). Migration 0017 scoped all G10 tests with a real pool.
-3. **⚠️ Seeder re-break** — `learning/management/commands/seed_*.py` create CHAPTER_TEST nodes without a `question_filter`, so a fresh re-seed re-introduces empty filters (migration 0017 only fixed existing rows). Update the seed `test()` helper to set the chapter filter.
-4. **🎨 Flashcard Phase 3** — the model + UI now support markdown/KaTeX, formula/example blocks, and an image field, but seeded cards are still plain title+body. Populate richer content/diagrams.
-5. **🧪 Backend test coverage** — 23 tests cover auth, gamification, the core learning flow, and the analytics endpoint. Study groups + moderation, mock tests, paper generation/ingestion, the wizard, and admin endpoints are still untested.
+3. **⚠️ Seeder re-break** — ✅ FIXED (PR #98): the G10 seed commands now set the chapter `question_filter` on their test node. (G9/no-pool seeders intentionally left — no question pool to scope to.)
+4. **🎨 Flashcard Phase 3** — the model + UI now support markdown/KaTeX, formula/example blocks, and an image field, but seeded cards are still plain title+body. Populate richer content/diagrams. *(Content task — requires authoring, not code.)*
+5. **🧪 Backend test coverage** — **32 tests** (PR #99): auth, gamification, core learning flow, analytics endpoint, **the doubt feature, and chat moderation**. Still untested: mock-test grading, paper generation/ingestion (need Groq/LaTeX mocks), the course wizard, and admin endpoints.
 
 ---
 
