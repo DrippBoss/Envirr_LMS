@@ -690,7 +690,7 @@ export default function TeacherPanel() {
           {/* ── KPI Row (Exam/other tabs) ── */}
           {navTab !== 'overview' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-              <KpiCard icon="quiz"            label="Questions Available" value="1,248"                             sub="Across all subjects"    iconColor="text-primary" />
+              <KpiCard icon="menu_book"       label="Assigned Courses"   value={String(assignedCourses.length)}    sub="Courses you teach"      iconColor="text-primary" />
               <KpiCard icon="description"     label="Recent Papers"      value={String(papers.length)}             sub="Last 5 generated"       iconColor="text-secondary" />
               <KpiCard icon="pending_actions" label="Compiling"          value={String(papers.filter(p => !p.pdf_url && p.status !== 'failed').length)} sub="In queue"   iconColor="text-tertiary" />
             </div>
