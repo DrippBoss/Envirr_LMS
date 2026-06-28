@@ -1381,7 +1381,7 @@ export default function StudyGroupsPage() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-16 px-4">
-      <div className="max-w-xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate(-1)} className="p-2 rounded-xl hover:bg-surface-container-high transition-colors text-outline hover:text-on-surface">
@@ -1405,6 +1405,7 @@ export default function StudyGroupsPage() {
               <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
               <p className="text-xs font-black uppercase tracking-widest text-secondary">Live Now</p>
             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {liveSessions.map(s => (
               <div key={s.session_id}
                 className="bg-surface-container rounded-2xl border border-secondary/20 p-4 flex items-center gap-3">
@@ -1425,12 +1426,13 @@ export default function StudyGroupsPage() {
                 </button>
               </div>
             ))}
+            </div>
           </div>
         )}
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {[1, 2].map(i => <div key={i} className="bg-surface-container rounded-2xl border border-outline-variant/10 p-4 h-44 animate-pulse" />)}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[1, 2, 3].map(i => <div key={i} className="bg-surface-container rounded-2xl border border-outline-variant/10 p-4 h-44 animate-pulse" />)}
           </div>
         ) : groups.length === 0 ? (
           <div className="text-center py-16 space-y-4">
@@ -1447,7 +1449,7 @@ export default function StudyGroupsPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {groups.map(g => <GroupCard key={g.id} group={g} onClick={() => setSelectedId(g.id)} />)}
           </div>
         )}
