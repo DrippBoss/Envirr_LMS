@@ -83,15 +83,20 @@ class UnitPrerequisitesView(views.APIView):
 
     def get(self, request, unit_id):
         unit = get_object_or_404(CourseUnit, pk=unit_id)
-        # Check if already seen
-        if UnitPrerequisiteSeen.objects.filter(student=request.user.profile, course_unit=unit).exists():
-            return Response({'status': 'already_seen', 'deck': None})
-            
         deck = unit.prereq_decks.first()
         if not deck:
             return Response({'status': 'no_prerequisites', 'deck': None})
-            
-        return Response({'status': 'presend', 'deck': FlashcardDeckSerializer(deck).data})
+
+        seen = UnitPrerequisiteSeen.objects.filter(
+            student=request.user.profile, course_unit=unit
+        ).exists()
+        # Always return the deck so "Review Foundations" can re-show it later;
+        # `status` still tells the enrollment flow whether the student has seen it
+        # (it skips the modal on 'already_seen' / 'no_prerequisites').
+        return Response({
+            'status': 'already_seen' if seen else 'presend',
+            'deck': FlashcardDeckSerializer(deck).data,
+        })
 
     def post(self, request, unit_id):
         unit = get_object_or_404(CourseUnit, pk=unit_id)
