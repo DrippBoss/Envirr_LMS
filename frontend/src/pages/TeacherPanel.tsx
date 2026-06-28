@@ -6,7 +6,7 @@ import UploadIngest from '../components/UploadIngest';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type ExamMode = 'ai' | 'manual' | 'hybrid' | 'course' | 'upload';
-type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'analytics' | 'approvals' | 'assigned' | 'questions';
+type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions';
 
 // ─── Paper structure: mirrors backend calculate_marks_distribution exactly ─────
 interface DistRow { type: string; label: string; count: number; marks: number; sec: string; }
@@ -181,7 +181,6 @@ const NAV_ITEMS = [
   { id: 'overview',   icon: 'grid_view',      label: 'Overview' },
   { id: 'exam',       icon: 'science',        label: 'Exam Factory' },
   { id: 'doubts',     icon: 'help_outline',   label: 'Doubt Solver' },
-  { id: 'analytics',  icon: 'bar_chart',      label: 'Analytics' },
   { id: 'questions',  icon: 'quiz',           label: 'Question Editor' },
   { id: 'assigned',   icon: 'edit_note',      label: 'Edit Courses' },
   { id: 'course',     icon: 'account_tree',   label: 'Course Builder' },
