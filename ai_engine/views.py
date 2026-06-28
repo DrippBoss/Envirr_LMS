@@ -28,6 +28,16 @@ from envirr_backend.cache_utils import qbank_meta_version, QBANK_META_TTL
 from django.core.cache import cache
 
 class GeneratePaperAPIView(views.APIView):
+    """Printed / PDF exam-paper generation (teacher/admin).
+
+    Asynchronously builds a ``QuestionPaper`` PDF from QuestionBank via the
+    Celery ``generate_paper_task`` (gap-fill with Groq + LaTeX render). This is
+    deliberately a separate flow from the in-app interactive chapter test
+    (``learning.views.ChapterTestStartView``), which serves QuestionBank
+    questions as JSON for live answering. Both read from QuestionBank but
+    produce different outputs (printable exam vs interactive test) and are
+    intentionally NOT converged (see OQ2).
+    """
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
