@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
+import FloatingAIButton from './components/FloatingAIButton';
 import Login from './pages/Login';
 
 // Route-level code splitting: each page is fetched on demand so the initial
@@ -63,6 +64,7 @@ function AppRoutes() {
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
                     </Routes>
                 </Suspense>
+                <FloatingAIButton />
             </div>
         </Router>
     );
