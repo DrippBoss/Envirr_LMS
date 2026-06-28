@@ -297,13 +297,6 @@ export default function AdminDashboard() {
                         >
                             <span className="material-symbols-outlined text-xl">menu</span>
                         </button>
-                        <div className="relative w-full max-w-xs">
-                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base">search</span>
-                            <input
-                                className="w-full bg-surface-container rounded-full py-2 pl-10 pr-4 text-sm border-none focus:ring-1 focus:ring-primary/30 focus:outline-none placeholder:text-slate-600 text-on-surface"
-                                placeholder="Search analytics..."
-                            />
-                        </div>
                     </div>
                     {/* Notifications and settings icons removed until backend models exist */}
                 </header>
