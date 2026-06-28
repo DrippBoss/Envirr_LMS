@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PrerequisiteModal from "../components/PrerequisiteModal";
+import ProgressBar from "../components/ProgressBar";
 
 type Path = { id: number; title: string };
 type CourseUnit = {
@@ -170,9 +171,7 @@ export default function CurriculumPage() {
                         </span>
                       </div>
                       <p className="text-xs text-slate-500 mb-3">Grade {unit.class_grade} · {unit.board}</p>
-                      <div className="h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full transition-all ${meta.bar}`} style={{ width: `${pct}%` }} />
-                      </div>
+                      <ProgressBar value={pct} barClassName={meta.bar} className="h-1.5" />
                       {/* Extra paths beyond the first, if any, as direct links */}
                       {unit.paths && unit.paths.length > 1 && (
                         <div className="mt-3 space-y-1">
