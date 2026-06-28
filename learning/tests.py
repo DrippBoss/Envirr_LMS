@@ -152,3 +152,12 @@ class LearningFlowTests(TestCase):
         )
         xp = StudentXP.objects.get(student=self.user)
         self.assertGreaterEqual(xp.total_xp, self.node1.xp_reward)
+
+    def test_my_progress_analytics_returns_full_report(self):
+        # Regression for the "My Progress" page 500 (missing MockTestAttempt
+        # import): the analytics view must execute end to end — including the
+        # mock-test stats section — and return the full report.
+        resp = self.client.get("/api/student/analytics/")
+        self.assertEqual(resp.status_code, 200)
+        for key in ("xp", "streak", "completion", "subjects", "mock_tests"):
+            self.assertIn(key, resp.data)
