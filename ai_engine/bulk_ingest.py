@@ -28,6 +28,12 @@ from ai_engine.models import (
 VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 TEXT_MODEL = "llama-3.3-70b-versatile"
 
+# Local Ollama (text-only) fallback provider. Qwen2.5-Coder has no vision, so the
+# Ollama path uses each file's TEXT (PDF text layer / docx) — scanned PDFs and
+# embedded diagrams are not handled by this provider.
+OLLAMA_BASE_URL = "http://host.docker.internal:11434"
+OLLAMA_MODEL = "qwen2.5-coder:7b"
+
 
 # ── LaTeX → plain-text cleaner ────────────────────────────────────────────────
 _SUB_DIGITS = str.maketrans('0123456789', '₀₁₂₃₄₅₆₇₈₉')
@@ -355,8 +361,26 @@ def _call_vision(client, model_id, b64, log):
     return None
 
 
+def _call_ollama(base_url, model, prompt, log, num_ctx=8192, timeout=600):
+    """Call a local Ollama text model via its native /api/chat (JSON-forced)."""
+    import requests as rq
+    try:
+        r = rq.post(base_url.rstrip('/') + '/api/chat', json={
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "stream": False, "format": "json",
+            "options": {"temperature": 0.1, "num_ctx": num_ctx},
+        }, timeout=timeout)
+        r.raise_for_status()
+        return r.json().get("message", {}).get("content", "")
+    except Exception as exc:
+        log(f"      OLLAMA ERROR: {exc}")
+        return None
+
+
 # ── Public: ingest one PDF ──────────────────────────────────────────────────
-def ingest_pdf(pdf_path, *, subject, chapter, board, grade, client, model_id=VISION_MODEL,
+def ingest_pdf(pdf_path, *, subject, chapter, board, grade, provider='groq', client=None,
+               model_id=None, ollama_base_url=OLLAMA_BASE_URL, ollama_model=OLLAMA_MODEL,
                dpi=150, delay=5, dry_run=False, max_pages=0, log=print):
     from PIL import Image
     meta = {"subject": subject, "chapter": chapter, "board": board, "grade": grade}
@@ -364,6 +388,7 @@ def ingest_pdf(pdf_path, *, subject, chapter, board, grade, client, model_id=VIS
     total_pages = len(doc)
     src_doc = _open_source_doc(pdf_path, meta, total_pages, dry_run)
     matrix = fitz.Matrix(dpi / 72.0, dpi / 72.0)
+    vision_model = model_id or VISION_MODEL
     created = skipped = errors = 0
     pages = list(range(total_pages))
     if max_pages:
@@ -384,25 +409,37 @@ def ingest_pdf(pdf_path, *, subject, chapter, board, grade, client, model_id=VIS
                 log(f"    page {page_num}/{total_pages} — already saved ({already}) — skipped")
                 skipped += already
                 continue
-        pix = page.get_pixmap(matrix=matrix)
-        page_w, page_h = pix.width, pix.height
 
-        raw = _call_vision(client, model_id, _encode_crop(pix, 0, page_h), log)
-        parsed = safe_json(raw)
-        if not parsed or "questions" not in parsed:
-            mid = page_h // 2
-            collected = []
-            for y0, y1 in [(0, mid), (mid, page_h)]:
-                time.sleep(delay)
-                half = safe_json(_call_vision(client, model_id, _encode_crop(pix, y0, y1), log))
-                if half and "questions" in half:
-                    collected.extend(half["questions"])
-            if collected:
-                parsed = {"questions": collected}
-            else:
-                log(f"    page {page_num}/{total_pages} — extraction failed, skipped")
+        pix = None
+        page_w = page_h = 0
+        if provider == 'ollama':
+            # Text-only: use the page's text layer (no vision, no diagram crop).
+            ptext = page.get_text()
+            if not ptext.strip():
+                log(f"    page {page_num}/{total_pages} — no text layer (scanned) — needs a vision provider, skipped")
                 errors += 1
                 continue
+            raw = _call_ollama(ollama_base_url, ollama_model,
+                               build_text_prompt(subject, chapter, grade, board, ptext[:12000]), log)
+            parsed = safe_json(raw)
+        else:
+            pix = page.get_pixmap(matrix=matrix)
+            page_w, page_h = pix.width, pix.height
+            parsed = safe_json(_call_vision(client, vision_model, _encode_crop(pix, 0, page_h), log))
+            if not parsed or "questions" not in parsed:
+                mid = page_h // 2
+                collected = []
+                for y0, y1 in [(0, mid), (mid, page_h)]:
+                    time.sleep(delay)
+                    half = safe_json(_call_vision(client, vision_model, _encode_crop(pix, y0, y1), log))
+                    if half and "questions" in half:
+                        collected.extend(half["questions"])
+                parsed = {"questions": collected} if collected else None
+
+        if not parsed or "questions" not in parsed:
+            log(f"    page {page_num}/{total_pages} — extraction failed, skipped")
+            errors += 1
+            continue
 
         qs = parsed["questions"]
         log(f"    page {page_num}/{total_pages} — {len(qs)} question(s)")
@@ -411,7 +448,7 @@ def ingest_pdf(pdf_path, *, subject, chapter, board, grade, client, model_id=VIS
                                source_page=page_num, pix=pix, page_w=page_w, page_h=page_h,
                                dry_run=dry_run, log=log)
             created += (r == 'created'); skipped += (r == 'skipped'); errors += (r == 'error')
-        if page_idx < pages[-1]:
+        if provider == 'groq' and page_idx < pages[-1]:
             time.sleep(delay)
 
     if src_doc and not dry_run:
@@ -422,7 +459,8 @@ def ingest_pdf(pdf_path, *, subject, chapter, board, grade, client, model_id=VIS
 
 
 # ── Public: ingest one DOCX (text only — figures not captured) ────────────────
-def ingest_docx(docx_path, *, subject, chapter, board, grade, client, model_id=TEXT_MODEL,
+def ingest_docx(docx_path, *, subject, chapter, board, grade, provider='groq', client=None,
+                model_id=None, ollama_base_url=OLLAMA_BASE_URL, ollama_model=OLLAMA_MODEL,
                 dry_run=False, log=print):
     from docx import Document
     document = Document(docx_path)
@@ -439,17 +477,21 @@ def ingest_docx(docx_path, *, subject, chapter, board, grade, client, model_id=T
 
     meta = {"subject": subject, "chapter": chapter, "board": board, "grade": grade}
     src_doc = _open_source_doc(docx_path, meta, None, dry_run)
+    prompt = build_text_prompt(subject, chapter, grade, board, content)
 
     created = skipped = errors = 0
     try:
-        resp = client.chat.completions.create(
-            model=model_id,
-            messages=[{"role": "user", "content": build_text_prompt(subject, chapter, grade, board, content)}],
-            temperature=0.1, max_tokens=8000,
-        )
-        parsed = safe_json(resp.choices[0].message.content)
+        if provider == 'ollama':
+            parsed = safe_json(_call_ollama(ollama_base_url, ollama_model, prompt, log))
+        else:
+            resp = client.chat.completions.create(
+                model=model_id or TEXT_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.1, max_tokens=8000,
+            )
+            parsed = safe_json(resp.choices[0].message.content)
     except Exception as exc:
-        log(f"    GROQ ERROR: {exc}")
+        log(f"    LLM ERROR: {exc}")
         if src_doc:
             src_doc.status = IngestionStatus.FAILED
             src_doc.save(update_fields=["status"])
