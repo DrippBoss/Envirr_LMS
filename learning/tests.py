@@ -226,6 +226,99 @@ class TeacherDashboardTests(TestCase):
         self.assertEqual(resp.status_code, 403)
 
 
+@override_settings(CACHES=LOCMEM_CACHE)
+class AssignmentCalendarTests(TestCase):
+    """Assignments + calendar: teacher CRUD, student visibility, grading."""
+
+    def setUp(self):
+        cache.clear()
+        self.client = APIClient()
+        self.teacher = User.objects.create_user(
+            username="asgnteacher", email="at@x.io", password="pw", role="teacher",
+        )
+        self.student_user = User.objects.create_user(
+            username="asgnstudent", email="as@x.io", password="pw", role="student",
+        )
+        self.profile = self.student_user.profile
+        self.profile.class_grade = "10"
+        self.profile.save()
+        # A grade-11 student should NOT see grade-10 assignments.
+        self.other_user = User.objects.create_user(
+            username="asgnother", email="ao@x.io", password="pw", role="student",
+        )
+        self.other_user.profile.class_grade = "11"
+        self.other_user.profile.save()
+
+    def _make_assignment(self):
+        self.client.force_authenticate(user=self.teacher)
+        return self.client.post("/api/teacher/assignments/", {
+            "title": "Polynomials worksheet", "description": "Solve all",
+            "subject": "Mathematics", "class_grade": "10", "max_marks": 20,
+        }, format="json")
+
+    def test_teacher_creates_and_student_sees_matching_grade(self):
+        resp = self._make_assignment()
+        self.assertEqual(resp.status_code, 201)
+        aid = resp.data["id"]
+
+        self.client.force_authenticate(user=self.student_user)
+        r = self.client.get("/api/student/assignments/")
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(r.data), 1)
+        self.assertEqual(r.data[0]["my_status"], "PENDING")
+
+        # Wrong-grade student sees nothing.
+        self.client.force_authenticate(user=self.other_user)
+        self.assertEqual(len(self.client.get("/api/student/assignments/").data), 0)
+        return aid
+
+    def test_submit_then_grade_flow(self):
+        aid = self.test_teacher_creates_and_student_sees_matching_grade()
+
+        # Student submits.
+        self.client.force_authenticate(user=self.student_user)
+        sub = self.client.post(f"/api/student/assignments/{aid}/submit/", {"note": "done"}, format="json")
+        self.assertEqual(sub.status_code, 201)
+        self.assertEqual(self.client.get("/api/student/assignments/").data[0]["my_status"], "SUBMITTED")
+
+        # Teacher sees the submission and grades it.
+        self.client.force_authenticate(user=self.teacher)
+        subs = self.client.get(f"/api/teacher/assignments/{aid}/submissions/")
+        self.assertEqual(len(subs.data), 1)
+        sub_id = subs.data[0]["id"]
+        graded = self.client.post(f"/api/teacher/submissions/{sub_id}/grade/",
+                                  {"marks": 18, "feedback": "Great"}, format="json")
+        self.assertEqual(graded.status_code, 200)
+        self.assertEqual(graded.data["status"], "GRADED")
+
+        # Student now sees the grade.
+        self.client.force_authenticate(user=self.student_user)
+        mine = self.client.get("/api/student/assignments/").data[0]
+        self.assertEqual(mine["my_status"], "GRADED")
+        self.assertEqual(mine["my_marks"], 18)
+
+    def test_calendar_create_and_student_agenda(self):
+        from django.utils import timezone
+        from datetime import timedelta
+        self.client.force_authenticate(user=self.teacher)
+        soon = (timezone.now() + timedelta(days=2)).isoformat()
+        ev = self.client.post("/api/teacher/calendar/", {
+            "title": "Unit Test", "event_type": "EXAM", "start": soon,
+            "class_grade": "10", "subject": "Mathematics",
+        }, format="json")
+        self.assertEqual(ev.status_code, 201)
+
+        self.client.force_authenticate(user=self.student_user)
+        agenda = self.client.get("/api/student/agenda/")
+        self.assertEqual(agenda.status_code, 200)
+        self.assertTrue(any(i["title"] == "Unit Test" for i in agenda.data))
+
+    def test_student_cannot_create_assignment(self):
+        self.client.force_authenticate(user=self.student_user)
+        r = self.client.post("/api/teacher/assignments/", {"title": "x", "class_grade": "10"}, format="json")
+        self.assertEqual(r.status_code, 403)
+
+
 class ChatModerationTests(TestCase):
     """Server-side study-group chat moderation (check_message)."""
 
