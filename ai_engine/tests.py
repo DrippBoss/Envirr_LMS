@@ -191,3 +191,24 @@ class IngestFolderCommandTests(TestCase):
         self.assertIn("subject=Mathematics", text)
         self.assertIn("chapter=Assignments", text)
         self.assertIn("grade=12", text)  # "Class 12" normalised to 12
+
+
+class BulkIngestGuardTests(TestCase):
+    """Quality guards that reject garbled formulas + stray fragments."""
+
+    def test_looks_garbled_catches_subscript_blob(self):
+        from ai_engine.bulk_ingest import _looks_garbled
+        self.assertTrue(_looks_garbled('f(x) = φ₁₂₄₅₆₇₈₉₊₋₌₍₎ₐₑₒₓ'))
+
+    def test_looks_garbled_allows_normal_math(self):
+        from ai_engine.bulk_ingest import _looks_garbled
+        self.assertFalse(_looks_garbled('If x² + y² ≤ 4, the domain of R is {–2,–1,0,1,2}'))
+
+    def test_is_fragment(self):
+        from ai_engine.bulk_ingest import _is_fragment
+        self.assertTrue(_is_fragment('bijective function', 'SHORT', []))
+        self.assertTrue(_is_fragment('many one function', 'VERY_SHORT', []))
+        self.assertTrue(_is_fragment('many one, into function.', 'SHORT', []))  # 24 chars, no cue
+        self.assertFalse(_is_fragment('What is the domain of the relation R defined on Z?', 'SHORT', []))
+        self.assertFalse(_is_fragment('State Rolle’s theorem.', 'VERY_SHORT', []))  # has cue "state"
+        self.assertFalse(_is_fragment('x', 'MCQ', [{'label': 'a'}]))  # has options

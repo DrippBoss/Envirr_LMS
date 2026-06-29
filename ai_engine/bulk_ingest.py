@@ -125,6 +125,8 @@ Rules:
 6. For CASE: fill case_parts and solve each sub-question.
 7. Include ALL questions on the page; ignore headers/footers/page numbers.
 8. NEVER use LaTeX — write plain Unicode (a₁, x², 1/2, √2, ×, ÷, ≤, ≥, π …). No $, \\frac, \\sqrt, backslashes, _{}, ^{}.
+9. Each "text" must be a COMPLETE standalone question — never output an answer
+   choice or single label as its own question (put those in "options").
 """
 
 
@@ -140,6 +142,11 @@ Rules:
 3. difficulty: easy/medium/hard.
 4. Include every question; ignore headers/footers/instructions.
 5. NEVER use LaTeX — plain Unicode only (a₁, x², 1/2, √2, ×, ÷, ≤, ≥, π …). No $, backslashes, _{{}}, ^{{}}.
+6. Each "text" MUST be a COMPLETE, standalone question. NEVER output an answer
+   choice, a single word, or a classification label (e.g. "bijective function")
+   as its own question — those belong in "options" of their parent question.
+7. If a question's math cannot be written cleanly in plain Unicode, OMIT that
+   question entirely rather than emitting garbled/repeated characters.
 
 ===DOCUMENT===
 {content}
@@ -241,12 +248,67 @@ def _file_hash(path: str) -> str:
     return h.hexdigest()
 
 
+# ── Quality guards (small local models emit garbled formulas + fragments) ─────
+# Exotic unicode ranges: subscripts, superscripts, currency, combining marks.
+def _is_exotic(ch):
+    o = ord(ch)
+    return (0x2080 <= o <= 0x20CF) or (0x2070 <= o <= 0x207F) or (0x0300 <= o <= 0x036F)
+
+
+def _looks_garbled(text):
+    """A long run of subscript/super/combining chars, or a high overall ratio,
+    means a mangled formula (e.g. f(x)=… exploded into ₁₂₃...)."""
+    run = 0
+    for ch in text:
+        if _is_exotic(ch):
+            run += 1
+            if run >= 6:
+                return True
+        else:
+            run = 0
+    nonspace = [c for c in text if not c.isspace()]
+    return bool(nonspace) and sum(_is_exotic(c) for c in nonspace) / len(nonspace) > 0.25
+
+
+_Q_CUES = ('what', 'which', 'find', 'prove', 'define', 'state', 'show', 'evaluate',
+           'solve', 'calculate', 'how', 'why', 'is ', 'are ', 'let ', 'given',
+           'if ', 'draw', 'write', 'explain', 'determine', 'express', 'verify')
+
+
+def _is_fragment(text, qtype, options):
+    """Stray answer-choice / label saved as its own 'question'. Only applies to
+    option-less free-text types (a real MCQ stem keeps its options)."""
+    if options or qtype.upper() not in ('SHORT', 'VERY_SHORT', ''):
+        return False
+    t = text.strip().lower()
+    if len(t) < 20:
+        return True
+    # Short, with no question mark and none of the usual question/command cues →
+    # almost certainly a stray label/phrase (e.g. "many one, into function.").
+    return len(t) < 45 and '?' not in t and not any(cue in t for cue in _Q_CUES)
+
+
 # ── Persist one extracted question ─────────────────────────────────────────────
 def _save_question(q, *, subject, chapter, src_doc, source_page, pix, page_w, page_h, dry_run, log):
     """Returns 'created' | 'skipped' | 'error'."""
     text = clean_latex_text((q.get("text") or "").strip())
     if not text:
         return 'skipped'
+
+    # Drop low-quality extractions (common with small local models) before they
+    # pollute the review queue.
+    qtype = (q.get("type") or "").upper()
+    options = q.get("options") or []
+    if _looks_garbled(text):
+        log(f"      skipped (garbled formula): {text[:40]}…")
+        return 'skipped'
+    if _is_fragment(text, qtype, options):
+        log(f"      skipped (fragment, not a question): {text[:40]}")
+        return 'skipped'
+    if qtype in ('MCQ', 'ASSERTION_REASON') and not options:
+        log(f"      skipped (MCQ with no options): {text[:40]}")
+        return 'skipped'
+
     q_hash = compute_hash(subject, chapter, text)
 
     if dry_run:
