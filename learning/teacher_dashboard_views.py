@@ -13,12 +13,23 @@ from datetime import timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 from django.db.models import Count, Q
 from django.utils import timezone
 
 from .wizard_views import IsTeacherOrAdmin
-from .models import CourseUnit, NodeProgress, SessionAnswer, WeakSpot
+from .models import CourseUnit, NodeProgress, SessionAnswer, WeakSpot, Section
 from ai_engine.models import DoubtTicket, QuestionPaper
+
+
+def _can_view_course_analytics(user):
+    """Class analytics on the app's built-in courses are restricted to teachers
+    granted Course Builder access by an admin (admins always qualify). Coursework
+    a teacher creates themselves (assignments) is not gated by this."""
+    return (
+        getattr(user, 'role', None) == 'admin'
+        or bool(getattr(user, 'can_build_courses', False))
+    )
 
 
 def _teacher_subjects(user):
@@ -41,9 +52,32 @@ class TeacherDashboardView(APIView):
 
     def get(self, request):
         user = request.user
+        # Gate: student learning analytics on built-in courses require admin-
+        # approved Course Builder access. Teachers without it still manage their
+        # own assignments/calendar/sections — just not this class analytics.
+        if not _can_view_course_analytics(user):
+            return Response(
+                {'detail': 'Class analytics require Course Builder access, approved by an admin.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         subjects = _teacher_subjects(user)
         now = timezone.now()
         week_ago = now - timedelta(days=7)
+
+        # Optional per-section filter: scope to one of the teacher's sections.
+        member_ids = None
+        active_section = None
+        section_id = request.query_params.get('section')
+        if section_id:
+            sec_qs = Section.objects.filter(pk=section_id)
+            if user.role != 'admin':
+                sec_qs = sec_qs.filter(teacher=user)
+            active_section = sec_qs.first()
+            member_ids = (
+                list(active_section.memberships.values_list('student_id', flat=True))
+                if active_section else []
+            )
 
         # ── Scoped querysets ────────────────────────────────────────────────
         progress = NodeProgress.objects.select_related(
@@ -57,13 +91,19 @@ class TeacherDashboardView(APIView):
         if subjects is not None:
             if not subjects:
                 # Teacher with no subjects and no assigned courses → empty dashboard.
-                return Response(self._empty_payload())
+                return Response(self._empty_payload(user))
             progress = progress.filter(node__path__unit__subject__in=subjects)
             answers = answers.filter(node__path__unit__subject__in=subjects)
             weak = weak.filter(subject__in=subjects)
             doubts = doubts.filter(
                 Q(lesson__isnull=True) | Q(lesson__path__unit__subject__in=subjects)
             )
+        if member_ids is not None:
+            # Restrict student-generated data to the chosen section's members.
+            progress = progress.filter(student_id__in=member_ids)
+            answers = answers.filter(student_id__in=member_ids)
+            weak = weak.filter(student_id__in=member_ids)
+            doubts = doubts.filter(student__profile__id__in=member_ids)
 
         # ── Headline KPIs ───────────────────────────────────────────────────
         total_rows = progress.count()
@@ -166,12 +206,21 @@ class TeacherDashboardView(APIView):
             'weak_topics': weak_topics,
             'activity': feed,
             'scope': 'all' if subjects is None else subjects,
+            'sections': self._teacher_sections(user),
+            'active_section': active_section.id if active_section else None,
         })
 
     @staticmethod
-    def _empty_payload():
+    def _teacher_sections(user):
+        qs = Section.objects.all()
+        if getattr(user, 'role', None) != 'admin':
+            qs = qs.filter(teacher=user)
+        return [{'id': s.id, 'name': s.name} for s in qs]
+
+    def _empty_payload(self, user):
         return {
             'kpis': {'students': 0, 'active_7d': 0, 'courses': 0, 'avg_completion': 0,
                      'avg_accuracy': 0, 'pending_doubts': 0, 'compiling_papers': 0},
             'subjects': [], 'weak_topics': [], 'activity': [], 'scope': [],
+            'sections': self._teacher_sections(user), 'active_section': None,
         }

@@ -206,13 +206,14 @@ class TeacherDashboardTests(TestCase):
             username="dashteacher", email="dt@x.io", password="pw", role="teacher",
         )
         self.teacher.assigned_subjects = ["Mathematics"]
+        self.teacher.can_build_courses = True  # analytics gate: course-builder access
         self.teacher.save()
 
     def test_dashboard_returns_scoped_analytics(self):
         self.client.force_authenticate(user=self.teacher)
         resp = self.client.get("/api/teacher/dashboard/")
         self.assertEqual(resp.status_code, 200)
-        for key in ("kpis", "subjects", "weak_topics", "activity", "scope"):
+        for key in ("kpis", "subjects", "weak_topics", "activity", "scope", "sections"):
             self.assertIn(key, resp.data)
         self.assertEqual(resp.data["kpis"]["students"], 1)
         self.assertEqual(resp.data["kpis"]["avg_completion"], 100)
@@ -224,6 +225,30 @@ class TeacherDashboardTests(TestCase):
         self.client.force_authenticate(user=self.student_user)
         resp = self.client.get("/api/teacher/dashboard/")
         self.assertEqual(resp.status_code, 403)
+
+    def test_dashboard_gated_without_course_builder(self):
+        # A teacher WITHOUT admin-approved course-builder access cannot view the
+        # built-in-course learning analytics.
+        plain = User.objects.create_user(
+            username="plainteacher", email="pt@x.io", password="pw", role="teacher",
+        )
+        self.client.force_authenticate(user=plain)
+        resp = self.client.get("/api/teacher/dashboard/")
+        self.assertEqual(resp.status_code, 403)
+
+    def test_dashboard_section_filter_scopes_students(self):
+        from learning.models import Section, SectionMembership
+        # Section the analytics student is NOT a member of → zero students.
+        empty = Section.objects.create(name="Empty", class_grade="10", teacher=self.teacher)
+        self.client.force_authenticate(user=self.teacher)
+        r = self.client.get(f"/api/teacher/dashboard/?section={empty.id}")
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.data["kpis"]["students"], 0)
+        self.assertEqual(r.data["active_section"], empty.id)
+        # Now add the student → analytics reflect them.
+        SectionMembership.objects.create(section=empty, student=self.profile)
+        r2 = self.client.get(f"/api/teacher/dashboard/?section={empty.id}")
+        self.assertEqual(r2.data["kpis"]["students"], 1)
 
 
 @override_settings(CACHES=LOCMEM_CACHE)
