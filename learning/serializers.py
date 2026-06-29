@@ -217,3 +217,85 @@ class LessonQuestionSerializer(serializers.ModelSerializer):
             _rnd.shuffle(steps)
             return {'steps': steps}
         return obj.options_json
+
+
+# ── Assignments & Calendar ──────────────────────────────────────────────────
+from .models import Assignment, AssignmentSubmission, CalendarEvent
+
+
+class AssignmentSubmissionSerializer(serializers.ModelSerializer):
+    student_name = serializers.SerializerMethodField()
+    student_username = serializers.CharField(source='student.user.username', read_only=True)
+
+    class Meta:
+        model = AssignmentSubmission
+        fields = [
+            'id', 'assignment', 'student', 'student_name', 'student_username',
+            'note', 'submission_file', 'status', 'marks', 'feedback',
+            'submitted_at', 'graded_at',
+        ]
+        read_only_fields = ['status', 'marks', 'feedback', 'submitted_at', 'graded_at']
+
+    def get_student_name(self, obj):
+        u = obj.student.user
+        return u.get_full_name() or u.username
+
+
+class AssignmentSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.SerializerMethodField()
+    submission_count = serializers.SerializerMethodField()
+    graded_count = serializers.SerializerMethodField()
+    attached_paper_title = serializers.CharField(source='attached_paper.title', read_only=True)
+    # Per-student fields (populated only in the student list view via context).
+    my_status = serializers.SerializerMethodField()
+    my_marks = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Assignment
+        fields = [
+            'id', 'title', 'description', 'subject', 'class_grade', 'board',
+            'created_by', 'created_by_name', 'due_date', 'max_marks',
+            'attached_paper', 'attached_paper_title', 'is_published',
+            'created_at', 'submission_count', 'graded_count',
+            'my_status', 'my_marks',
+        ]
+        read_only_fields = ['created_by', 'created_at']
+
+    def get_created_by_name(self, obj):
+        return obj.created_by.get_full_name() or obj.created_by.username
+
+    def get_submission_count(self, obj):
+        return obj.submissions.count()
+
+    def get_graded_count(self, obj):
+        return obj.submissions.filter(status='GRADED').count()
+
+    def _my_sub(self, obj):
+        subs = self.context.get('my_subs')
+        if subs is None:
+            return None
+        return subs.get(obj.id)
+
+    def get_my_status(self, obj):
+        sub = self._my_sub(obj)
+        return sub.status if sub else 'PENDING'
+
+    def get_my_marks(self, obj):
+        sub = self._my_sub(obj)
+        return sub.marks if sub else None
+
+
+class CalendarEventSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CalendarEvent
+        fields = [
+            'id', 'title', 'description', 'event_type', 'start', 'end',
+            'all_day', 'subject', 'class_grade', 'assignment',
+            'created_by', 'created_by_name', 'created_at',
+        ]
+        read_only_fields = ['created_by', 'created_at']
+
+    def get_created_by_name(self, obj):
+        return obj.created_by.get_full_name() or obj.created_by.username

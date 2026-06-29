@@ -514,6 +514,110 @@ class MockTestAttempt(models.Model):
         return f'MockTest #{self.pk} — {self.student} — {self.score}/{self.total}'
 
 
+# ── Assignments ──────────────────────────────────────────────────────────────
+# Teacher-created coursework targeted at a class grade (+ optional subject /
+# board). Targeting mirrors the rest of the app: a student sees an assignment
+# when their StudentProfile.class_grade matches. An optional QuestionPaper can
+# be attached for download.
+class Assignment(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    subject = models.CharField(max_length=100, blank=True)
+    class_grade = models.CharField(max_length=5, choices=CLASS_CHOICES)
+    board = models.CharField(max_length=50, blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='created_assignments',
+    )
+    due_date = models.DateTimeField(null=True, blank=True)
+    max_marks = models.PositiveIntegerField(default=0)
+    attached_paper = models.ForeignKey(
+        'ai_engine.QuestionPaper', null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='assignments',
+    )
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.title} (Grade {self.class_grade})'
+
+
+class SubmissionStatus(models.TextChoices):
+    SUBMITTED = 'SUBMITTED', 'Submitted'
+    GRADED = 'GRADED', 'Graded'
+
+
+class AssignmentSubmission(models.Model):
+    assignment = models.ForeignKey(
+        Assignment, on_delete=models.CASCADE, related_name='submissions',
+    )
+    student = models.ForeignKey(
+        'users.StudentProfile', on_delete=models.CASCADE,
+        related_name='assignment_submissions',
+    )
+    note = models.TextField(blank=True)
+    submission_file = models.FileField(
+        upload_to='assignment_submissions/', null=True, blank=True,
+    )
+    status = models.CharField(
+        max_length=20, choices=SubmissionStatus.choices,
+        default=SubmissionStatus.SUBMITTED,
+    )
+    marks = models.FloatField(null=True, blank=True)
+    feedback = models.TextField(blank=True)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    graded_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = [['assignment', 'student']]
+        ordering = ['-submitted_at']
+
+    def __str__(self):
+        return f'{self.student} → {self.assignment.title}'
+
+
+# ── Calendar ─────────────────────────────────────────────────────────────────
+# Teacher scheduling. Events with a class_grade (or blank = all grades) are also
+# visible to matching students as a read-only agenda.
+class EventType(models.TextChoices):
+    CLASS = 'CLASS', 'Class'
+    EXAM = 'EXAM', 'Exam'
+    DEADLINE = 'DEADLINE', 'Deadline'
+    REMINDER = 'REMINDER', 'Reminder'
+    OTHER = 'OTHER', 'Other'
+
+
+class CalendarEvent(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    event_type = models.CharField(
+        max_length=20, choices=EventType.choices, default=EventType.CLASS,
+    )
+    start = models.DateTimeField()
+    end = models.DateTimeField(null=True, blank=True)
+    all_day = models.BooleanField(default=False)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='calendar_events',
+    )
+    subject = models.CharField(max_length=100, blank=True)
+    class_grade = models.CharField(max_length=5, blank=True)
+    assignment = models.ForeignKey(
+        Assignment, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='events',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['start']
+
+    def __str__(self):
+        return f'{self.title} @ {self.start:%Y-%m-%d %H:%M}'
+
+
 # ── Dashboard cache invalidation ────────────────────────────────────────────
 # Bust a student's cached dashboard whenever their node/revision progress
 # changes, deferred to commit so the new state is visible before we invalidate.

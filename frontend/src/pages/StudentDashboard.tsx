@@ -478,6 +478,24 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
+              {/* Assignments card */}
+              <div
+                className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 flex flex-col justify-between hover:border-primary/30 transition-all group cursor-pointer"
+                onClick={() => navigate('/assignments')}
+              >
+                <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-primary text-2xl">assignment</span>
+                </div>
+                <div>
+                  <h4 className="text-base font-black font-headline text-on-surface mb-1">Assignments</h4>
+                  <p className="text-xs text-slate-500 mb-4 leading-relaxed">Coursework from your teachers & what's due next.</p>
+                  <span className="text-primary font-bold text-xs uppercase tracking-wider flex items-center gap-1 group-hover:gap-2 transition-all">
+                    View Tasks
+                    <span className="material-symbols-outlined text-sm">chevron_right</span>
+                  </span>
+                </div>
+              </div>
+
               {/* Study Groups card */}
               <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 flex flex-col justify-between hover:border-secondary/30 transition-all group cursor-pointer"
                 onClick={() => navigate('/study-groups')}>

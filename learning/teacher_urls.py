@@ -12,9 +12,22 @@ from .wizard_views import (
     WizardCourseStructureView,
 )
 from .teacher_dashboard_views import TeacherDashboardView
+from .assignment_views import (
+    TeacherAssignmentListCreateView, TeacherAssignmentDetailView,
+    AssignmentSubmissionListView, GradeSubmissionView,
+    TeacherCalendarListCreateView, TeacherCalendarDetailView,
+)
 
 urlpatterns = [
     path('dashboard/', TeacherDashboardView.as_view(), name='teacher-dashboard'),
+    # Assignments
+    path('assignments/', TeacherAssignmentListCreateView.as_view(), name='teacher-assignments'),
+    path('assignments/<int:pk>/', TeacherAssignmentDetailView.as_view(), name='teacher-assignment-detail'),
+    path('assignments/<int:pk>/submissions/', AssignmentSubmissionListView.as_view(), name='teacher-assignment-submissions'),
+    path('submissions/<int:pk>/grade/', GradeSubmissionView.as_view(), name='teacher-grade-submission'),
+    # Calendar
+    path('calendar/', TeacherCalendarListCreateView.as_view(), name='teacher-calendar'),
+    path('calendar/<int:pk>/', TeacherCalendarDetailView.as_view(), name='teacher-calendar-detail'),
     path('templates/', WizardTemplateListView.as_view(), name='wizard-templates'),
     path('course/create/', WizardCourseCreateView.as_view(), name='wizard-course-create'),
     path('course/reorder/', WizardReorderView.as_view(), name='wizard-course-reorder'),

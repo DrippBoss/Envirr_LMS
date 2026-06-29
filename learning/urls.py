@@ -10,6 +10,9 @@ from .views import (
     StudentAnalyticsView,
 )
 from .mock_test_views import MockTestGenerateView, MockTestSubmitView, MockTestHistoryView
+from .assignment_views import (
+    StudentAssignmentListView, StudentAssignmentSubmitView, StudentAgendaView,
+)
 from .study_group_views import (
     StudyGroupListCreateView, StudyGroupJoinView,
     StudyGroupDetailView, StudyGroupLeaderboardView,
@@ -23,6 +26,9 @@ from .study_group_views import (
 
 urlpatterns = [
     path('analytics/', StudentAnalyticsView.as_view(), name='student-analytics'),
+    path('assignments/', StudentAssignmentListView.as_view(), name='student-assignments'),
+    path('assignments/<int:pk>/submit/', StudentAssignmentSubmitView.as_view(), name='student-assignment-submit'),
+    path('agenda/', StudentAgendaView.as_view(), name='student-agenda'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('weak-concepts/', WeakConceptsView.as_view(), name='weak-concepts'),
     path('activity/', ActivityFeedView.as_view(), name='activity-feed'),

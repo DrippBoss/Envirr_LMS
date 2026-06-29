@@ -25,6 +25,7 @@ const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage'));
 const StudentAnalyticsPage = lazy(() => import('./pages/StudentAnalyticsPage'));
+const StudentAssignmentsPage = lazy(() => import('./pages/StudentAssignmentsPage'));
 
 const ProtectedRoute = ({ children, allowedRole }: { children: React.ReactNode, allowedRole?: string }) => {
     const { user, isAuthenticated, loading } = useAuth();
@@ -62,6 +63,7 @@ function AppRoutes() {
                         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                         <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
                         <Route path="/analytics" element={<ProtectedRoute><StudentAnalyticsPage /></ProtectedRoute>} />
+                        <Route path="/assignments" element={<ProtectedRoute><StudentAssignmentsPage /></ProtectedRoute>} />
                         <Route path="/verify-email" element={<VerifyEmailPage />} />
                         <Route path="/reset-password" element={<ResetPasswordPage />} />
                     </Routes>

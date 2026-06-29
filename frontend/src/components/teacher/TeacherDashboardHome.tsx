@@ -17,7 +17,7 @@ interface WeakTopic { subject: string; chapter: string; concept: string; student
 interface Activity { type: 'completion' | 'doubt' | 'paper'; student: string; detail: string; subject: string; status?: string; at: string; }
 interface DashboardData { kpis: Kpis; subjects: SubjectPerf[]; weak_topics: WeakTopic[]; activity: Activity[]; }
 
-type Tab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions' | 'planner';
+type Tab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions' | 'planner' | 'assignments' | 'calendar';
 
 const ACTIVITY_META: Record<Activity['type'], { icon: string; color: string }> = {
   completion: { icon: 'task_alt',    color: 'text-secondary' },
@@ -106,9 +106,9 @@ export default function TeacherDashboardHome({
   // ── Productivity shortcuts ──
   const shortcuts: { icon: string; title: string; desc: string; tab: Tab; mode?: string; color: string }[] = [
     { icon: 'auto_awesome', title: 'Generate Paper', desc: 'AI / manual / hybrid exam builder', tab: 'exam', mode: 'ai', color: 'text-primary' },
-    { icon: 'edit_calendar', title: 'AI Lesson Planner', desc: 'Draft a structured class plan', tab: 'planner', color: 'text-secondary' },
-    { icon: 'account_tree', title: 'Course Builder', desc: 'Build a new course framework', tab: 'course', color: 'text-tertiary' },
-    { icon: 'edit_note', title: 'Edit Courses', desc: 'Update your assigned courses', tab: 'assigned', color: 'text-primary' },
+    { icon: 'assignment', title: 'Assignments', desc: 'Create & grade coursework', tab: 'assignments', color: 'text-secondary' },
+    { icon: 'calendar_month', title: 'Calendar', desc: 'Schedule classes & exams', tab: 'calendar', color: 'text-tertiary' },
+    { icon: 'edit_calendar', title: 'AI Lesson Planner', desc: 'Draft a structured class plan', tab: 'planner', color: 'text-primary' },
   ];
 
   if (loading) {
