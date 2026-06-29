@@ -751,21 +751,115 @@ class AdminAnalyticsView(APIView):
         users = CustomUser.objects.order_by('-date_joined')[:ADMIN_USERS_PAGE_SIZE]
         user_data = [_serialize_admin_user(u) for u in users]
 
+        # ── User growth: sign-ups per day, last 30 days ───────────────
+        signup_rows = (
+            CustomUser.objects.filter(date_joined__date__gte=start)
+            .annotate(day=TruncDate('date_joined'))
+            .values('day').annotate(n=Count('id'))
+        )
+        signup_map = {r['day']: r['n'] for r in signup_rows}
+        user_growth = [
+            {'day': (start + timedelta(days=i)).isoformat(),
+             'count': signup_map.get(start + timedelta(days=i), 0)}
+            for i in range(30)
+        ]
+
+        # ── AI usage: question provenance + verification + paper modes ─
+        total_q = QuestionBank.objects.count()
+        ai_generated = QuestionBank.objects.filter(is_ai_generated=True).count()
+        verified = QuestionBank.objects.filter(is_verified=True).count()
+        ai_usage = {
+            'ai_generated': ai_generated,
+            'manual': total_q - ai_generated,
+            'verified': verified,
+            'unverified': total_q - verified,
+        }
+        mode_counts = {}
+        for cfg in QuestionPaper.objects.values_list('config', flat=True):
+            mode = (cfg or {}).get('mode', 'full_ai') if isinstance(cfg, dict) else 'full_ai'
+            mode_counts[mode] = mode_counts.get(mode, 0) + 1
+        paper_modes = [{'mode': k, 'count': v}
+                       for k, v in sorted(mode_counts.items(), key=lambda x: -x[1])]
+
+        # ── Review queue: unverified questions awaiting sign-off ───────
+        review_queue = [
+            {'id': q.id, 'subject': q.subject, 'chapter': q.chapter,
+             'difficulty': q.difficulty, 'is_ai_generated': q.is_ai_generated,
+             'question_text': q.question_text[:160]}
+            for q in QuestionBank.objects.filter(is_verified=False).order_by('-id')[:5]
+        ]
+
+        # ── Recent activity (audit feed): new users + new papers ───────
+        recent_activity = [
+            {'type': 'user_joined', 'label': f'{u.username} joined as {u.role}',
+             'at': u.date_joined.isoformat()}
+            for u in CustomUser.objects.order_by('-date_joined')[:6]
+        ] + [
+            {'type': 'paper', 'label': f'Paper "{p.title}" generated',
+             'at': p.created_at.isoformat()}
+            for p in QuestionPaper.objects.order_by('-created_at')[:6]
+        ]
+        recent_activity.sort(key=lambda e: e['at'], reverse=True)
+        recent_activity = recent_activity[:10]
+
         return Response({
             'kpi': {
                 'total_users': total_users,
                 'students': counts_by_role.get('student', 0),
                 'teachers': counts_by_role.get('teacher', 0),
                 'admins': counts_by_role.get('admin', 0),
-                'total_questions': QuestionBank.objects.count(),
+                'total_questions': total_q,
                 'total_papers': QuestionPaper.objects.count(),
             },
             'qbank_by_subject': list(qbank_by_subject),
             'day_bars': day_bars,
+            'user_growth': user_growth,
+            'ai_usage': ai_usage,
+            'paper_modes': paper_modes,
+            'review_queue': review_queue,
+            'recent_activity': recent_activity,
             'subject_scores': subject_scores,
             'weak_concepts': weak_concepts,
             'papers': paper_data,
             'users': user_data,
+        })
+
+
+class AdminSystemHealthView(APIView):
+    """Lightweight system-health probe for the admin dashboard widget."""
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        if request.user.role != 'admin':
+            return Response({'error': 'Admin only.'}, status=403)
+
+        from ai_engine.models import QuestionBank, QuestionPaper
+        from django.core.cache import cache
+
+        db_ok = True
+        try:
+            CustomUser.objects.exists()
+        except Exception:
+            db_ok = False
+
+        cache_ok = True
+        try:
+            cache.set('admin_health_ping', '1', 5)
+            cache_ok = cache.get('admin_health_ping') == '1'
+        except Exception:
+            cache_ok = False
+
+        return Response({
+            'services': [
+                {'name': 'Database', 'status': 'operational' if db_ok else 'down'},
+                {'name': 'Cache (Redis)', 'status': 'operational' if cache_ok else 'degraded'},
+                {'name': 'API', 'status': 'operational'},
+            ],
+            'metrics': {
+                'users': CustomUser.objects.count(),
+                'questions': QuestionBank.objects.count(),
+                'papers': QuestionPaper.objects.count(),
+            },
         })
 
 

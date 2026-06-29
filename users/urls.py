@@ -6,7 +6,7 @@ from .views import (
     CookieTokenObtainPairView, CookieTokenRefreshView, LogoutView,
     AdminAnalyticsView, AdminUsersListView, ToggleCourseBuilderView,
     ToggleQuestionEditorView, ToggleUserStatusView, DeleteUserView,
-    AssignSubjectsView,
+    AssignSubjectsView, AdminSystemHealthView,
 )
 
 urlpatterns = [
@@ -22,6 +22,7 @@ urlpatterns = [
     path('password-reset/',         PasswordResetRequestView.as_view(),  name='password_reset'),
     path('password-reset/confirm/', PasswordResetConfirmView.as_view(),  name='password_reset_confirm'),
     path('admin/analytics/', AdminAnalyticsView.as_view(),        name='admin_analytics'),
+    path('admin/system-health/', AdminSystemHealthView.as_view(), name='admin_system_health'),
     path('admin/users/',      AdminUsersListView.as_view(),        name='admin_users_list'),
     path('admin/users/<int:user_id>/toggle-course-builder/', ToggleCourseBuilderView.as_view(), name='toggle_course_builder'),
     path('admin/users/<int:user_id>/toggle-question-editor/', ToggleQuestionEditorView.as_view(), name='toggle_question_editor'),
