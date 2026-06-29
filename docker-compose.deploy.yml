@@ -1,0 +1,52 @@
+# ── Envirr LMS — self-contained single-host production deploy ────────────────
+# One command brings up a complete, internet-ready stack on any Docker host:
+#
+#   1. cp .env.production.example .env.production   (fill in every value)
+#   2. ./scripts/deploy.sh        (Linux/macOS)  or  scripts\deploy.ps1  (Windows)
+#
+# The `web` image (Dockerfile.prod) builds the React SPA and serves it
+# same-origin with the Django API via gunicorn + WhiteNoise on one port — no
+# separate frontend container or reverse proxy required to get started. The
+# container migrates + collectstatic automatically on start (entrypoint.prod.sh).
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file:
+      - .env.production          # provides POSTGRES_DB / POSTGRES_USER / POSTGRES_PASSWORD
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    # DB port is NOT published to the host in production.
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    ports:
+      - "${PORT:-8000}:8000"     # the only public port — serves SPA + API
+    depends_on:
+      - db
+      - redis
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    command: ["celery", "-A", "envirr_backend", "worker", "--loglevel=info", "--concurrency=2"]
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  postgres_data_prod:
