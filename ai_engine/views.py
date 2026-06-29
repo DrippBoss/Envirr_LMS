@@ -100,6 +100,50 @@ class QuestionBankListView(generics.ListAPIView):
         if qtype: qs = qs.filter(question_type=qtype)
         return qs
 
+class QuestionBankCreateView(views.APIView):
+    """Teacher/admin inline-authors a question straight into the SHARED bank
+    (Course Builder). New questions are human-written (is_ai_generated=False)
+    and unverified, so they surface in the admin review queue for sign-off."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        if request.user.role not in ('teacher', 'admin'):
+            return response.Response({'detail': 'Teachers/admins only.'}, status=status.HTTP_403_FORBIDDEN)
+
+        from .models import QuestionType, Difficulty
+        data = request.data
+        qtext = (data.get('question_text') or '').strip()
+        subject = (data.get('subject') or '').strip()
+        chapter = (data.get('chapter') or '').strip()
+        if not qtext:
+            return response.Response({'detail': 'Question text is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not subject or not chapter:
+            return response.Response({'detail': 'Subject and chapter are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        qtype = data.get('question_type') or 'SHORT'
+        if qtype not in QuestionType.values:
+            return response.Response({'detail': 'Unsupported question type for the bank.'}, status=status.HTTP_400_BAD_REQUEST)
+        difficulty = data.get('difficulty') if data.get('difficulty') in Difficulty.values else 'medium'
+        try:
+            marks = max(1, min(20, int(data.get('marks') or 1)))
+        except (TypeError, ValueError):
+            marks = 1
+
+        qhash = QuestionBank.compute_hash(subject, chapter, qtype, qtext)
+        existing = QuestionBank.objects.filter(question_hash=qhash).first()
+        if existing:
+            # Identical question already in the bank — reuse it rather than erroring.
+            return response.Response(QuestionBankSerializer(existing).data, status=status.HTTP_200_OK)
+
+        q = QuestionBank.objects.create(
+            subject=subject, chapter=chapter, question_type=qtype, marks=marks,
+            difficulty=difficulty, question_text=qtext,
+            answer_text=(data.get('answer_text') or '').strip(),
+            is_ai_generated=False, is_verified=False,
+        )
+        return response.Response(QuestionBankSerializer(q).data, status=status.HTTP_201_CREATED)
+
+
 class QuestionBankMetaView(views.APIView):
     """Return distinct subjects and (optionally) chapters from the question bank."""
     permission_classes = [permissions.IsAuthenticated]

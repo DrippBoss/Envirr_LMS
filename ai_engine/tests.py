@@ -86,3 +86,44 @@ class DoubtApiTests(TestCase):
         )
         d.refresh_from_db()
         self.assertEqual(d.status, "resolved")
+
+
+@override_settings(CACHES=LOCMEM)
+class QuestionBankCreateTests(TestCase):
+    """Inline question authoring writes to the shared QuestionBank (unverified)."""
+
+    def setUp(self):
+        cache.clear()
+        User = get_user_model()
+        self.teacher = User.objects.create_user(username="qbteach", email="qb@t.com", password="pw", role="teacher")
+        self.student = User.objects.create_user(username="qbstud", email="qbs@t.com", password="pw", role="student")
+
+    def _payload(self, text="What is 2+2?"):
+        return {"subject": "Mathematics", "chapter": "Arithmetic", "question_type": "SHORT",
+                "marks": 2, "difficulty": "easy", "question_text": text, "answer_text": "4"}
+
+    def test_teacher_creates_shared_unverified_question(self):
+        c = APIClient(); c.force_authenticate(self.teacher)
+        r = c.post("/api/ai/questions/create/", self._payload(), format="json")
+        self.assertEqual(r.status_code, 201)
+        from ai_engine.models import QuestionBank
+        q = QuestionBank.objects.get(id=r.data["id"])
+        self.assertFalse(q.is_ai_generated)
+        self.assertFalse(q.is_verified)
+        self.assertEqual(q.subject, "Mathematics")
+
+    def test_duplicate_reuses_existing(self):
+        c = APIClient(); c.force_authenticate(self.teacher)
+        first = c.post("/api/ai/questions/create/", self._payload(), format="json")
+        again = c.post("/api/ai/questions/create/", self._payload(), format="json")
+        self.assertEqual(again.status_code, 200)
+        self.assertEqual(again.data["id"], first.data["id"])
+
+    def test_invalid_type_rejected(self):
+        c = APIClient(); c.force_authenticate(self.teacher)
+        bad = {**self._payload(), "question_type": "FILL_BLANK"}
+        self.assertEqual(c.post("/api/ai/questions/create/", bad, format="json").status_code, 400)
+
+    def test_student_forbidden(self):
+        c = APIClient(); c.force_authenticate(self.student)
+        self.assertEqual(c.post("/api/ai/questions/create/", self._payload(), format="json").status_code, 403)

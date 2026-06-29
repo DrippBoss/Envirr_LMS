@@ -1,6 +1,6 @@
 from django.urls import path
 from ai_engine.views import (
-    GeneratePaperAPIView, QuestionBankListView, QuestionBankMetaView,
+    GeneratePaperAPIView, QuestionBankListView, QuestionBankCreateView, QuestionBankMetaView,
     ManualPaperCreateView, AiTutorView, PaperDownloadView,
     QuestionBankDetailView, MCQOptionsUpdateView, QuestionBankEditorListView,
     IngestUploadView, CompileIngestPaperView, DetectDocumentView, GapFillView,
@@ -12,6 +12,7 @@ urlpatterns = [
     path('generate-paper/', GeneratePaperAPIView.as_view(), name='generate_paper'),
     path('generate-paper/<int:pk>/download/', PaperDownloadView.as_view(), name='paper_download'),
     path('questions/', QuestionBankListView.as_view(), name='question_bank_list'),
+    path('questions/create/', QuestionBankCreateView.as_view(), name='question_bank_create'),
     path('questions/meta/', QuestionBankMetaView.as_view(), name='question_bank_meta'),
     path('questions/editor/', QuestionBankEditorListView.as_view(), name='question_bank_editor_list'),
     path('questions/<int:pk>/', QuestionBankDetailView.as_view(), name='question_bank_detail'),
