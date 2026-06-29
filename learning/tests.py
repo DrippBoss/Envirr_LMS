@@ -319,6 +319,86 @@ class AssignmentCalendarTests(TestCase):
         self.assertEqual(r.status_code, 403)
 
 
+@override_settings(CACHES=LOCMEM_CACHE)
+class SectionRosterTests(TestCase):
+    """Sections: teacher roster management + section-targeted delivery."""
+
+    def setUp(self):
+        cache.clear()
+        self.client = APIClient()
+        self.teacher = User.objects.create_user(
+            username="secteacher", email="st@x.io", password="pw", role="teacher",
+        )
+        # member: grade 11, but will be added to a grade-10 section
+        self.member = User.objects.create_user(
+            username="secmember", email="sm@x.io", password="pw", role="student",
+        )
+        self.member.profile.class_grade = "11"
+        self.member.profile.save()
+        # non-member: grade 10 (same grade as the assignment) but NOT in section
+        self.outsider = User.objects.create_user(
+            username="secoutsider", email="so@x.io", password="pw", role="student",
+        )
+        self.outsider.profile.class_grade = "10"
+        self.outsider.profile.save()
+
+    def _make_section(self):
+        self.client.force_authenticate(user=self.teacher)
+        return self.client.post("/api/teacher/sections/", {
+            "name": "10-A Maths", "class_grade": "10", "subject": "Mathematics",
+        }, format="json")
+
+    def test_create_add_member_and_join_code(self):
+        sec = self._make_section()
+        self.assertEqual(sec.status_code, 201)
+        sid = sec.data["id"]
+        self.assertTrue(sec.data["join_code"])
+
+        # Teacher adds member by username.
+        add = self.client.post(f"/api/teacher/sections/{sid}/members/", {"username": "secmember"}, format="json")
+        self.assertEqual(add.status_code, 201)
+        self.assertEqual(len(add.data), 1)
+
+        # Outsider self-joins via the code.
+        self.client.force_authenticate(user=self.outsider)
+        join = self.client.post("/api/student/sections/join/", {"join_code": sec.data["join_code"]}, format="json")
+        self.assertEqual(join.status_code, 201)
+        self.assertEqual(len(self.client.get("/api/student/sections/").data), 1)
+
+    def test_section_targeting_overrides_grade(self):
+        sec = self._make_section()
+        sid = sec.data["id"]
+        self.client.post(f"/api/teacher/sections/{sid}/members/", {"username": "secmember"}, format="json")
+
+        # Assignment targeted at the section (grade 10).
+        a = self.client.post("/api/teacher/assignments/", {
+            "title": "Section task", "class_grade": "10", "section": sid, "max_marks": 10,
+        }, format="json")
+        self.assertEqual(a.status_code, 201)
+
+        # Member (grade 11, but in section) SEES it.
+        self.client.force_authenticate(user=self.member)
+        self.assertEqual(len(self.client.get("/api/student/assignments/").data), 1)
+
+        # Outsider (grade 10, not in section) does NOT see it.
+        self.client.force_authenticate(user=self.outsider)
+        self.assertEqual(len(self.client.get("/api/student/assignments/").data), 0)
+
+    def test_cannot_target_another_teachers_section(self):
+        sec = self._make_section()
+        other = User.objects.create_user(username="otherteach", email="ot@x.io", password="pw", role="teacher")
+        self.client.force_authenticate(user=other)
+        r = self.client.post("/api/teacher/assignments/", {
+            "title": "x", "class_grade": "10", "section": sec.data["id"],
+        }, format="json")
+        self.assertEqual(r.status_code, 400)
+
+    def test_student_cannot_create_section(self):
+        self.client.force_authenticate(user=self.member)
+        r = self.client.post("/api/teacher/sections/", {"name": "x", "class_grade": "11"}, format="json")
+        self.assertEqual(r.status_code, 403)
+
+
 class ChatModerationTests(TestCase):
     """Server-side study-group chat moderation (check_message)."""
 

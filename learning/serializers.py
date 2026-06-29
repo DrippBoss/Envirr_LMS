@@ -220,7 +220,36 @@ class LessonQuestionSerializer(serializers.ModelSerializer):
 
 
 # ── Assignments & Calendar ──────────────────────────────────────────────────
-from .models import Assignment, AssignmentSubmission, CalendarEvent
+from .models import Assignment, AssignmentSubmission, CalendarEvent, Section, SectionMembership
+
+
+class SectionMemberSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='student.id', read_only=True)
+    name = serializers.SerializerMethodField()
+    username = serializers.CharField(source='student.user.username', read_only=True)
+
+    class Meta:
+        model = SectionMembership
+        fields = ['id', 'name', 'username', 'joined_at']
+
+    def get_name(self, obj):
+        u = obj.student.user
+        return u.get_full_name() or u.username
+
+
+class SectionSerializer(serializers.ModelSerializer):
+    member_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Section
+        fields = [
+            'id', 'name', 'class_grade', 'subject', 'board',
+            'join_code', 'member_count', 'created_at',
+        ]
+        read_only_fields = ['join_code', 'created_at']
+
+    def get_member_count(self, obj):
+        return obj.memberships.count()
 
 
 class AssignmentSubmissionSerializer(serializers.ModelSerializer):
@@ -246,6 +275,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     submission_count = serializers.SerializerMethodField()
     graded_count = serializers.SerializerMethodField()
     attached_paper_title = serializers.CharField(source='attached_paper.title', read_only=True)
+    section_name = serializers.CharField(source='section.name', read_only=True)
     # Per-student fields (populated only in the student list view via context).
     my_status = serializers.SerializerMethodField()
     my_marks = serializers.SerializerMethodField()
@@ -255,8 +285,8 @@ class AssignmentSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'description', 'subject', 'class_grade', 'board',
             'created_by', 'created_by_name', 'due_date', 'max_marks',
-            'attached_paper', 'attached_paper_title', 'is_published',
-            'created_at', 'submission_count', 'graded_count',
+            'attached_paper', 'attached_paper_title', 'section', 'section_name',
+            'is_published', 'created_at', 'submission_count', 'graded_count',
             'my_status', 'my_marks',
         ]
         read_only_fields = ['created_by', 'created_at']
@@ -287,13 +317,14 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
 class CalendarEventSerializer(serializers.ModelSerializer):
     created_by_name = serializers.SerializerMethodField()
+    section_name = serializers.CharField(source='section.name', read_only=True)
 
     class Meta:
         model = CalendarEvent
         fields = [
             'id', 'title', 'description', 'event_type', 'start', 'end',
-            'all_day', 'subject', 'class_grade', 'assignment',
-            'created_by', 'created_by_name', 'created_at',
+            'all_day', 'subject', 'class_grade', 'assignment', 'section',
+            'section_name', 'created_by', 'created_by_name', 'created_at',
         ]
         read_only_fields = ['created_by', 'created_at']
 

@@ -29,8 +29,11 @@ export default function TeacherAssignments() {
   const [active, setActive] = useState<Assignment | null>(null);
 
   // Create form
-  const [form, setForm] = useState({ title: '', description: '', subject: 'Mathematics', class_grade: '10', board: 'CBSE', due_date: '', max_marks: 20 });
+  const [form, setForm] = useState({ title: '', description: '', subject: 'Mathematics', class_grade: '10', board: 'CBSE', due_date: '', max_marks: 20, section: '' });
   const [saving, setSaving] = useState(false);
+  const [sections, setSections] = useState<{ id: number; name: string; class_grade: string }[]>([]);
+
+  useEffect(() => { api.get('/teacher/sections/').then(r => setSections(r.data)).catch(() => {}); }, []);
 
   const fetchList = useCallback(() => {
     setLoading(true);
@@ -49,9 +52,10 @@ export default function TeacherAssignments() {
     try {
       const payload: any = { ...form, max_marks: Number(form.max_marks) };
       if (!payload.due_date) delete payload.due_date;
+      if (!payload.section) delete payload.section; else payload.section = Number(payload.section);
       await api.post('/teacher/assignments/', payload);
       success('Assignment created.');
-      setForm({ title: '', description: '', subject: 'Mathematics', class_grade: '10', board: 'CBSE', due_date: '', max_marks: 20 });
+      setForm({ title: '', description: '', subject: 'Mathematics', class_grade: '10', board: 'CBSE', due_date: '', max_marks: 20, section: '' });
       setView('list');
       fetchList();
     } catch (err: any) {
@@ -108,6 +112,19 @@ export default function TeacherAssignments() {
               <label className={labelCls}>Due date</label>
               <input type="datetime-local" className={inputCls} value={form.due_date} onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))} />
             </div>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className={labelCls}>Target</label>
+            <select className={inputCls} value={form.section}
+              onChange={e => {
+                const sid = e.target.value;
+                const sec = sections.find(s => String(s.id) === sid);
+                setForm(f => ({ ...f, section: sid, class_grade: sec ? sec.class_grade : f.class_grade }));
+              }}>
+              <option value="">Whole grade {form.class_grade}</option>
+              {sections.map(s => <option key={s.id} value={s.id}>{s.name} (Grade {s.class_grade})</option>)}
+            </select>
+            <p className="text-[10px] text-outline">Pick a class to assign only its members, or leave on the whole grade.</p>
           </div>
           <button type="submit" disabled={saving} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-primary text-on-primary font-bold text-sm hover:brightness-110 transition-all shadow-lg active:scale-95 disabled:opacity-60">
             <span className="material-symbols-outlined text-lg">add_task</span>

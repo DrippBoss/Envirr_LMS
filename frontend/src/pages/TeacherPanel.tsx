@@ -7,10 +7,11 @@ import TeacherDashboardHome from '../components/teacher/TeacherDashboardHome';
 import TeacherLessonPlanner from '../components/teacher/TeacherLessonPlanner';
 import TeacherAssignments from '../components/teacher/TeacherAssignments';
 import TeacherCalendar from '../components/teacher/TeacherCalendar';
+import TeacherSections from '../components/teacher/TeacherSections';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type ExamMode = 'ai' | 'manual' | 'hybrid' | 'course' | 'upload';
-type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions' | 'planner' | 'assignments' | 'calendar';
+type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions' | 'planner' | 'assignments' | 'calendar' | 'sections';
 
 // ─── Paper structure: mirrors backend calculate_marks_distribution exactly ─────
 interface DistRow { type: string; label: string; count: number; marks: number; sec: string; }
@@ -185,6 +186,7 @@ const NAV_ITEMS = [
   { id: 'overview',    icon: 'grid_view',      label: 'Dashboard' },
   { id: 'exam',        icon: 'science',        label: 'Exam Factory' },
   { id: 'assignments', icon: 'assignment',     label: 'Assignments' },
+  { id: 'sections',    icon: 'groups',         label: 'Classes' },
   { id: 'calendar',    icon: 'calendar_month', label: 'Calendar' },
   { id: 'planner',     icon: 'edit_calendar',  label: 'Lesson Planner' },
   { id: 'doubts',      icon: 'help_outline',   label: 'Doubt Solver' },
@@ -716,6 +718,11 @@ export default function TeacherPanel() {
           {/* ── Calendar ── */}
           {navTab === 'calendar' && (user?.role === 'teacher' || user?.role === 'admin') && (
             <TeacherCalendar />
+          )}
+
+          {/* ── Classes / Sections ── */}
+          {navTab === 'sections' && (user?.role === 'teacher' || user?.role === 'admin') && (
+            <TeacherSections />
           )}
 
           {/* ── Doubt Solver (live queue) ── */}
