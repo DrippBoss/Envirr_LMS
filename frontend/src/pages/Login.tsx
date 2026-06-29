@@ -457,6 +457,7 @@ export default function Login() {
                   </span>
                 </div>
                 <input
+                  data-testid="login-username"
                   className="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-lg text-on-surface placeholder:text-outline/50 focus:ring-0 focus:outline-none transition-all"
                   placeholder={isLogin ? "commander@envirr.edu" : "johndoe"}
                   value={username}
@@ -486,6 +487,7 @@ export default function Login() {
                   <span className="material-symbols-outlined text-xl">lock</span>
                 </div>
                 <input
+                  data-testid="login-password"
                   className="w-full pl-12 pr-12 py-4 bg-surface-container-lowest border-none rounded-lg text-on-surface placeholder:text-outline/50 focus:ring-0 focus:outline-none transition-all"
                   type={showPw ? "text" : "password"}
                   placeholder="••••••••"
@@ -543,6 +545,7 @@ export default function Login() {
             {/* Submit Button */}
             <button
               type="submit"
+              data-testid="login-submit"
               disabled={isSubmitting}
               className="w-full py-4 bg-gradient-to-r from-secondary-container to-secondary text-on-secondary-container font-bold rounded-lg shadow-lg hover:shadow-secondary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
