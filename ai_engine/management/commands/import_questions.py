@@ -16,12 +16,15 @@ class Command(BaseCommand):
         parser.add_argument('--board', default='CBSE', help='Board name (default: CBSE)')
         parser.add_argument('--class_grade', default='10', help='Class grade (default: 10)')
         parser.add_argument('--dry-run', action='store_true', help='Validate only, do not write to DB')
+        parser.add_argument('--unverified', action='store_true',
+                            help='Import as unverified (→ admin review queue) instead of verified')
 
     def handle(self, *args, **options):
         json_file_path = options['json_file']
         board = options['board']
         class_grade = options['class_grade']
         dry_run = options['dry_run']
+        verified = not options['unverified']
 
         if not os.path.exists(json_file_path):
             self.stdout.write(self.style.ERROR(f"File not found: {json_file_path}"))
@@ -85,7 +88,7 @@ class Command(BaseCommand):
                         'has_image':         validated.has_image,
                         'image_description': validated.image_description,
                         'tags':              validated.tags,
-                        'is_verified':       True,
+                        'is_verified':       verified,
                         'is_ai_generated':   False,
                     }
                 )
