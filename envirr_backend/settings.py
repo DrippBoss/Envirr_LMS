@@ -115,6 +115,22 @@ STATICFILES_STORAGE = (
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# ── Deployment: serve the built React SPA same-origin ───────────────────────
+# In production we build frontend/dist and let WhiteNoise serve it at the site
+# root (assets like /assets/*.js); a catch-all in urls.py returns index.html for
+# client-side routes. Same-origin keeps the httpOnly auth cookie simple (no CORS).
+_SPA_DIST = BASE_DIR / 'frontend' / 'dist'
+if _SPA_DIST.exists():
+    WHITENOISE_ROOT = str(_SPA_DIST)
+    WHITENOISE_INDEX_FILE = True
+
+# Testing/staging conveniences (env-driven; default off = normal prod behaviour):
+#  - AUTO_VERIFY_USERS: register without email verification (closed friends test)
+#  - CELERY_TASK_ALWAYS_EAGER: run tasks inline (no separate worker on free tiers)
+AUTO_VERIFY_USERS = env.bool('AUTO_VERIFY_USERS', default=False)
+CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=False)
+CELERY_TASK_EAGER_PROPAGATES = True
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User Configuration
@@ -206,7 +222,9 @@ CSRF_COOKIE_SECURE = not DEBUG
 
 # Production-only security headers
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    # Env-overridable so a prod-config image can still be smoke-tested over http
+    # locally (set SECURE_SSL_REDIRECT=False); real deploys keep it on.
+    SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_HSTS_SECONDS = 31_536_000          # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True

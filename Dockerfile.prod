@@ -1,0 +1,35 @@
+# Production image: builds the React SPA, then serves it same-origin with the
+# Django API via gunicorn + WhiteNoise. (Dev still uses the plain `Dockerfile`.)
+
+# ── Stage 1: build the frontend ──────────────────────────────────────────────
+FROM node:20-slim AS frontend
+WORKDIR /frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+# Empty API base → the SPA calls "/api/..." on its own origin (no CORS needed).
+ENV VITE_API_URL=""
+RUN npm run build
+
+# ── Stage 2: python runtime ──────────────────────────────────────────────────
+FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /app
+
+# gcc/libpq for psycopg; texlive for question-paper PDF generation.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc libpq-dev \
+        texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /app/
+RUN pip install --upgrade pip && pip install -r requirements.txt gunicorn
+
+COPY . /app/
+# Bring the built SPA in so WhiteNoise (WHITENOISE_ROOT) can serve it at root.
+COPY --from=frontend /frontend/dist /app/frontend/dist
+RUN chmod +x /app/entrypoint.prod.sh
+
+EXPOSE 8000
+CMD ["/bin/sh", "/app/entrypoint.prod.sh"]

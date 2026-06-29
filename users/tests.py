@@ -109,3 +109,27 @@ class AdminAnalyticsTests(TestCase):
     def test_system_health_forbidden_for_non_admin(self):
         self.client.force_authenticate(user=self.student)
         self.assertEqual(self.client.get("/api/auth/admin/system-health/").status_code, 403)
+
+
+@override_settings(CACHES=LOCMEM_CACHE, AUTO_VERIFY_USERS=True)
+class AutoVerifyRegistrationTests(TestCase):
+    """AUTO_VERIFY_USERS (closed friends test) → register + log in with no email."""
+
+    def setUp(self):
+        cache.clear()
+        self.client = APIClient()
+
+    def test_register_auto_verifies_and_login_works(self):
+        r = self.client.post("/api/auth/register/", {
+            "name": "Friend One", "username": "friend1", "email": "friend1@test.io",
+            "password": "Testpass123!", "role": "student", "class_grade": "10",
+        }, format="json")
+        self.assertIn(r.status_code, (200, 201))
+        u = User.objects.get(username="friend1")
+        self.assertTrue(u.is_active)
+        self.assertTrue(u.email_verified)
+        # And the account can immediately log in (no verification step).
+        login = self.client.post("/api/auth/login/", {
+            "username": "friend1", "password": "Testpass123!",
+        }, format="json")
+        self.assertEqual(login.status_code, 200)

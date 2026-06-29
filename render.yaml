@@ -1,0 +1,49 @@
+# Render blueprint — single-service staging deploy (SPA served same-origin by
+# Django via Dockerfile.prod). In Render: New → Blueprint → connect this repo.
+# After the first deploy, set the `sync: false` secrets in the dashboard and set
+# ALLOWED_HOSTS / FRONTEND_URL to the assigned <app>.onrender.com URL, then redeploy.
+#
+# Note: schema fields evolve — if Render flags anything, adjust in the UI; the
+# env-var names below match the app's settings exactly.
+services:
+  - type: web
+    name: envirr-lms
+    runtime: docker
+    dockerfilePath: ./Dockerfile.prod
+    plan: free
+    healthCheckPath: /api/metadata/
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        sync: false          # set to <your-app>.onrender.com
+      - key: FRONTEND_URL
+        sync: false          # https://<your-app>.onrender.com  (same origin)
+      - key: AUTO_VERIFY_USERS
+        value: "True"        # closed test: register without email
+      - key: CELERY_TASK_ALWAYS_EAGER
+        value: "True"        # run tasks inline (no separate worker on free tier)
+      - key: DATABASE_URL
+        fromDatabase:
+          name: envirr-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: envirr-redis
+          property: connectionString
+      - key: GROQ_API_KEY
+        sync: false          # optional (paper-gen / ingestion)
+      - key: GEMINI_API_KEY
+        sync: false          # optional (AI tutor)
+
+  - type: keyvalue
+    name: envirr-redis
+    plan: free
+    ipAllowList: []
+
+databases:
+  - name: envirr-db
+    plan: free

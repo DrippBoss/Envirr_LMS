@@ -186,6 +186,14 @@ class RegisterSerializer(serializers.ModelSerializer):
                 profile.board = board
             profile.save()
 
+        # Closed-test convenience: skip email verification entirely so testers
+        # can register and log in immediately. Off by default (normal prod flow).
+        if getattr(settings, 'AUTO_VERIFY_USERS', False):
+            user.is_active = True
+            user.email_verified = True
+            user.save(update_fields=['is_active', 'email_verified'])
+            return user
+
         # Generate verification token and send email immediately
         token_obj = EmailVerificationToken.objects.create(
             user=user,
