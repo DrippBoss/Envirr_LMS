@@ -357,7 +357,7 @@ def _call_vision(client, model_id, b64, log):
 
 # ── Public: ingest one PDF ──────────────────────────────────────────────────
 def ingest_pdf(pdf_path, *, subject, chapter, board, grade, client, model_id=VISION_MODEL,
-               dpi=150, delay=5, dry_run=False, log=print):
+               dpi=150, delay=5, dry_run=False, max_pages=0, log=print):
     from PIL import Image
     meta = {"subject": subject, "chapter": chapter, "board": board, "grade": grade}
     doc = fitz.open(pdf_path)
@@ -366,6 +366,8 @@ def ingest_pdf(pdf_path, *, subject, chapter, board, grade, client, model_id=VIS
     matrix = fitz.Matrix(dpi / 72.0, dpi / 72.0)
     created = skipped = errors = 0
     pages = list(range(total_pages))
+    if max_pages:
+        pages = pages[:max_pages]
 
     def _encode_crop(p, y0, y1):
         img = Image.frombytes("RGB", [p.width, p.height], p.samples).crop((0, y0, p.width, y1))

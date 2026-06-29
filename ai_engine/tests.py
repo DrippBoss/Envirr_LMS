@@ -175,3 +175,19 @@ class IngestFolderCommandTests(TestCase):
         self.assertIn("chapter=Algebra — Quadratic Equations", text)
         self.assertIn("subject=Science", text)
         self.assertIn("Discovered 2 file(s)", text)
+
+    def test_path_order_grade_first_with_normalization(self):
+        import os, tempfile
+        from io import StringIO
+        from django.core.management import call_command
+        with tempfile.TemporaryDirectory() as root:
+            d = os.path.join(root, "Class 12", "Mathematics", "Assignments")
+            os.makedirs(d)
+            open(os.path.join(d, "paper.pdf"), "w").close()
+            out = StringIO()
+            call_command("ingest_folder", folder=root, path_order="grade,subject,chapter",
+                         dry_run=True, stdout=out)
+            text = out.getvalue()
+        self.assertIn("subject=Mathematics", text)
+        self.assertIn("chapter=Assignments", text)
+        self.assertIn("grade=12", text)  # "Class 12" normalised to 12

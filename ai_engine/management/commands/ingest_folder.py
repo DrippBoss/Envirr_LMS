@@ -17,6 +17,7 @@ Usage (inside Docker, with the folder mounted at /app/question_bank_data):
   docker compose exec web python manage.py ingest_folder --folder /app/question_bank_data
 """
 import os
+import re
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -24,18 +25,35 @@ from django.core.management.base import BaseCommand, CommandError
 from ai_engine import bulk_ingest
 from ai_engine.models import SourceDocument, IngestionStatus
 
+_ROMAN_GRADE = {'IX': '9', 'X': '10', 'XI': '11', 'XII': '12'}
+
+
+def _normalize_grade(s: str) -> str:
+    """'Class 12' / 'Grade 10' / 'XII' → '12' / '10' / '12'."""
+    s = (s or '').strip()
+    if not s:
+        return ''
+    m = re.search(r'\d{1,2}', s)
+    if m:
+        return m.group(0)
+    return _ROMAN_GRADE.get(s.upper().replace('CLASS', '').replace('GRADE', '').strip(), s)
+
 
 class Command(BaseCommand):
     help = "Bulk-ingest a folder of question papers (.pdf/.docx) into the QuestionBank."
 
     def add_arguments(self, parser):
         parser.add_argument("--folder", required=True, help="Root folder to walk")
+        parser.add_argument("--path-order", default="subject,chapter",
+                            help='Map folder depth → field, e.g. "grade,subject,chapter". '
+                                 'Recognized: grade, subject, board, chapter. Deeper folders fold into chapter.')
         parser.add_argument("--default-grade", default="10", help="Grade when not in the path")
         parser.add_argument("--default-board", default="CBSE", help="Board when not in the path")
         parser.add_argument("--detect-fallback", action="store_true",
                             help="Use AI to detect missing chapter/grade/board per file")
         parser.add_argument("--skip-docx", action="store_true", help="Ingest PDFs only")
         parser.add_argument("--dpi", default=150, type=int, help="PDF render DPI")
+        parser.add_argument("--max-pages", default=0, type=int, help="Cap pages per PDF (0=all) — handy for test runs")
         parser.add_argument("--delay", default=5, type=int, help="Seconds between Groq calls")
         parser.add_argument("--limit", default=0, type=int, help="Max files to process (0=all)")
         parser.add_argument("--start-at", default=0, type=int, help="Skip the first N discovered files (resume)")
@@ -46,14 +64,20 @@ class Command(BaseCommand):
                             help="List files + derived metadata only — no Groq calls, no DB writes")
 
     # ── metadata from path ──────────────────────────────────────────────────
-    def _meta_from_path(self, root, path, default_grade, default_board):
+    def _meta_from_path(self, root, path, order, default_grade, default_board):
         rel = os.path.relpath(path, root)
-        parts = rel.split(os.sep)
-        subject = parts[0] if len(parts) > 1 else "General"
-        chapter_parts = parts[1:-1]  # folders between subject and the file
-        chapter = " — ".join(chapter_parts) if chapter_parts else ""
+        folders = rel.split(os.sep)[:-1]  # drop the filename
+        buckets = {}
+        for i, seg in enumerate(folders):
+            field = order[i] if i < len(order) else 'chapter'
+            buckets.setdefault(field, []).append(seg)
+        subject = " — ".join(buckets.get('subject', [])) or "General"
+        chapter_parts = buckets.get('chapter', [])
+        chapter = " — ".join(chapter_parts)
+        grade = _normalize_grade(" ".join(buckets.get('grade', []))) or default_grade
+        board = " ".join(buckets.get('board', [])) or default_board
         return {"subject": subject, "chapter": chapter or subject,
-                "grade": default_grade, "board": default_board,
+                "grade": grade, "board": board,
                 "chapter_missing": not chapter_parts}
 
     def _detect(self, path, client, is_pdf):
@@ -121,8 +145,10 @@ class Command(BaseCommand):
 
         totals = {"created": 0, "skipped": 0, "errors": 0, "files": 0, "files_skipped": 0}
 
+        order = [s.strip() for s in opts["path_order"].split(",") if s.strip()]
+
         for path, kind in files:
-            meta = self._meta_from_path(root, path, opts["default_grade"], opts["default_board"])
+            meta = self._meta_from_path(root, path, order, opts["default_grade"], opts["default_board"])
 
             if (opts["detect_fallback"] and not dry and (meta["chapter_missing"] or opts.get("force_detect"))):
                 det = self._detect(path, client, kind == "pdf")
@@ -154,7 +180,8 @@ class Command(BaseCommand):
                     res = bulk_ingest.ingest_pdf(
                         path, subject=meta["subject"], chapter=meta["chapter"],
                         board=meta["board"], grade=meta["grade"], client=client,
-                        dpi=opts["dpi"], delay=opts["delay"], log=lambda m: self.stdout.write(m))
+                        dpi=opts["dpi"], delay=opts["delay"], max_pages=opts["max_pages"],
+                        log=lambda m: self.stdout.write(m))
                 else:
                     res = bulk_ingest.ingest_docx(
                         path, subject=meta["subject"], chapter=meta["chapter"],
