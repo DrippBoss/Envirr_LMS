@@ -296,6 +296,9 @@ class RegisterView(generics.CreateAPIView):
 
 class UserDetailView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
+    # /me/ is the SPA's bootstrap call on every page load — never throttle it,
+    # or the app can't load the current user (was the cause of "login not working").
+    throttle_classes = ()
 
     def get(self, request):
         return Response(UserSerializer(request.user).data)

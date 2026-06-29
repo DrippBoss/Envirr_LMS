@@ -133,8 +133,12 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ),
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '20/day',
-        'user': '500/day',
+        # An SPA fires several API calls per page, so the global ceilings must be
+        # generous; abuse-prone endpoints (login, recovery, ai_tutor) keep their
+        # own tight scoped throttles below. (The previous 20/day anon · 500/day
+        # user broke normal use — /me/ alone, called on every load, exhausted it.)
+        'anon': '120/hour',
+        'user': '4000/hour',
         'ai_tutor': '30/hour',
         'login': '10/hour',
         'account_recovery': '5/hour',
