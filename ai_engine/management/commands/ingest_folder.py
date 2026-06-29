@@ -44,6 +44,12 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--folder", required=True, help="Root folder to walk")
+        parser.add_argument("--provider", default="groq", choices=["groq", "ollama"],
+                            help="groq = Vision (scanned + diagrams); ollama = local text-only "
+                                 "(digital PDFs' text layer + docx; no scanned/diagram support)")
+        parser.add_argument("--ollama-url", default=bulk_ingest.OLLAMA_BASE_URL, help="Ollama base URL")
+        parser.add_argument("--ollama-model", default=bulk_ingest.OLLAMA_MODEL, help="Ollama model tag")
+        parser.add_argument("--model", default="", help="Override the provider's model")
         parser.add_argument("--path-order", default="subject,chapter",
                             help='Map folder depth → field, e.g. "grade,subject,chapter". '
                                  'Recognized: grade, subject, board, chapter. Deeper folders fold into chapter.')
@@ -132,16 +138,19 @@ class Command(BaseCommand):
             return
 
         dry = opts["dry_run"]
+        provider = opts["provider"]
         client = None
-        if not dry:
+        if not dry and provider == "groq":
             api_key = opts["api_key"] or getattr(settings, "GROQ_API_KEY", "")
             if not api_key:
                 raise CommandError("Groq API key required (--api-key or GROQ_API_KEY).")
             from groq import Groq
             client = Groq(api_key=api_key)
 
-        self.stdout.write(f"\nDiscovered {len(files)} file(s) under {root}"
-                          + (" — DRY RUN (no Groq, no DB writes)\n" if dry else "\n"))
+        prov_label = (f"groq (Vision)" if provider == "groq"
+                      else f"ollama ({opts['model'] or opts['ollama_model']}, text-only)")
+        self.stdout.write(f"\nDiscovered {len(files)} file(s) under {root} — provider: {prov_label}"
+                          + (" — DRY RUN (no LLM, no DB writes)\n" if dry else "\n"))
 
         totals = {"created": 0, "skipped": 0, "errors": 0, "files": 0, "files_skipped": 0}
 
@@ -150,7 +159,7 @@ class Command(BaseCommand):
         for path, kind in files:
             meta = self._meta_from_path(root, path, order, opts["default_grade"], opts["default_board"])
 
-            if (opts["detect_fallback"] and not dry and (meta["chapter_missing"] or opts.get("force_detect"))):
+            if (opts["detect_fallback"] and not dry and provider == "groq" and meta["chapter_missing"]):
                 det = self._detect(path, client, kind == "pdf")
                 for k in ("subject", "chapter", "grade", "board"):
                     if det.get(k):
@@ -175,18 +184,21 @@ class Command(BaseCommand):
             except Exception:
                 pass
 
+            prov_kwargs = dict(provider=provider, client=client,
+                               model_id=(opts["model"] or None),
+                               ollama_base_url=opts["ollama_url"], ollama_model=opts["ollama_model"])
             try:
                 if kind == "pdf":
                     res = bulk_ingest.ingest_pdf(
                         path, subject=meta["subject"], chapter=meta["chapter"],
-                        board=meta["board"], grade=meta["grade"], client=client,
+                        board=meta["board"], grade=meta["grade"],
                         dpi=opts["dpi"], delay=opts["delay"], max_pages=opts["max_pages"],
-                        log=lambda m: self.stdout.write(m))
+                        log=lambda m: self.stdout.write(m), **prov_kwargs)
                 else:
                     res = bulk_ingest.ingest_docx(
                         path, subject=meta["subject"], chapter=meta["chapter"],
-                        board=meta["board"], grade=meta["grade"], client=client,
-                        log=lambda m: self.stdout.write(m))
+                        board=meta["board"], grade=meta["grade"],
+                        log=lambda m: self.stdout.write(m), **prov_kwargs)
                 totals["created"] += res["created"]
                 totals["skipped"] += res["skipped"]
                 totals["errors"] += res["errors"]
