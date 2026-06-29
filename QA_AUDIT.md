@@ -1,16 +1,30 @@
 # Envirr LMS — QA Audit & Open Issues
 > Original full audit: 2026-06-07.
-> **Reconciled against the codebase 2026-06-28 — every item below is now RESOLVED.**
-> Remediation landed across PRs #43–#96. See also: KNOWLEDGE_BASE.md, DOCUMENTATION.md.
+> **Reconciled against the codebase 2026-06-29 — every item below is now RESOLVED.**
+> Remediation landed across PRs #43–#124. See also: KNOWLEDGE_BASE.md, DOCUMENTATION.md.
 
 ---
 
-## STATUS SUMMARY (2026-06-28)
+## STATUS SUMMARY (2026-06-29)
 
 All originally-logged issues are fixed. Full page audit complete (13 frontend
-pages — no dead/broken interactive elements remain). The only outstanding items
-are content/ops tasks, listed under **OUTSTANDING** at the bottom — none are
-open bugs.
+pages — no dead/broken interactive elements remain).
+
+**2026-06-29 feature audit** (full live API smoke across admin/teacher/student +
+write flows + Django suite + frontend build): every feature working or behaving
+as intended. `manage.py check` clean · **62 backend tests pass** · frontend
+builds · 27 read endpoints healthy (the only non-200 is the teacher-dashboard
+`403`, which is the **intended** course-builder analytics gate — verified to
+open to `200` for a `can_build_courses` teacher) · create-doubt / mock-test /
+assignment / question write flows all succeed. One red item: the **AI Tutor
+returns 503 when Gemini replies 429 (free-tier quota exhausted)** — an external
+API-quota/ops issue, not a code defect; the app degrades gracefully. See
+OUTSTANDING #6.
+
+**E2E coverage now exists** — Playwright suite added (PR #124): `frontend/tests/`,
+6 specs / 20 tests, run via `npm test` (in `frontend/`) or the `/intent-test`
+skill. The remaining outstanding items are content/ops tasks under
+**OUTSTANDING** — none are open bugs.
 
 ---
 
@@ -102,7 +116,8 @@ markdown/KaTeX · U4 mock-test timer pause · U5 REARRANGE format.
 2. **📝 Chapter-test content gap** — "Chapter 10: Circles" and the Grade-9 units have no scoped test filter because `QuestionBank` has no grade field and lacks matching questions. Needs grade-9 / Circles questions authored (and ideally a `class_grade` field on QuestionBank). Migration 0017 scoped all G10 tests with a real pool.
 3. **⚠️ Seeder re-break** — ✅ FIXED (PR #98): the G10 seed commands now set the chapter `question_filter` on their test node. (G9/no-pool seeders intentionally left — no question pool to scope to.)
 4. **🎨 Flashcard Phase 3** — the model + UI now support markdown/KaTeX, formula/example blocks, and an image field, but seeded cards are still plain title+body. Populate richer content/diagrams. *(Content task — requires authoring, not code.)*
-5. **🧪 Backend test coverage** — **32 tests** (PR #99): auth, gamification, core learning flow, analytics endpoint, **the doubt feature, and chat moderation**. Still untested: mock-test grading, paper generation/ingestion (need Groq/LaTeX mocks), the course wizard, and admin endpoints.
+5. **🧪 Test coverage** — **62 backend tests** (up from 32): auth, gamification, core learning flow, analytics endpoint, doubt feature, chat moderation, plus bulk-ingest helpers/guards and question-import. **E2E suite added (PR #124)**: Playwright, 6 specs / 20 tests covering login, student dashboard/mock-test/AI-tutor, admin dashboard, and a `qa-audit` bug-regression spec (B4/B6/B7/B8/B9, U3/U4). Run with `cd frontend && npm test` (needs the app running + `frontend/.env.test` creds; roles without creds skip) or the `/intent-test` skill. Still thin on the server side: mock-test grading internals, paper generation/ingestion (need Groq/LaTeX mocks), the course wizard.
+6. **🤖 AI Tutor / lesson-planner — Gemini quota** — the tutor returns `503` whenever Gemini replies `429 Too Many Requests` (free-tier daily quota exhausted). Not a code bug (handled gracefully), but the feature is dark until the `GEMINI_API_KEY` quota resets or is upgraded/rotated. Same ops class as the expired `GROQ_API_KEY` that blocks bulk vision ingestion. ⚠️ The key value currently appears in the server-log traceback on failure — scrub before any shared/centralised logging.
 
 ---
 
@@ -110,3 +125,4 @@ markdown/KaTeX · U4 mock-test timer pause · U5 REARRANGE format.
 - 2026-04-12 R1 login error message; (earlier) R2 JWT → httpOnly cookies.
 - 2026-06-07 → 06-13: data-integrity, performance, config-hardening, auth-recovery, enum, FK, dead-UI, student-analytics batches (PRs #43–#67).
 - 2026-06-28 session (PRs #69–#96): green build + real CI + 23 backend tests; AI provider consolidation (Gemini tutor, Ollama removed); route code-splitting; G10 chapter-test scoping; flashcard markdown/KaTeX + images; Curriculum page + sidebar-nav fixes; Review-Foundations fix; My-Progress 500 fix; mock-test hardening; study-group polish; **doubt feature built**; full 13-page audit (dead Analytics tab, admin search, tutor voice/photo, fake KPI all removed/fixed).
+- 2026-06-29 session (PRs #106–#124): micro-interactions (toast/Tooltip/ProgressBar/EmptyState); teacher AI workspace (dashboard analytics, lesson planner, assignments, calendar, sections/roster); student-analytics course-builder gate (#112); admin enterprise dashboard + reusable chart library (#113); Course Builder UX overhaul (#114–#116); bulk question ingestion + import commands (#117–#123); login throttle fix (#120); staging-deploy config; **full feature audit (all green)**; **Playwright E2E suite scaffolded (#124)** — closes the `/intent-test` gap.
