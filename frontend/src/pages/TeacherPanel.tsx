@@ -701,6 +701,7 @@ export default function TeacherPanel() {
             <TeacherDashboardHome
               userName={user?.username || 'Educator'}
               pendingDoubts={pendingDoubts.length}
+              canViewAnalytics={user?.role === 'admin' || !!user?.can_build_courses}
               onNavigate={(tab, mode) => { setNavTab(tab as NavTab); if (mode) setExamMode(mode as ExamMode); }}
             />
           )}

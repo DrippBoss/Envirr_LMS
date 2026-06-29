@@ -15,7 +15,8 @@ interface Kpis {
 interface SubjectPerf { subject: string; students: number; completion: number; accuracy: number; }
 interface WeakTopic { subject: string; chapter: string; concept: string; students: number; total_wrong: number; }
 interface Activity { type: 'completion' | 'doubt' | 'paper'; student: string; detail: string; subject: string; status?: string; at: string; }
-interface DashboardData { kpis: Kpis; subjects: SubjectPerf[]; weak_topics: WeakTopic[]; activity: Activity[]; }
+interface SectionOpt { id: number; name: string; }
+interface DashboardData { kpis: Kpis; subjects: SubjectPerf[]; weak_topics: WeakTopic[]; activity: Activity[]; sections?: SectionOpt[]; active_section?: number | null; }
 
 type Tab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions' | 'planner' | 'assignments' | 'calendar';
 
@@ -63,24 +64,28 @@ function Stat({ icon, label, value, suffix = '', color, hint }: {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function TeacherDashboardHome({
-  userName, pendingDoubts, onNavigate,
+  userName, pendingDoubts, onNavigate, canViewAnalytics,
 }: {
   userName: string;
   pendingDoubts: number;
   onNavigate: (tab: Tab, examMode?: string) => void;
+  canViewAnalytics: boolean;
 }) {
   const { error: toastError } = useToast();
   const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(canViewAnalytics);
+  const [section, setSection] = useState('');
 
   useEffect(() => {
+    if (!canViewAnalytics) return;
     let alive = true;
-    api.get('/teacher/dashboard/')
+    setLoading(true);
+    api.get(`/teacher/dashboard/${section ? `?section=${section}` : ''}`)
       .then(r => { if (alive) setData(r.data); })
       .catch(() => { if (alive) toastError('Could not load class analytics.'); })
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
-  }, [toastError]);
+  }, [toastError, section, canViewAnalytics]);
 
   const today = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
 
@@ -138,22 +143,37 @@ export default function TeacherDashboardHome({
           </h1>
           <p className="text-outline text-sm mt-1">{today} · Here's your teaching workspace at a glance.</p>
         </div>
-        <button
-          onClick={() => onNavigate('exam', 'ai')}
-          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-primary text-on-primary font-bold text-sm hover:brightness-110 transition-all shadow-lg active:scale-95"
-        >
-          <span className="material-symbols-outlined text-lg">auto_awesome</span>
-          Generate Paper
-        </button>
+        <div className="flex items-center gap-2">
+          {canViewAnalytics && data?.sections && data.sections.length > 0 && (
+            <select
+              value={section}
+              onChange={e => setSection(e.target.value)}
+              className="bg-surface-container border border-outline-variant/20 rounded-xl px-3 py-3 text-sm font-bold text-on-surface focus:outline-none focus:border-primary/50 transition-colors"
+              aria-label="Filter analytics by class"
+            >
+              <option value="">All my students</option>
+              {data.sections.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
+          )}
+          <button
+            onClick={() => onNavigate('exam', 'ai')}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-primary text-on-primary font-bold text-sm hover:brightness-110 transition-all shadow-lg active:scale-95"
+          >
+            <span className="material-symbols-outlined text-lg">auto_awesome</span>
+            Generate Paper
+          </button>
+        </div>
       </div>
 
-      {/* ── KPI row ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Stat icon="groups" label="Students" value={k?.students ?? 0} color="text-primary" hint="Students engaged with your subjects" />
-        <Stat icon="bolt" label="Active (7d)" value={k?.active_7d ?? 0} color="text-secondary" hint="Students active in the last 7 days" />
-        <Stat icon="trending_up" label="Avg Completion" value={k?.avg_completion ?? 0} suffix="%" color="text-tertiary" hint="Average node completion across your classes" />
-        <Stat icon="target" label="Avg Accuracy" value={k?.avg_accuracy ?? 0} suffix="%" color="text-primary" hint="Average answer accuracy across your classes" />
-      </div>
+      {/* ── KPI row (gated analytics) ── */}
+      {canViewAnalytics && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Stat icon="groups" label="Students" value={k?.students ?? 0} color="text-primary" hint="Students engaged with your subjects" />
+          <Stat icon="bolt" label="Active (7d)" value={k?.active_7d ?? 0} color="text-secondary" hint="Students active in the last 7 days" />
+          <Stat icon="trending_up" label="Avg Completion" value={k?.avg_completion ?? 0} suffix="%" color="text-tertiary" hint="Average node completion across your classes" />
+          <Stat icon="target" label="Avg Accuracy" value={k?.avg_accuracy ?? 0} suffix="%" color="text-primary" hint="Average answer accuracy across your classes" />
+        </div>
+      )}
 
       {/* ── Quick actions ── */}
       <div>
@@ -173,7 +193,31 @@ export default function TeacherDashboardHome({
         </div>
       </div>
 
-      {/* ── Main split ── */}
+      {/* ── Main split (analytics — gated to Course Builder access) ── */}
+      {!canViewAnalytics ? (
+        <div className="grid lg:grid-cols-[1fr_320px] gap-6 items-start">
+          <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-8 flex flex-col items-center text-center">
+            <div className="w-14 h-14 rounded-2xl bg-surface-container-high flex items-center justify-center mb-4">
+              <span className="material-symbols-outlined text-3xl text-outline">lock</span>
+            </div>
+            <h3 className="text-base font-black text-on-surface mb-1">Class analytics locked</h3>
+            <p className="text-sm text-on-surface-variant max-w-sm leading-relaxed">
+              Student learning analytics on the app's built-in courses are available to teachers
+              with <span className="font-bold">Course Builder</span> access, approved by an admin.
+              Your own assignments, calendar and classes are unaffected.
+            </p>
+          </div>
+          <section className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5 h-fit">
+            <h2 className="text-base font-black font-headline text-on-surface mb-3">Pending Work</h2>
+            <button onClick={() => onNavigate('doubts')}
+              className="w-full flex items-center gap-3 p-3 rounded-xl bg-surface-container-high hover:bg-surface-container-highest transition-all">
+              <span className="material-symbols-outlined text-error">pending_actions</span>
+              <span className="text-sm font-bold text-on-surface flex-1 text-left">Doubts to answer</span>
+              <span className="text-sm font-black text-error">{pendingDoubts}</span>
+            </button>
+          </section>
+        </div>
+      ) : (
       <div className="grid lg:grid-cols-[1fr_320px] gap-6 items-start">
         {/* Left column */}
         <div className="space-y-6">
@@ -304,6 +348,7 @@ export default function TeacherDashboardHome({
           </section>
         </div>
       </div>
+      )}
     </div>
   );
 }
