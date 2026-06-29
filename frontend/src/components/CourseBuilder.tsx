@@ -133,7 +133,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
     // Step 6: Done
     const [resultMsg, setResultMsg] = useState('');
 
-    const steps = ['Identity', 'Curriculum', 'Configure', 'Flashcards', 'Review', 'Done'];
+    const steps = ['Basics', 'Build', 'Flashcards', 'Review', 'Done'];
 
     useEffect(() => {
         api.get('/teacher/templates/').then(r => setTemplates(r.data)).catch(console.error);
@@ -257,7 +257,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
     }, [subject]);
 
     useEffect(() => {
-        if (step === 3 && qbChapter) fetchQbQuestions();
+        if (step === 2 && qbChapter) fetchQbQuestions();
     }, [qbChapter, qbType, step]);
 
     const fetchQbQuestions = async () => {
@@ -493,7 +493,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                 const res = await api.put(`/teacher/courses/${editUnitId}/structure/`, payload);
                 d = res.data;
                 setResultMsg(`Course updated! ${d.nodes} nodes · ${d.questions} questions`);
-                setStep(6);
+                setStep(5);
                 onEditDone?.();
             } else {
                 const res = await api.post('/teacher/course/create/', payload);
@@ -514,7 +514,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
 
                 setResultMsg(`Course published! ID: ${d.unit_id} · ${d.nodes} nodes · ${d.questions} questions · ${d.flashcards ?? 0} flashcards`);
                 try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
-                setStep(6);
+                setStep(5);
             }
         } catch (e: any) {
             toastError(e.response?.data?.error || 'Failed to create course.');
@@ -535,6 +535,59 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
 
     const activeNode = activeNodeKey ? getNode(activeNodeKey) : null;
     const activeDeck = activeDeckIdx !== null ? decks[activeDeckIdx] : null;
+
+    // ── Live student-map preview (for the active chapter) ───────────────────────
+    const renderMapPreview = () => {
+        const nodes = chapters[activeChapter]?.nodes ?? [];
+        if (nodes.length === 0) {
+            return (
+                <div className="flex-1 flex flex-col items-center justify-center text-center text-outline gap-2 py-10">
+                    <span className="material-symbols-outlined text-3xl text-outline-variant/40">map</span>
+                    <p className="text-sm">Add lessons above to see how the student's map will look.</p>
+                </div>
+            );
+        }
+        const spine = nodes.map((n, ni) => ({ n, ni })).filter(x => x.n.type !== 'REVISION');
+        const typeIcon = (t: string) => t === 'CHAPTER_TEST' ? 'quiz' : 'play_lesson';
+        const typeColor = (t: string) => t === 'CHAPTER_TEST' ? 'border-error/30 text-error bg-error/5' : 'border-primary/30 text-primary bg-primary/5';
+        const revPill = (title: string, ri: number) => (
+            <span key={ri} className="text-[10px] font-bold text-tertiary bg-tertiary/10 border border-tertiary/20 rounded-lg px-2 py-1 truncate max-w-[120px]">{title}</span>
+        );
+        return (
+            <div className="flex-1">
+                <div className="flex items-center gap-2 mb-4">
+                    <span className="material-symbols-outlined text-primary text-base">map</span>
+                    <p className="text-sm font-black text-on-surface">Student map preview — {chapters[activeChapter]?.title}</p>
+                </div>
+                <div className="flex flex-col items-center">
+                    {spine.map(({ n, ni }, si) => {
+                        const revs = nodes.filter(r => r.type === 'REVISION' && r.appears_after_node_key === `${activeChapter}-${ni}`);
+                        const leftRevs = revs.filter(r => (r.side ?? 'right') === 'left');
+                        const rightRevs = revs.filter(r => (r.side ?? 'right') !== 'left');
+                        return (
+                            <div key={ni} className="w-full flex flex-col items-center">
+                                <div className="flex items-center justify-center gap-2 w-full">
+                                    <div className="flex-1 flex justify-end gap-1">{leftRevs.map((r, ri) => revPill(r.title, ri))}</div>
+                                    <div className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border font-bold text-xs ${typeColor(n.type)}`}>
+                                        <span className="material-symbols-outlined text-sm">{typeIcon(n.type)}</span>
+                                        <span className="truncate max-w-[150px]">{n.title}</span>
+                                    </div>
+                                    <div className="flex-1 flex justify-start gap-1">{rightRevs.map((r, ri) => revPill(r.title, ri))}</div>
+                                </div>
+                                {si < spine.length - 1 && <div className="w-px h-5 bg-outline-variant/30" />}
+                            </div>
+                        );
+                    })}
+                </div>
+                {nodes.some(n => n.type === 'REVISION' && !n.appears_after_node_key) && (
+                    <p className="text-[10px] text-error/70 mt-4 text-center flex items-center justify-center gap-1">
+                        <span className="material-symbols-outlined text-sm">warning</span>
+                        Some Extra Help cards have no parent lesson yet — open them and set “Appears after”.
+                    </p>
+                )}
+            </div>
+        );
+    };
 
     // ── Stepper ────────────────────────────────────────────────────────────────
     const Stepper = () => (
@@ -630,209 +683,125 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                     onClick={() => setStep(2)}
                     disabled={!title.trim()}
                 >
-                    Next: Curriculum Map
+                    Next: Build Course
                     <span className="material-symbols-outlined text-lg">arrow_forward</span>
                 </button>
             </div>
         </div>
     );
 
-    // ── Step 2: Curriculum Map ─────────────────────────────────────────────────
+    // ── Step 2: Build (chapters, lessons & their content) ──────────────────────
     if (step === 2) return (
         <div className="flex flex-col gap-4">
             <Stepper />
-            <div className="flex gap-4 min-h-[440px]">
-                <div className="w-44 flex-shrink-0 flex flex-col gap-2">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-outline mb-1">Chapters</p>
-                    {chapters.map((ch, i) => (
-                        <div key={ch.tempId} onClick={() => setActiveChapter(i)}
-                            className={`p-3 rounded-xl cursor-pointer border transition-all ${
-                                activeChapter === i
-                                    ? 'bg-primary/10 border-primary/30 text-primary'
-                                    : 'bg-surface-container-lowest border-outline-variant/10 text-slate-400 hover:border-outline-variant/25'
-                            }`}
-                        >
-                            <div className="flex items-center gap-1">
-                                <input
-                                    className="flex-1 bg-transparent border-none outline-none text-sm font-bold placeholder:text-outline/50 min-w-0"
-                                    value={ch.title}
-                                    onChange={e => updateChapterTitle(i, e.target.value)}
-                                    onClick={e => e.stopPropagation()}
-                                />
-                                {chapters.length > 1 && (
-                                    <button
-                                        type="button"
-                                        onClick={e => { e.stopPropagation(); deleteChapter(i); }}
-                                        className="shrink-0 w-5 h-5 rounded flex items-center justify-center text-outline/30 hover:text-error hover:bg-error/10 transition-all"
-                                    >
-                                        <span className="material-symbols-outlined text-sm">close</span>
-                                    </button>
-                                )}
-                            </div>
-                            <div className="text-[10px] text-slate-500 mt-0.5">{ch.nodes.length} node(s)</div>
-                        </div>
-                    ))}
-                    <button
-                        className="flex items-center gap-1 px-3 py-2 rounded-xl border border-dashed border-outline-variant/20 text-slate-500 hover:border-primary/30 hover:text-primary text-xs font-bold transition-all mt-1"
-                        onClick={addChapter}
-                    >
-                        <span className="material-symbols-outlined text-sm">add</span>
-                        Add Chapter
+
+            {/* Chapter tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-outline-variant/10">
+                {chapters.map((ch, i) => (
+                    <button key={ch.tempId} type="button"
+                        onClick={() => { setActiveChapter(i); setActiveNodeKey(null); }}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all shrink-0 border ${
+                            activeChapter === i ? 'bg-primary/10 border-primary/30 text-primary' : 'bg-surface-container border-outline-variant/10 text-slate-400 hover:text-on-surface'
+                        }`}>
+                        {ch.title || 'Untitled'}
+                        <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${activeChapter === i ? 'bg-primary/20 text-primary' : 'bg-surface-container-high text-slate-500'}`}>{ch.nodes.length}</span>
                     </button>
-                </div>
-
-                <div className="flex-1 flex flex-col gap-3 bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10">
-                    <div className="flex flex-col gap-2">
-                        <h3 className="text-sm font-black text-on-surface font-headline">
-                            Content for: <span className="text-primary">{chapters[activeChapter]?.title}</span>
-                        </h3>
-                        <textarea
-                            className={`${inputCls} resize-none text-xs`}
-                            rows={2}
-                            placeholder="Chapter description (optional)..."
-                            value={chapters[activeChapter]?.description ?? ''}
-                            onChange={e => updateChapterDescription(activeChapter, e.target.value)}
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-2 pb-3 border-b border-outline-variant/10">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-outline">Add to this chapter</p>
-                        <div className="flex flex-wrap gap-2">
-                            {templates.map(t => (
-                                <Tooltip key={t.id} label="Adds a ready-made lesson layout you can then fill in.">
-                                    <button
-                                        className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all"
-                                        onClick={() => addNodeToChapter(activeChapter, t)}
-                                    >
-                                        + {t.name}
-                                    </button>
-                                </Tooltip>
-                            ))}
-                            <Tooltip label="A lesson with a video and practice questions.">
-                                <button
-                                    className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all"
-                                    onClick={() => addNodeToChapter(activeChapter, { name: 'Video Lesson', template_type: 'LESSON' })}
-                                >
-                                    + Lesson
-                                </button>
-                            </Tooltip>
-                            <Tooltip label="A graded test at the end of the chapter. Students must pass it to continue.">
-                                <button
-                                    className="px-3 py-1.5 bg-error-container/10 rounded-lg border border-error-container/20 text-xs font-bold text-error hover:bg-error-container/20 transition-all"
-                                    onClick={() => addNodeToChapter(activeChapter, { name: 'Test Node', template_type: 'CHAPTER_TEST' })}
-                                >
-                                    + Chapter Test
-                                </button>
-                            </Tooltip>
-                            <Tooltip label="Optional extra-help cards that branch off a lesson on the student's map.">
-                                <button
-                                    className="px-3 py-1.5 bg-tertiary/10 rounded-lg border border-tertiary/20 text-xs font-bold text-tertiary hover:bg-tertiary/20 transition-all"
-                                    onClick={() => addNodeToChapter(activeChapter, { template_type: 'REVISION' })}
-                                >
-                                    + Extra Help
-                                </button>
-                            </Tooltip>
-                        </div>
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto">
-                        <NodeReorderList
-                            nodes={chapters[activeChapter]?.nodes || []}
-                            onReorder={n => handleReorderNodes(activeChapter, n)}
-                            onRename={(idx, title) => renameNode(activeChapter, idx, title)}
-                            onDelete={idx => deleteNode(activeChapter, idx)}
-                            getAnnotation={(node) => {
-                                if (node.type !== 'REVISION') return null;
-                                const key = node.appears_after_node_key;
-                                if (!key) return '↳ no parent set';
-                                const [ci, ni] = key.split('-').map(Number);
-                                const parent = chapters[ci]?.nodes[ni];
-                                return parent ? `↳ after: ${parent.title}` : '↳ parent not found';
-                            }}
-                        />
-                    </div>
-
-                    <div className="flex justify-between pt-3 border-t border-outline-variant/10">
-                        <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface text-sm font-bold transition-all" onClick={() => setStep(1)}>
-                            <span className="material-symbols-outlined text-base">arrow_back</span>
-                            Back
-                        </button>
-                        <button
-                            className="flex items-center gap-2 px-5 py-2 bg-primary/10 text-primary border border-primary/20 rounded-xl font-bold text-sm hover:bg-primary/20 transition-all disabled:opacity-40"
-                            onClick={() => { setStep(3); if (allConfigurableNodes.length) setActiveNodeKey(allConfigurableNodes[0].key); }}
-                            disabled={totalNodes === 0}
-                        >
-                            Configure Nodes
-                            <span className="material-symbols-outlined text-base">arrow_forward</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-
-    // ── Step 3: Configure Nodes ────────────────────────────────────────────────
-    if (step === 3) return (
-        <div className="flex flex-col gap-4">
-            <Stepper />
-            <div className="flex items-center justify-between gap-3 -mt-2">
-                <p className="text-xs text-outline">Set up each lesson's video and questions. Extra settings are tucked under Advanced.</p>
-                <button
-                    type="button"
-                    onClick={() => setAdvanced(v => !v)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all shrink-0 ${
-                        advanced ? 'bg-primary/10 text-primary border-primary/25' : 'bg-surface-container text-outline border-outline-variant/15 hover:text-on-surface'
-                    }`}
-                >
-                    <span className="material-symbols-outlined text-base">{advanced ? 'tune' : 'tune'}</span>
-                    {advanced ? 'Advanced settings: On' : 'Advanced settings: Off'}
+                ))}
+                <button type="button" onClick={addChapter}
+                    className="flex items-center gap-1 px-3 py-2 rounded-lg border border-dashed border-outline-variant/20 text-slate-500 hover:border-primary/30 hover:text-primary text-xs font-bold transition-all shrink-0">
+                    <span className="material-symbols-outlined text-sm">add</span> Chapter
                 </button>
             </div>
-            <div className="grid grid-cols-[200px_1fr] gap-4 min-h-[520px]">
 
-                {/* Left: node list */}
-                <div className="flex flex-col gap-2 overflow-y-auto max-h-[520px] pr-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-outline mb-1">Nodes</p>
-                    {allConfigurableNodes.length === 0 && (
-                        <p className="text-xs text-slate-500 italic">No nodes yet.</p>
-                    )}
-                    {allConfigurableNodes.map(({ key, chapTitle, node }) => (
-                        <button
-                            key={key}
-                            onClick={() => setActiveNodeKey(key)}
-                            className={`text-left p-3 rounded-xl border transition-all ${
-                                activeNodeKey === key
-                                    ? 'bg-primary/10 border-primary/30'
-                                    : 'bg-surface-container-lowest border-outline-variant/10 hover:border-outline-variant/25'
-                            }`}
-                        >
-                            <p className={`text-xs font-bold truncate ${activeNodeKey === key ? 'text-primary' : 'text-on-surface'}`}>{node.title}</p>
-                            <p className="text-[10px] text-slate-500 mt-0.5 truncate">{chapTitle}</p>
-                            <div className="flex items-center gap-1 mt-1.5 flex-wrap">
-                                <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full border ${
-                                    node.type === 'LESSON' ? 'bg-primary/10 text-primary border-primary/20'
-                                    : node.type === 'CHAPTER_TEST' ? 'bg-error/10 text-error border-error/20'
-                                    : 'bg-tertiary/10 text-tertiary border-tertiary/20'
-                                }`}>{node.type === 'CHAPTER_TEST' ? 'TEST' : node.type === 'REVISION' ? 'REV' : 'LESS'}</span>
-                                {(node.selectedQuestions?.length ?? 0) > 0 && (
-                                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-secondary/10 text-secondary">
-                                        {node.selectedQuestions!.length}Q
-                                    </span>
-                                )}
-                                {node.youtube_url && <span className="material-symbols-outlined text-xs text-primary">play_circle</span>}
-                                {videoFiles[key] && <span className="material-symbols-outlined text-xs text-secondary">video_file</span>}
-                                {node.is_bonus && <span className="material-symbols-outlined text-xs text-yellow-400" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>}
-                            </div>
+            {/* Active chapter: rename / delete / description + advanced toggle */}
+            <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                    <input
+                        className="flex-1 bg-surface-container-lowest rounded-xl px-4 py-2.5 text-sm font-bold text-on-surface border border-outline-variant/15 focus:outline-none focus:border-primary/50"
+                        value={chapters[activeChapter]?.title ?? ''}
+                        onChange={e => updateChapterTitle(activeChapter, e.target.value)}
+                        placeholder="Chapter name…"
+                    />
+                    {chapters.length > 1 && (
+                        <button type="button" onClick={() => deleteChapter(activeChapter)} title="Delete chapter"
+                            className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-outline hover:text-error hover:bg-error/10 transition-all">
+                            <span className="material-symbols-outlined text-base">delete</span>
                         </button>
+                    )}
+                    <button type="button" onClick={() => setAdvanced(v => !v)}
+                        className={`shrink-0 flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border transition-all ${
+                            advanced ? 'bg-primary/10 text-primary border-primary/25' : 'bg-surface-container text-outline border-outline-variant/15 hover:text-on-surface'
+                        }`}>
+                        <span className="material-symbols-outlined text-base">tune</span>
+                        Advanced: {advanced ? 'On' : 'Off'}
+                    </button>
+                </div>
+                <textarea
+                    className={`${inputCls} resize-none text-xs`} rows={1}
+                    placeholder="Chapter description (optional)…"
+                    value={chapters[activeChapter]?.description ?? ''}
+                    onChange={e => updateChapterDescription(activeChapter, e.target.value)}
+                />
+            </div>
+
+            {/* Add content */}
+            <div className="flex flex-col gap-2 pb-3 border-b border-outline-variant/10">
+                <p className="text-[10px] font-black uppercase tracking-widest text-outline">Add to this chapter</p>
+                <div className="flex flex-wrap gap-2">
+                    {templates.map(t => (
+                        <Tooltip key={t.id} label="Adds a ready-made lesson layout you can then fill in.">
+                            <button className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all" onClick={() => addNodeToChapter(activeChapter, t)}>+ {t.name}</button>
+                        </Tooltip>
                     ))}
+                    <Tooltip label="A lesson with a video and practice questions.">
+                        <button className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all" onClick={() => addNodeToChapter(activeChapter, { name: 'Video Lesson', template_type: 'LESSON' })}>+ Lesson</button>
+                    </Tooltip>
+                    <Tooltip label="A graded test at the end of the chapter. Students must pass it to continue.">
+                        <button className="px-3 py-1.5 bg-error-container/10 rounded-lg border border-error-container/20 text-xs font-bold text-error hover:bg-error-container/20 transition-all" onClick={() => addNodeToChapter(activeChapter, { name: 'Test Node', template_type: 'CHAPTER_TEST' })}>+ Chapter Test</button>
+                    </Tooltip>
+                    <Tooltip label="Optional extra-help cards that branch off a lesson on the student's map.">
+                        <button className="px-3 py-1.5 bg-tertiary/10 rounded-lg border border-tertiary/20 text-xs font-bold text-tertiary hover:bg-tertiary/20 transition-all" onClick={() => addNodeToChapter(activeChapter, { template_type: 'REVISION' })}>+ Extra Help</button>
+                    </Tooltip>
+                </div>
+            </div>
+
+            <div className="grid lg:grid-cols-[320px_1fr] gap-4 min-h-[480px]">
+
+                {/* Left: lessons in this chapter (reorder + click to edit) */}
+                <div className="flex flex-col gap-2 overflow-y-auto max-h-[540px] pr-1">
+                    <div className="flex items-center justify-between">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-outline">Lessons here</p>
+                        {activeNode && (
+                            <button type="button" onClick={() => setActiveNodeKey(null)} className="flex items-center gap-1 text-[10px] font-black text-primary hover:underline">
+                                <span className="material-symbols-outlined text-sm">map</span> Map preview
+                            </button>
+                        )}
+                    </div>
+                    <NodeReorderList
+                        nodes={chapters[activeChapter]?.nodes || []}
+                        activeIdx={activeNodeKey && activeNodeKey.startsWith(`${activeChapter}-`) ? Number(activeNodeKey.split('-')[1]) : undefined}
+                        onSelect={idx => setActiveNodeKey(`${activeChapter}-${idx}`)}
+                        onReorder={n => handleReorderNodes(activeChapter, n)}
+                        onRename={(idx, title) => renameNode(activeChapter, idx, title)}
+                        onDelete={idx => deleteNode(activeChapter, idx)}
+                        getAnnotation={(node) => {
+                            if (node.type !== 'REVISION') return null;
+                            const key = node.appears_after_node_key;
+                            if (!key) return '↳ no parent set';
+                            const [ci, ni] = key.split('-').map(Number);
+                            const parent = chapters[ci]?.nodes[ni];
+                            return parent ? `↳ after: ${parent.title}` : '↳ parent not found';
+                        }}
+                    />
                 </div>
 
                 {/* Right: node config */}
-                <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 p-5 flex flex-col gap-4 overflow-y-auto max-h-[520px]">
+                <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 p-5 flex flex-col gap-4 overflow-y-auto max-h-[540px]">
                     {!activeNode ? (
-                        <div className="flex-1 flex items-center justify-center text-slate-500 text-sm">
-                            Select a node on the left to configure it.
-                        </div>
+                        <>
+                            {renderMapPreview()}
+                            <p className="text-xs text-outline text-center mt-2">Click a lesson on the left to add its video &amp; questions.</p>
+                        </>
                     ) : (
                         <>
                             {/* Header */}
@@ -1177,11 +1146,15 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
             </div>
 
             <div className="flex justify-between pt-2">
-                <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface text-sm font-bold transition-all" onClick={() => setStep(2)}>
+                <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface text-sm font-bold transition-all" onClick={() => setStep(1)}>
                     <span className="material-symbols-outlined text-base">arrow_back</span>
-                    Back
+                    Back to Basics
                 </button>
-                <button className="flex items-center gap-2 px-5 py-2 bg-primary/10 text-primary border border-primary/20 rounded-xl font-bold text-sm hover:bg-primary/20 transition-all" onClick={() => setStep(4)}>
+                <button
+                    className="flex items-center gap-2 px-5 py-2 bg-primary/10 text-primary border border-primary/20 rounded-xl font-bold text-sm hover:bg-primary/20 transition-all disabled:opacity-40"
+                    onClick={() => setStep(3)}
+                    disabled={totalNodes === 0}
+                >
                     Flashcards (optional)
                     <span className="material-symbols-outlined text-base">arrow_forward</span>
                 </button>
@@ -1189,8 +1162,8 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
         </div>
     );
 
-    // ── Step 4: Flashcards ─────────────────────────────────────────────────────
-    if (step === 4) return (
+    // ── Step 3: Flashcards ─────────────────────────────────────────────────────
+    if (step === 3) return (
         <div className="flex flex-col gap-4">
             <Stepper />
             <div className="flex items-center gap-3 bg-tertiary/5 border border-tertiary/20 rounded-xl px-4 py-3">
@@ -1200,7 +1173,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                     <p className="text-xs text-outline">Add quick study cards (concepts, formulas, memory tricks) — or skip straight to review.</p>
                 </div>
                 <button
-                    onClick={() => setStep(5)}
+                    onClick={() => setStep(4)}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/20 text-on-surface-variant hover:text-on-surface hover:border-primary/30 text-sm font-bold transition-all shrink-0"
                 >
                     Skip
@@ -1343,11 +1316,11 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
             </div>
 
             <div className="flex justify-between pt-2">
-                <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface text-sm font-bold transition-all" onClick={() => setStep(3)}>
+                <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface text-sm font-bold transition-all" onClick={() => setStep(2)}>
                     <span className="material-symbols-outlined text-base">arrow_back</span>
                     Back
                 </button>
-                <button className="flex items-center gap-2 px-5 py-2 bg-primary/10 text-primary border border-primary/20 rounded-xl font-bold text-sm hover:bg-primary/20 transition-all" onClick={() => setStep(5)}>
+                <button className="flex items-center gap-2 px-5 py-2 bg-primary/10 text-primary border border-primary/20 rounded-xl font-bold text-sm hover:bg-primary/20 transition-all" onClick={() => setStep(4)}>
                     Review & Publish
                     <span className="material-symbols-outlined text-base">arrow_forward</span>
                 </button>
@@ -1355,8 +1328,8 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
         </div>
     );
 
-    // ── Step 5: Review & Publish ───────────────────────────────────────────────
-    if (step === 5) return (
+    // ── Step 4: Review & Publish ───────────────────────────────────────────────
+    if (step === 4) return (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
             <Stepper />
             <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
@@ -1441,7 +1414,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
             )}
 
             <div className="flex gap-3">
-                <button className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface font-bold text-sm transition-all" onClick={() => setStep(4)}>
+                <button className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-outline-variant/15 text-slate-400 hover:text-on-surface font-bold text-sm transition-all" onClick={() => setStep(3)}>
                     <span className="material-symbols-outlined text-base">arrow_back</span>
                     Back
                 </button>
@@ -1459,7 +1432,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
         </div>
     );
 
-    // ── Step 6: Done ───────────────────────────────────────────────────────────
+    // ── Step 5: Done ───────────────────────────────────────────────────────────
     return (
         <div className="flex flex-col items-center gap-6 py-12 text-center">
             <Stepper />
