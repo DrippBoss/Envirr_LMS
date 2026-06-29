@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { api, useAuth } from '../context/AuthContext';
+import KpiCard from '../components/charts/KpiCard';
+import AreaChart from '../components/charts/AreaChart';
+import BarChart from '../components/charts/BarChart';
+import DonutChart from '../components/charts/DonutChart';
 
 // ── Chart helpers ────────────────────────────────────────────────
 const subjectBarColor = (pct: number) =>
     pct >= 80 ? 'bg-secondary' : pct >= 60 ? 'bg-primary-container' : 'bg-error';
-
-const weakSeverity = (errorRate: number) =>
-    errorRate >= 40 ? 'error' : errorRate >= 30 ? 'tertiary' : 'outline';
 
 type AdminTab = 'overview' | 'approvals' | 'courses';
 
@@ -60,6 +61,7 @@ export default function AdminDashboard() {
     const [assigningId, setAssigningId] = useState<number | null>(null);
     const [usersPage, setUsersPage] = useState(1);
     const [loadingMoreUsers, setLoadingMoreUsers] = useState(false);
+    const [health, setHealth] = useState<any>(null);
 
     const fetchPublishedCourses = () =>
         api.get('/teacher/courses/assigned/').then(r => setPublishedCourses(r.data)).catch(() => {});
@@ -75,6 +77,7 @@ export default function AdminDashboard() {
         fetchPublishedCourses();
         api.get('/teacher/teachers/').then(r => setTeachers(r.data)).catch(() => {});
         api.get('/ai/questions/meta/').then(r => setAllSubjects(r.data.subjects ?? [])).catch(() => {});
+        api.get('/auth/admin/system-health/').then(r => setHealth(r.data)).catch(() => {});
     }, []);
 
     const handleAssign = async (unitId: number, teacherId: number | '') => {
@@ -118,6 +121,30 @@ export default function AdminDashboard() {
     const dayBars: number[] = data?.day_bars ?? [];
     const subjectScores: any[] = data?.subject_scores ?? [];
     const weakConcepts: any[] = data?.weak_concepts ?? [];
+
+    // ── Chart-ready series (from the extended analytics payload) ──
+    const growth: { day: string; count: number }[] = data?.user_growth ?? [];
+    const growthCounts = growth.map(g => g.count);
+    const cumulativeGrowth = growthCounts.reduce<number[]>((acc, n) => {
+        acc.push((acc[acc.length - 1] ?? (kpi.total_users ?? 0) - growthCounts.reduce((s, x) => s + x, 0)) + n);
+        return acc;
+    }, []);
+    const newThisWeek = growthCounts.slice(-7).reduce((s, n) => s + n, 0);
+    const aiUsage = data?.ai_usage ?? { ai_generated: 0, manual: 0, verified: 0, unverified: 0 };
+    const paperModes: { mode: string; count: number }[] = data?.paper_modes ?? [];
+    const reviewQueue: any[] = data?.review_queue ?? [];
+    const recentActivity: any[] = data?.recent_activity ?? [];
+    const verifiedPct = kpi.total_questions
+        ? Math.round((aiUsage.verified / kpi.total_questions) * 100) : 0;
+
+    // Sparse 30-day x labels for the growth/engagement axes.
+    const growthLabels = ['30d', '20d', '10d', 'Today'];
+    const relTimeShort = (iso: string) => {
+        const h = Math.floor((Date.now() - new Date(iso).getTime()) / 3_600_000);
+        if (h < 1) return 'now';
+        if (h < 24) return `${h}h`;
+        return `${Math.floor(h / 24)}d`;
+    };
 
     const handleDeleteUser = async () => {
         if (!confirmDelete) return;
@@ -211,8 +238,6 @@ export default function AdminDashboard() {
             setLoadingMoreUsers(false);
         }
     };
-
-    const maxBar = Math.max(1, ...dayBars);
 
     return (
         <div className="flex h-screen bg-background overflow-hidden">
@@ -483,120 +508,179 @@ export default function AdminDashboard() {
                     {loading ? (
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                             {Array.from({ length: 5 }).map((_, i) => (
-                                <div key={i} className="h-32 bg-surface-container-high rounded-xl animate-pulse" />
+                                <div key={i} className="h-36 bg-surface-container-high rounded-2xl animate-pulse" />
                             ))}
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                            {/* Total Users */}
-                            <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Total Users</p>
-                                <div className="flex items-end justify-between">
-                                    <span className="text-2xl font-extrabold text-on-surface">{kpi.total_users?.toLocaleString() ?? '—'}</span>
-                                    <span className="text-secondary text-[10px] font-bold flex items-center gap-0.5">
-                                        +4.2% <span className="material-symbols-outlined text-sm">trending_up</span>
-                                    </span>
-                                </div>
-                                <div className="space-y-1 pt-2 border-t border-outline-variant/10">
-                                    <div className="flex justify-between text-[10px] text-slate-500"><span>Students</span><span>{kpi.students?.toLocaleString()}</span></div>
-                                    <div className="flex justify-between text-[10px] text-slate-500"><span>Teachers</span><span>{kpi.teachers?.toLocaleString()}</span></div>
-                                    <div className="flex justify-between text-[10px] text-slate-500"><span>Admins</span><span>{kpi.admins?.toLocaleString()}</span></div>
-                                </div>
-                            </div>
-
-                            {/* Active Students */}
-                            <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Students</p>
-                                <span className="text-2xl font-extrabold text-on-surface">{kpi.students?.toLocaleString() ?? '—'}</span>
-                                <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden mt-2">
-                                    <div className="h-full bg-secondary w-3/4 rounded-full" />
-                                </div>
-                                <p className="text-[10px] text-slate-500">Registered on platform</p>
-                            </div>
-
-                            {/* Question Bank */}
-                            <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Question Bank</p>
-                                <span className="text-2xl font-extrabold text-on-surface">{kpi.total_questions?.toLocaleString() ?? '—'}</span>
-                                <div className="flex gap-0.5 h-1.5 mt-1">
-                                    <div className="bg-primary rounded-l-full" style={{ width: '65%' }} />
-                                    <div className="bg-tertiary rounded-r-full" style={{ width: '35%' }} />
-                                </div>
-                                <div className="flex justify-between text-[9px] text-slate-500">
-                                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" /> 65% AI</span>
-                                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-tertiary inline-block" /> 35% Manual</span>
-                                </div>
-                            </div>
-
-                            {/* Papers Created */}
-                            <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Papers Created</p>
-                                <div className="flex items-end justify-between">
-                                    <span className="text-2xl font-extrabold text-on-surface">{kpi.total_papers?.toLocaleString() ?? '—'}</span>
-                                    <span className="material-symbols-outlined text-primary">description</span>
-                                </div>
-                                <p className="text-[10px] text-slate-500 mt-2">Monthly generation rate</p>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-secondary text-xs font-bold">+12%</span>
-                                    <span className="text-slate-600 text-[10px]">vs prev month</span>
-                                </div>
-                            </div>
-
-                            {/* Avg Score */}
-                            <div className="p-5 bg-surface-container-low rounded-xl space-y-3">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Avg. Platform Score</p>
-                                <span className="text-2xl font-extrabold text-on-surface">78%</span>
-                                <div className="relative pt-4">
-                                    <div className="w-full h-1 bg-surface-container-highest rounded-full" />
-                                    <div className="absolute top-4 w-1.5 h-3 bg-white rounded-full -translate-x-1/2" style={{ left: '78%' }} />
-                                </div>
-                                <p className="text-[10px] text-slate-500">Benchmark: 75% Target</p>
-                            </div>
+                            <KpiCard
+                                label="Total Users" value={(kpi.total_users ?? 0).toLocaleString()} icon="group"
+                                accent="primary" sparkline={cumulativeGrowth}
+                                footer={
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between text-[10px] text-outline"><span>Students</span><span>{kpi.students?.toLocaleString()}</span></div>
+                                        <div className="flex justify-between text-[10px] text-outline"><span>Teachers</span><span>{kpi.teachers?.toLocaleString()}</span></div>
+                                        <div className="flex justify-between text-[10px] text-outline"><span>+ this week</span><span className="text-secondary font-bold">+{newThisWeek}</span></div>
+                                    </div>
+                                }
+                            />
+                            <KpiCard
+                                label="Active (30d)" value={Math.max(0, ...dayBars).toLocaleString()} icon="bolt"
+                                accent="secondary" sparkline={dayBars}
+                                footer={<p className="text-[10px] text-outline">Peak daily active students</p>}
+                            />
+                            <KpiCard
+                                label="Question Bank" value={(kpi.total_questions ?? 0).toLocaleString()} icon="quiz"
+                                accent="tertiary"
+                                footer={<p className="text-[10px] text-outline">{kpi.total_questions ? Math.round((aiUsage.ai_generated / kpi.total_questions) * 100) : 0}% AI-generated</p>}
+                            />
+                            <KpiCard
+                                label="Papers" value={(kpi.total_papers ?? 0).toLocaleString()} icon="description"
+                                accent="primary"
+                                footer={<p className="text-[10px] text-outline">{paperModes.length} generation modes</p>}
+                            />
+                            <KpiCard
+                                label="Verified" value={`${verifiedPct}%`} icon="verified"
+                                accent="secondary"
+                                footer={<p className="text-[10px] text-outline">{aiUsage.verified}/{kpi.total_questions ?? 0} questions</p>}
+                            />
                         </div>
                     )}
 
-                    {/* ── Charts Row ── */}
+                    {/* ── User Growth + AI Usage ── */}
                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                        {/* Daily Active Students bar chart */}
-                        <div className="lg:col-span-3 bg-surface-container-low rounded-2xl p-6 relative overflow-hidden">
+                        <div className="lg:col-span-3 bg-surface-container-low rounded-2xl border border-outline-variant/10 p-6">
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-sm font-bold text-slate-200">Daily Active Students (30D)</h3>
-                                <span className="flex items-center gap-2 text-[10px] text-slate-400">
-                                    <span className="w-2 h-2 rounded-full bg-primary inline-block" /> Current Period
-                                </span>
+                                <div>
+                                    <h3 className="text-sm font-bold text-on-surface">User Growth</h3>
+                                    <p className="text-[10px] text-outline mt-0.5">New sign-ups · last 30 days</p>
+                                </div>
+                                <span className="text-[10px] font-bold text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">+{newThisWeek} this week</span>
                             </div>
-                            {dayBars.some(v => v > 0) ? (
-                                <>
-                                    <div className="h-40 flex items-end gap-0.5">
-                                        {dayBars.map((val, i) => (
-                                            <div
-                                                key={i}
-                                                className="flex-1 bg-gradient-to-t from-primary/30 to-primary/5 rounded-t hover:from-primary/50 transition-all cursor-default"
-                                                style={{ height: `${(val / maxBar) * 100}%` }}
-                                                title={`${dayBars.length - 1 - i === 0 ? 'Today' : `${dayBars.length - 1 - i}d ago`}: ${val} active`}
-                                            />
-                                        ))}
-                                    </div>
-                                    <div className="flex justify-between text-[10px] text-slate-600 mt-3 px-1">
-                                        <span>30 days ago</span><span>20d</span><span>10d</span><span>Today</span>
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="h-40 flex items-center justify-center text-xs text-slate-500">
-                                    No student activity in the last 30 days.
+                            <AreaChart data={growthCounts} xLabels={growthLabels} colorVar="primary" valueFormatter={n => `${n}`} />
+                        </div>
+                        <div className="lg:col-span-2 bg-surface-container-low rounded-2xl border border-outline-variant/10 p-6">
+                            <h3 className="text-sm font-bold text-on-surface mb-1">AI Usage</h3>
+                            <p className="text-[10px] text-outline mb-5">Question bank provenance</p>
+                            <DonutChart
+                                centerLabel="Questions" centerValue={(kpi.total_questions ?? 0).toLocaleString()}
+                                slices={[
+                                    { label: 'AI-generated', value: aiUsage.ai_generated, colorVar: 'primary' },
+                                    { label: 'Manual', value: aiUsage.manual, colorVar: 'tertiary' },
+                                ]}
+                            />
+                            {paperModes.length > 0 && (
+                                <div className="mt-5 pt-4 border-t border-outline-variant/10 space-y-1.5">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-outline mb-2">Papers by mode</p>
+                                    {paperModes.map(m => (
+                                        <div key={m.mode} className="flex justify-between text-[11px]">
+                                            <span className="text-on-surface-variant capitalize">{m.mode.replace('_', ' ')}</span>
+                                            <span className="font-bold text-on-surface">{m.count}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
                         </div>
+                    </div>
 
-                        {/* Subject-wise scores */}
-                        <div className="lg:col-span-2 bg-surface-container-low rounded-2xl p-6">
-                            <h3 className="text-sm font-bold text-slate-200 mb-6">Subject-wise Average Quiz Score</h3>
+                    {/* ── Engagement + System Health ── */}
+                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                        <div className="lg:col-span-3 bg-surface-container-low rounded-2xl border border-outline-variant/10 p-6">
+                            <div className="flex justify-between items-center mb-6">
+                                <div>
+                                    <h3 className="text-sm font-bold text-on-surface">Engagement</h3>
+                                    <p className="text-[10px] text-outline mt-0.5">Daily active students · last 30 days</p>
+                                </div>
+                                <span className="flex items-center gap-2 text-[10px] text-outline">
+                                    <span className="w-2 h-2 rounded-full bg-secondary inline-block" /> Active / day
+                                </span>
+                            </div>
+                            <BarChart
+                                data={dayBars} colorVar="secondary"
+                                xLabels={['30d ago', '20d', '10d', 'Today']}
+                                tooltips={dayBars.map((v, i) => `${dayBars.length - 1 - i === 0 ? 'Today' : `${dayBars.length - 1 - i}d ago`}: ${v} active`)}
+                            />
+                        </div>
+                        <div className="lg:col-span-2 bg-surface-container-low rounded-2xl border border-outline-variant/10 p-6">
+                            <h3 className="text-sm font-bold text-on-surface mb-5">System Health</h3>
+                            <div className="space-y-3">
+                                {(health?.services ?? []).map((s: any) => {
+                                    const ok = s.status === 'operational';
+                                    const degraded = s.status === 'degraded';
+                                    return (
+                                        <div key={s.name} className="flex items-center justify-between">
+                                            <span className="text-xs font-medium text-on-surface-variant">{s.name}</span>
+                                            <span className={`flex items-center gap-1.5 text-[11px] font-bold ${ok ? 'text-secondary' : degraded ? 'text-tertiary' : 'text-error'}`}>
+                                                <span className={`w-2 h-2 rounded-full ${ok ? 'bg-secondary' : degraded ? 'bg-tertiary' : 'bg-error'}`} />
+                                                {ok ? 'Operational' : degraded ? 'Degraded' : 'Down'}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                                {!health && <p className="text-xs text-outline">Checking services…</p>}
+                            </div>
+                            {health?.metrics && (
+                                <div className="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-outline-variant/10">
+                                    {Object.entries(health.metrics).map(([k, v]) => (
+                                        <div key={k} className="text-center">
+                                            <p className="text-lg font-black text-on-surface font-headline">{(v as number).toLocaleString()}</p>
+                                            <p className="text-[9px] text-outline uppercase tracking-widest">{k}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* ── Revenue (API-ready) + Recent Activity / Audit ── */}
+                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                        <div className="lg:col-span-3 bg-surface-container-low rounded-2xl border border-outline-variant/10 p-6 relative overflow-hidden">
+                            <div className="flex justify-between items-center mb-2">
+                                <div>
+                                    <h3 className="text-sm font-bold text-on-surface">Revenue</h3>
+                                    <p className="text-[10px] text-outline mt-0.5">Monthly recurring revenue</p>
+                                </div>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full">API-ready</span>
+                            </div>
+                            <div className="opacity-30 pointer-events-none select-none">
+                                <AreaChart data={[3, 5, 4, 7, 6, 9, 8, 11, 10, 13]} colorVar="secondary" height={140} valueFormatter={n => `$${n}k`} />
+                            </div>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                                <span className="material-symbols-outlined text-3xl text-outline mb-2">payments</span>
+                                <p className="text-sm font-bold text-on-surface">No billing provider connected</p>
+                                <p className="text-[11px] text-outline max-w-xs mt-1">Wire a billing source to <code className="text-primary">RevenueData</code> and this chart goes live. Sample shown.</p>
+                            </div>
+                        </div>
+                        <div className="lg:col-span-2 bg-surface-container-low rounded-2xl border border-outline-variant/10 overflow-hidden">
+                            <div className="px-5 py-4 border-b border-outline-variant/10 flex items-center justify-between">
+                                <h3 className="text-sm font-bold text-on-surface">Recent Activity</h3>
+                                <span className="material-symbols-outlined text-outline text-base">history</span>
+                            </div>
+                            <div className="p-3 space-y-1 max-h-[260px] overflow-y-auto no-scrollbar">
+                                {recentActivity.length === 0 && <p className="text-xs text-outline py-6 text-center">No recent activity.</p>}
+                                {recentActivity.map((a, i) => (
+                                    <div key={i} className="flex items-start gap-3 px-2 py-2 hover:bg-surface-container-high rounded-lg transition-colors">
+                                        <span className={`material-symbols-outlined text-base mt-0.5 ${a.type === 'user_joined' ? 'text-primary' : 'text-tertiary'}`}>
+                                            {a.type === 'user_joined' ? 'person_add' : 'description'}
+                                        </span>
+                                        <p className="text-xs text-on-surface-variant leading-snug flex-1">{a.label}</p>
+                                        <span className="text-[10px] text-outline shrink-0">{relTimeShort(a.at)}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ── Subject scores + AI Review queue ── */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="bg-surface-container-low rounded-2xl border border-outline-variant/10 p-6">
+                            <h3 className="text-sm font-bold text-on-surface mb-6">Subject-wise Average Quiz Score</h3>
                             {subjectScores.length ? (
                                 <div className="space-y-5">
                                     {subjectScores.map(s => (
                                         <div key={s.label} className="space-y-2">
                                             <div className="flex justify-between text-xs font-medium">
-                                                <span className="text-slate-400">{s.label}</span>
+                                                <span className="text-on-surface-variant">{s.label}</span>
                                                 <span className="text-on-surface">{s.pct}%</span>
                                             </div>
                                             <div className="h-2 bg-surface-container-highest rounded-full relative">
@@ -607,91 +691,90 @@ export default function AdminDashboard() {
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-xs text-slate-500 py-8 text-center">No completed mock tests yet.</p>
+                                <p className="text-xs text-outline py-8 text-center">No completed mock tests yet.</p>
                             )}
                         </div>
-                    </div>
-
-                    {/* ── Triple panel ── */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Q-Bank Health */}
-                        <div className="bg-surface-container-low rounded-2xl overflow-hidden">
-                            <div className="px-5 py-4 border-b border-outline-variant/10">
-                                <h3 className="text-sm font-bold text-slate-200">Question Bank Health</h3>
-                            </div>
-                            <table className="w-full text-xs">
-                                <thead>
-                                    <tr className="text-slate-500 font-bold border-b border-outline-variant/10">
-                                        <th className="px-4 py-3 text-left">Subject</th>
-                                        <th className="px-4 py-3 text-left">Total</th>
-                                        <th className="px-4 py-3 text-left">AI-Gen</th>
-                                        <th className="px-4 py-3 text-left">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-outline-variant/10">
-                                    {(qbank.length ? qbank : [
-                                        { subject: 'Mathematics', total: 4201, ai_gen: 3100, status: 'Healthy', statusColor: 'text-secondary' },
-                                        { subject: 'Physics', total: 3892, ai_gen: 2400, status: 'Review', statusColor: 'text-tertiary' },
-                                        { subject: 'Biology', total: 5103, ai_gen: 4200, status: 'Healthy', statusColor: 'text-secondary' },
-                                    ]).map((row: any, i: number) => (
-                                        <tr key={i} className="hover:bg-surface-container-high/50 transition-colors">
-                                            <td className="px-4 py-3 text-slate-200">{row.subject}</td>
-                                            <td className="px-4 py-3 font-medium">{(row.total ?? row.total)?.toLocaleString()}</td>
-                                            <td className="px-4 py-3 text-slate-400">{(row.ai_gen ?? Math.floor(row.total * 0.65))?.toLocaleString()}</td>
-                                            <td className="px-4 py-3">
-                                                <span className={row.statusColor ?? (i % 2 === 0 ? 'text-secondary' : 'text-tertiary')}>
-                                                    {row.status ?? (i % 2 === 0 ? 'Healthy' : 'Review')}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* AI Review Queue */}
-                        <div className="bg-surface-container-low rounded-2xl flex flex-col overflow-hidden">
+                        <div className="bg-surface-container-low rounded-2xl border border-outline-variant/10 flex flex-col overflow-hidden">
                             <div className="px-5 py-4 border-b border-outline-variant/10 flex justify-between items-center">
-                                <h3 className="text-sm font-bold text-slate-200">AI Review Queue</h3>
-                                <span className="px-2 py-0.5 bg-error/15 text-error text-[10px] font-black rounded-full">14 PENDING</span>
+                                <h3 className="text-sm font-bold text-on-surface">Question Review Queue</h3>
+                                {aiUsage.unverified > 0 && (
+                                    <span className="px-2 py-0.5 bg-error/15 text-error text-[10px] font-black rounded-full">{aiUsage.unverified} UNVERIFIED</span>
+                                )}
                             </div>
                             <div className="p-4 space-y-3 overflow-y-auto">
-                                {[
-                                    { tag: 'CBSE 10th Math', diff: 'MEDIUM', diffColor: 'text-primary', q: 'Prove that √5 is irrational. Select the correct primary step in the proof by contradiction.' },
-                                    { tag: 'CBSE 12th Physics', diff: 'HARD', diffColor: 'text-error', q: 'A particle moves in a circle of radius r. Find the centripetal acceleration in terms of angular velocity.' },
-                                ].map((item, i) => (
-                                    <div key={i} className="p-4 bg-surface-container-lowest rounded-xl border-l-4 border-primary space-y-3">
-                                        <div className="flex justify-between text-[10px]">
-                                            <span className="px-2 py-0.5 bg-surface-container rounded text-slate-400">{item.tag}</span>
-                                            <span className={`font-black ${item.diffColor}`}>{item.diff}</span>
+                                {reviewQueue.length === 0 && (
+                                    <p className="text-xs text-outline py-8 text-center">All questions verified. 🎉</p>
+                                )}
+                                {reviewQueue.map((q: any) => (
+                                    <div key={q.id} className="p-4 bg-surface-container-lowest rounded-xl border-l-4 border-primary space-y-2">
+                                        <div className="flex justify-between items-center text-[10px]">
+                                            <span className="px-2 py-0.5 bg-surface-container rounded text-on-surface-variant">{q.subject} · {q.chapter}</span>
+                                            <span className="flex items-center gap-1.5">
+                                                {q.is_ai_generated && <span className="text-primary font-black uppercase">AI</span>}
+                                                <span className="font-black text-tertiary uppercase">{q.difficulty}</span>
+                                            </span>
                                         </div>
-                                        <p className="text-xs text-on-surface-variant leading-relaxed italic">"{item.q}"</p>
-                                        <div className="flex gap-2 pt-1">
-                                            <button className="flex-1 py-1.5 bg-secondary/10 text-secondary text-[10px] font-black rounded-lg hover:bg-secondary/20 transition-colors">APPROVE</button>
-                                            <button className="flex-1 py-1.5 bg-error/10 text-error text-[10px] font-black rounded-lg hover:bg-error/20 transition-colors">REJECT</button>
-                                        </div>
+                                        <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-2 italic">{q.question_text}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
+                    </div>
+
+                    {/* ── Q-Bank Health + Weak Concepts ── */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Q-Bank Health */}
+                        <div className="bg-surface-container-low rounded-2xl border border-outline-variant/10 overflow-hidden">
+                            <div className="px-5 py-4 border-b border-outline-variant/10">
+                                <h3 className="text-sm font-bold text-on-surface">Question Bank by Subject</h3>
+                            </div>
+                            {qbank.length ? (
+                                <table className="w-full text-xs">
+                                    <thead>
+                                        <tr className="text-outline font-bold border-b border-outline-variant/10">
+                                            <th className="px-5 py-3 text-left">Subject</th>
+                                            <th className="px-5 py-3 text-right">Questions</th>
+                                            <th className="px-5 py-3 text-right">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-outline-variant/10">
+                                        {qbank.map((row: any, i: number) => (
+                                            <tr key={i} className="hover:bg-surface-container-high/50 transition-colors">
+                                                <td className="px-5 py-3 text-on-surface font-medium">{row.subject}</td>
+                                                <td className="px-5 py-3 text-right font-bold text-on-surface">{row.total?.toLocaleString()}</td>
+                                                <td className="px-5 py-3 text-right">
+                                                    <span className={row.total >= 20 ? 'text-secondary' : 'text-tertiary'}>
+                                                        {row.total >= 20 ? 'Healthy' : 'Low stock'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <p className="text-xs text-outline py-10 text-center">No questions in the bank yet.</p>
+                            )}
+                        </div>
 
                         {/* Weak Concept Trends */}
-                        <div className="bg-surface-container-low rounded-2xl overflow-hidden">
+                        <div className="bg-surface-container-low rounded-2xl border border-outline-variant/10 overflow-hidden">
                             <div className="px-5 py-4 border-b border-outline-variant/10">
-                                <h3 className="text-sm font-bold text-slate-200">Weak Concept Trends</h3>
+                                <h3 className="text-sm font-bold text-on-surface">Weak Concept Trends</h3>
                             </div>
                             <div className="p-3 space-y-1">
                                 {weakConcepts.length ? weakConcepts.map((c, i) => (
                                     <div key={`${c.name}-${i}`} className="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-container-high rounded-xl transition-colors group">
-                                        <span className="text-xs font-black text-slate-600 w-5">{String(i + 1).padStart(2, '0')}</span>
+                                        <span className="text-xs font-black text-outline w-5">{String(i + 1).padStart(2, '0')}</span>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-xs font-bold text-slate-200 truncate">{c.name}</p>
-                                            <p className="text-[10px] text-slate-500">{c.subject} • {c.error_rate}% Error Rate</p>
+                                            <p className="text-xs font-bold text-on-surface truncate">{c.name}</p>
+                                            <p className="text-[10px] text-outline">{c.subject} • {c.error_rate}% Error Rate</p>
                                         </div>
-                                        <span className={`material-symbols-outlined text-${weakSeverity(c.error_rate)} text-base opacity-0 group-hover:opacity-100 transition-opacity`}>warning</span>
+                                        <div className="w-20 h-1.5 bg-surface-container-highest rounded-full overflow-hidden shrink-0">
+                                            <div className={`h-full rounded-full ${c.error_rate >= 40 ? 'bg-error' : c.error_rate >= 30 ? 'bg-tertiary' : 'bg-outline'}`} style={{ width: `${Math.min(100, c.error_rate)}%` }} />
+                                        </div>
                                     </div>
                                 )) : (
-                                    <p className="text-xs text-slate-500 py-6 text-center">No weak concepts identified yet.</p>
+                                    <p className="text-xs text-outline py-6 text-center">No weak concepts identified yet.</p>
                                 )}
                             </div>
                         </div>

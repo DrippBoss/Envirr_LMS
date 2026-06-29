@@ -69,3 +69,43 @@ class LoginApiTests(TestCase):
     def test_me_requires_authentication(self):
         resp = self.client.get("/api/auth/me/")
         self.assertIn(resp.status_code, (401, 403))
+
+
+@override_settings(CACHES=LOCMEM_CACHE)
+class AdminAnalyticsTests(TestCase):
+    """Admin analytics payload (new chart-ready fields) + system health."""
+
+    def setUp(self):
+        cache.clear()
+        self.client = APIClient()
+        self.admin = User.objects.create_user(
+            username="anadmin", email="aa@x.io", password="pw", role="admin",
+        )
+        self.student = User.objects.create_user(
+            username="anstudent", email="as@x.io", password="pw", role="student",
+        )
+
+    def test_analytics_returns_chart_ready_fields(self):
+        self.client.force_authenticate(user=self.admin)
+        r = self.client.get("/api/auth/admin/analytics/")
+        self.assertEqual(r.status_code, 200)
+        for key in ("kpi", "user_growth", "ai_usage", "paper_modes",
+                    "review_queue", "recent_activity", "day_bars"):
+            self.assertIn(key, r.data)
+        self.assertEqual(len(r.data["user_growth"]), 30)
+        self.assertIn("ai_generated", r.data["ai_usage"])
+
+    def test_analytics_forbidden_for_non_admin(self):
+        self.client.force_authenticate(user=self.student)
+        self.assertEqual(self.client.get("/api/auth/admin/analytics/").status_code, 403)
+
+    def test_system_health(self):
+        self.client.force_authenticate(user=self.admin)
+        r = self.client.get("/api/auth/admin/system-health/")
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(any(s["name"] == "Database" for s in r.data["services"]))
+        self.assertIn("users", r.data["metrics"])
+
+    def test_system_health_forbidden_for_non_admin(self):
+        self.client.force_authenticate(user=self.student)
+        self.assertEqual(self.client.get("/api/auth/admin/system-health/").status_code, 403)
