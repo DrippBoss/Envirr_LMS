@@ -24,6 +24,9 @@ const COURSE_ICONS = [
 
 const CARD_TYPES = ['CONCEPT', 'FORMULA', 'EXAMPLE', 'MNEMONIC', 'SUMMARY'];
 
+// Question types the SHARED bank accepts (subset of the lesson Q_TYPES below).
+const BANK_TYPES = ['MCQ', 'ASSERTION_REASON', 'VERY_SHORT', 'SHORT', 'LONG', 'CASE', 'REARRANGE'];
+
 const Q_TYPES = [
     { value: 'MCQ', label: 'MCQ' },
     { value: 'ASSERTION_REASON', label: 'Assertion & Reason' },
@@ -114,6 +117,14 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
     const [availableChapters, setAvailableChapters] = useState<string[]>([]);
     const [videoFiles, setVideoFiles] = useState<Record<string, File>>({});
     const [expandedQId, setExpandedQId] = useState<number | null>(null);
+
+    // Simple vs Advanced: hide gamification/layout knobs behind sane defaults.
+    const [advanced, setAdvanced] = useState(false);
+
+    // Inline "write your own question" (writes to the shared bank).
+    const [showCreateQ, setShowCreateQ] = useState(false);
+    const [creatingQ, setCreatingQ] = useState(false);
+    const [newQ, setNewQ] = useState({ question_text: '', answer_text: '', difficulty: 'medium', marks: 1 });
 
     // Step 4: Flashcards
     const [decks, setDecks] = useState<DraftDeck[]>([]);
@@ -366,6 +377,29 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                 q.id === qId ? { ...q, ...patch } : q
             ),
         });
+    };
+
+    // Inline-author a question into the SHARED bank, then add it to the node.
+    const createQuestion = async () => {
+        if (!activeNodeKey || !newQ.question_text.trim() || !qbChapter) return;
+        setCreatingQ(true);
+        try {
+            const res = await api.post('/ai/questions/create/', {
+                subject, chapter: qbChapter, question_type: qbType,
+                question_text: newQ.question_text.trim(),
+                answer_text: newQ.answer_text.trim(),
+                difficulty: newQ.difficulty, marks: newQ.marks,
+            });
+            addQuestionToNode(activeNodeKey, res.data);
+            setQbResults(prev => [res.data, ...prev.filter((q: any) => q.id !== res.data.id)]);
+            toastSuccess('Question saved to the bank and added.');
+            setNewQ({ question_text: '', answer_text: '', difficulty: 'medium', marks: 1 });
+            setShowCreateQ(false);
+        } catch (e: any) {
+            toastError(e.response?.data?.detail || 'Could not create the question.');
+        } finally {
+            setCreatingQ(false);
+        }
     };
 
     // ── Deck helpers ───────────────────────────────────────────────────────────
@@ -741,6 +775,19 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
     if (step === 3) return (
         <div className="flex flex-col gap-4">
             <Stepper />
+            <div className="flex items-center justify-between gap-3 -mt-2">
+                <p className="text-xs text-outline">Set up each lesson's video and questions. Extra settings are tucked under Advanced.</p>
+                <button
+                    type="button"
+                    onClick={() => setAdvanced(v => !v)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all shrink-0 ${
+                        advanced ? 'bg-primary/10 text-primary border-primary/25' : 'bg-surface-container text-outline border-outline-variant/15 hover:text-on-surface'
+                    }`}
+                >
+                    <span className="material-symbols-outlined text-base">{advanced ? 'tune' : 'tune'}</span>
+                    {advanced ? 'Advanced settings: On' : 'Advanced settings: Off'}
+                </button>
+            </div>
             <div className="grid grid-cols-[200px_1fr] gap-4 min-h-[520px]">
 
                 {/* Left: node list */}
@@ -850,46 +897,47 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                                         </div>
                                     </Field>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                        <Field label="Attempts" hint="How many wrong answers a student can make before the lesson restarts.">
-                                            <input type="number" min={1} max={10} className={inputCls}
-                                                value={activeNode.starting_lives ?? 3}
-                                                onChange={e => updateNode(activeNodeKey!, { starting_lives: Number(e.target.value) })}
-                                            />
-                                        </Field>
                                         <Field label="Practice questions" hint="How many questions a student practises in this lesson.">
                                             <input type="number" min={1} max={50} className={inputCls}
                                                 value={activeNode.practice_question_count ?? 5}
                                                 onChange={e => updateNode(activeNodeKey!, { practice_question_count: Number(e.target.value) })}
                                             />
                                         </Field>
-                                        <Field label="Points (XP)" hint="Points students earn for finishing — these drive the leaderboard.">
-                                            <input type="number" min={0} className={inputCls}
-                                                value={activeNode.xp_reward ?? 10}
-                                                onChange={e => updateNode(activeNodeKey!, { xp_reward: Number(e.target.value) })}
-                                            />
-                                        </Field>
-                                        <Field label="Optional lesson" hint="Mark as optional/bonus — students may skip it.">
-
-                                            <button
-                                                type="button"
-                                                onClick={() => updateNode(activeNodeKey!, { is_bonus: !(activeNode.is_bonus ?? false) })}
-                                                className={`h-[46px] rounded-xl border flex items-center justify-center gap-1.5 text-xs font-bold transition-all ${
-                                                    activeNode.is_bonus
-                                                        ? 'bg-yellow-400/10 border-yellow-400/30 text-yellow-400'
-                                                        : 'bg-surface-container border-outline-variant/15 text-slate-500 hover:border-outline-variant/30'
-                                                }`}
-                                            >
-                                                <span className="material-symbols-outlined text-base" style={activeNode.is_bonus ? { fontVariationSettings: "'FILL' 1" } : {}}>star</span>
-                                                {activeNode.is_bonus ? 'Bonus' : 'Standard'}
-                                            </button>
-                                        </Field>
+                                        {advanced && <>
+                                            <Field label="Attempts" hint="How many wrong answers a student can make before the lesson restarts.">
+                                                <input type="number" min={1} max={10} className={inputCls}
+                                                    value={activeNode.starting_lives ?? 3}
+                                                    onChange={e => updateNode(activeNodeKey!, { starting_lives: Number(e.target.value) })}
+                                                />
+                                            </Field>
+                                            <Field label="Points (XP)" hint="Points students earn for finishing — these drive the leaderboard.">
+                                                <input type="number" min={0} className={inputCls}
+                                                    value={activeNode.xp_reward ?? 10}
+                                                    onChange={e => updateNode(activeNodeKey!, { xp_reward: Number(e.target.value) })}
+                                                />
+                                            </Field>
+                                            <Field label="Optional lesson" hint="Mark as optional/bonus — students may skip it.">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => updateNode(activeNodeKey!, { is_bonus: !(activeNode.is_bonus ?? false) })}
+                                                    className={`h-[46px] rounded-xl border flex items-center justify-center gap-1.5 text-xs font-bold transition-all ${
+                                                        activeNode.is_bonus
+                                                            ? 'bg-yellow-400/10 border-yellow-400/30 text-yellow-400'
+                                                            : 'bg-surface-container border-outline-variant/15 text-slate-500 hover:border-outline-variant/30'
+                                                    }`}
+                                                >
+                                                    <span className="material-symbols-outlined text-base" style={activeNode.is_bonus ? { fontVariationSettings: "'FILL' 1" } : {}}>star</span>
+                                                    {activeNode.is_bonus ? 'Bonus' : 'Standard'}
+                                                </button>
+                                            </Field>
+                                        </>}
                                     </div>
                                 </>
                             )}
 
                             {/* ── CHAPTER_TEST ── */}
                             {activeNode.type === 'CHAPTER_TEST' && (
-                                <div className="grid grid-cols-3 gap-3">
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                     <Field label="Number of questions" hint="How many questions appear in this test.">
                                         <input type="number" min={1} max={100} className={inputCls}
                                             value={activeNode.test_question_count ?? 10}
@@ -902,12 +950,14 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                                             onChange={e => updateNode(activeNodeKey!, { test_pass_percentage: Number(e.target.value) })}
                                         />
                                     </Field>
-                                    <Field label="Points (XP)" hint="Points students earn for passing — these drive the leaderboard.">
-                                        <input type="number" min={0} className={inputCls}
-                                            value={activeNode.xp_reward ?? 20}
-                                            onChange={e => updateNode(activeNodeKey!, { xp_reward: Number(e.target.value) })}
-                                        />
-                                    </Field>
+                                    {advanced && (
+                                        <Field label="Points (XP)" hint="Points students earn for passing — these drive the leaderboard.">
+                                            <input type="number" min={0} className={inputCls}
+                                                value={activeNode.xp_reward ?? 20}
+                                                onChange={e => updateNode(activeNodeKey!, { xp_reward: Number(e.target.value) })}
+                                            />
+                                        </Field>
+                                    )}
                                 </div>
                             )}
 
@@ -936,23 +986,25 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                                                 </p>
                                             )}
                                         </Field>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <Field label="Which side" hint="Whether the card branches to the left or right of the main path on the student's map.">
-                                                <select className={inputCls}
-                                                    value={activeNode.side ?? 'right'}
-                                                    onChange={e => updateNode(activeNodeKey!, { side: e.target.value as 'left' | 'right' })}
-                                                >
-                                                    <option value="right">Right branch</option>
-                                                    <option value="left">Left branch</option>
-                                                </select>
-                                            </Field>
-                                            <Field label="Points (XP)" hint="Points students earn for completing this extra help.">
-                                                <input type="number" min={0} className={inputCls}
-                                                    value={activeNode.xp_reward ?? 15}
-                                                    onChange={e => updateNode(activeNodeKey!, { xp_reward: Number(e.target.value) })}
-                                                />
-                                            </Field>
-                                        </div>
+                                        {advanced && (
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <Field label="Which side" hint="Whether the card branches to the left or right of the main path on the student's map.">
+                                                    <select className={inputCls}
+                                                        value={activeNode.side ?? 'right'}
+                                                        onChange={e => updateNode(activeNodeKey!, { side: e.target.value as 'left' | 'right' })}
+                                                    >
+                                                        <option value="right">Right branch</option>
+                                                        <option value="left">Left branch</option>
+                                                    </select>
+                                                </Field>
+                                                <Field label="Points (XP)" hint="Points students earn for completing this extra help.">
+                                                    <input type="number" min={0} className={inputCls}
+                                                        value={activeNode.xp_reward ?? 15}
+                                                        onChange={e => updateNode(activeNodeKey!, { xp_reward: Number(e.target.value) })}
+                                                    />
+                                                </Field>
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })()}
@@ -979,11 +1031,49 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                                     <div className="grid grid-cols-2 gap-4">
                                         {/* Available */}
                                         <div className="flex flex-col gap-2">
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-outline">Available ({qbResults.length})</p>
+                                            <div className="flex items-center justify-between">
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-outline">Available ({qbResults.length})</p>
+                                                {qbChapter && BANK_TYPES.includes(qbType) && (
+                                                    <button type="button" onClick={() => setShowCreateQ(v => !v)}
+                                                        className="flex items-center gap-1 text-[10px] font-black text-primary hover:underline">
+                                                        <span className="material-symbols-outlined text-sm">edit</span>
+                                                        Write your own
+                                                    </button>
+                                                )}
+                                            </div>
+                                            {showCreateQ && qbChapter && BANK_TYPES.includes(qbType) && (
+                                                <div className="bg-primary/5 border border-primary/20 rounded-xl p-3 flex flex-col gap-2">
+                                                    <p className="text-[10px] text-outline leading-snug">Saved to the shared question bank ({qbChapter} · {Q_TYPES.find(t => t.value === qbType)?.label}); an admin verifies it later.</p>
+                                                    <textarea rows={2} className={`${inputCls} text-xs resize-none`} placeholder="Type your question…" value={newQ.question_text} onChange={e => setNewQ(p => ({ ...p, question_text: e.target.value }))} />
+                                                    <input className={`${inputCls} text-xs`} placeholder="Answer (optional)" value={newQ.answer_text} onChange={e => setNewQ(p => ({ ...p, answer_text: e.target.value }))} />
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <select className={`${inputCls} text-xs`} value={newQ.difficulty} onChange={e => setNewQ(p => ({ ...p, difficulty: e.target.value }))}>
+                                                            <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option>
+                                                        </select>
+                                                        <input type="number" min={1} max={20} className={`${inputCls} text-xs`} placeholder="Marks" value={newQ.marks} onChange={e => setNewQ(p => ({ ...p, marks: Number(e.target.value) }))} />
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <button type="button" disabled={creatingQ || !newQ.question_text.trim()} onClick={createQuestion}
+                                                            className="flex-1 py-2 rounded-lg bg-primary text-on-primary text-xs font-bold hover:brightness-110 transition-all disabled:opacity-50">
+                                                            {creatingQ ? 'Saving…' : 'Add to bank'}
+                                                        </button>
+                                                        <button type="button" onClick={() => setShowCreateQ(false)} className="px-3 py-2 rounded-lg text-outline text-xs font-bold hover:text-on-surface transition-all">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            )}
                                             <div className="overflow-y-auto space-y-2 max-h-52 pr-1 no-scrollbar">
                                                 {qbLoading && <div className="flex justify-center py-6"><div className="w-5 h-5 rounded-full border-2 border-primary/20 border-t-primary animate-spin" /></div>}
                                                 {!qbLoading && !qbChapter && <p className="text-xs text-slate-500 italic py-4 text-center">Select a chapter to browse.</p>}
-                                                {!qbLoading && qbChapter && qbResults.length === 0 && <p className="text-xs text-slate-500 italic py-4 text-center">No questions found.</p>}
+                                                {!qbLoading && qbChapter && qbResults.length === 0 && (
+                                                    <div className="flex flex-col items-center py-4 text-center gap-2">
+                                                        <p className="text-xs text-slate-500 italic">No ready-made questions here.</p>
+                                                        {BANK_TYPES.includes(qbType) && !showCreateQ && (
+                                                            <button type="button" onClick={() => setShowCreateQ(true)} className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                                                                <span className="material-symbols-outlined text-sm">edit</span>Write your own
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                )}
                                                 {qbResults.map(q => {
                                                     const alreadyAdded = (activeNode.selectedQuestions ?? []).some((x: any) => x.id === q.id);
                                                     return (
