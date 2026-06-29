@@ -127,3 +127,51 @@ class QuestionBankCreateTests(TestCase):
     def test_student_forbidden(self):
         c = APIClient(); c.force_authenticate(self.student)
         self.assertEqual(c.post("/api/ai/questions/create/", self._payload(), format="json").status_code, 403)
+
+
+class BulkIngestUtilTests(TestCase):
+    """Pure helpers in ai_engine.bulk_ingest (no Groq/network)."""
+
+    def test_safe_json_parses_clean(self):
+        from ai_engine.bulk_ingest import safe_json
+        out = safe_json('{"questions":[{"text":"Q1","type":"MCQ"}]}')
+        self.assertEqual(len(out["questions"]), 1)
+
+    def test_safe_json_recovers_truncated(self):
+        from ai_engine.bulk_ingest import safe_json
+        # Truncated mid-second-object: should still recover the first complete one.
+        out = safe_json('{"questions":[{"text":"Q1","number":1},{"text":"Q2"')
+        self.assertIsNotNone(out)
+        self.assertGreaterEqual(len(out["questions"]), 1)
+
+    def test_compute_hash_stable_and_case_insensitive(self):
+        from ai_engine.bulk_ingest import compute_hash
+        a = compute_hash("Math", "Algebra", "What is 2+2?")
+        b = compute_hash("Math", "Algebra", "what is 2+2?  ")
+        self.assertEqual(a, b)
+
+    def test_clean_latex(self):
+        from ai_engine.bulk_ingest import clean_latex_text
+        self.assertNotIn("\frac", clean_latex_text(r"\frac{1}{2}"))
+
+
+class IngestFolderCommandTests(TestCase):
+    """Folder discovery + path→metadata mapping (dry-run, no Groq)."""
+
+    def test_dry_run_maps_metadata_from_path(self):
+        import os, tempfile
+        from io import StringIO
+        from django.core.management import call_command
+        with tempfile.TemporaryDirectory() as root:
+            nested = os.path.join(root, "Mathematics", "Algebra", "Quadratic Equations")
+            os.makedirs(nested)
+            open(os.path.join(nested, "p1.pdf"), "w").close()
+            os.makedirs(os.path.join(root, "Science"))
+            open(os.path.join(root, "Science", "p2.docx"), "w").close()
+            out = StringIO()
+            call_command("ingest_folder", folder=root, dry_run=True, stdout=out)
+            text = out.getvalue()
+        self.assertIn("subject=Mathematics", text)
+        self.assertIn("chapter=Algebra — Quadratic Equations", text)
+        self.assertIn("subject=Science", text)
+        self.assertIn("Discovered 2 file(s)", text)
