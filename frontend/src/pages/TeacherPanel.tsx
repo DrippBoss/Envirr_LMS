@@ -5,10 +5,12 @@ import QuestionEditor from '../components/QuestionEditor';
 import UploadIngest from '../components/UploadIngest';
 import TeacherDashboardHome from '../components/teacher/TeacherDashboardHome';
 import TeacherLessonPlanner from '../components/teacher/TeacherLessonPlanner';
+import TeacherAssignments from '../components/teacher/TeacherAssignments';
+import TeacherCalendar from '../components/teacher/TeacherCalendar';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type ExamMode = 'ai' | 'manual' | 'hybrid' | 'course' | 'upload';
-type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions' | 'planner';
+type NavTab = 'overview' | 'exam' | 'doubts' | 'course' | 'approvals' | 'assigned' | 'questions' | 'planner' | 'assignments' | 'calendar';
 
 // ─── Paper structure: mirrors backend calculate_marks_distribution exactly ─────
 interface DistRow { type: string; label: string; count: number; marks: number; sec: string; }
@@ -180,10 +182,12 @@ function MarksDistributionPanel({ marks }: { marks: number }) {
 
 // ─── Sidebar nav items ────────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { id: 'overview',   icon: 'grid_view',      label: 'Dashboard' },
-  { id: 'exam',       icon: 'science',        label: 'Exam Factory' },
-  { id: 'planner',    icon: 'edit_calendar',  label: 'Lesson Planner' },
-  { id: 'doubts',     icon: 'help_outline',   label: 'Doubt Solver' },
+  { id: 'overview',    icon: 'grid_view',      label: 'Dashboard' },
+  { id: 'exam',        icon: 'science',        label: 'Exam Factory' },
+  { id: 'assignments', icon: 'assignment',     label: 'Assignments' },
+  { id: 'calendar',    icon: 'calendar_month', label: 'Calendar' },
+  { id: 'planner',     icon: 'edit_calendar',  label: 'Lesson Planner' },
+  { id: 'doubts',      icon: 'help_outline',   label: 'Doubt Solver' },
   { id: 'questions',  icon: 'quiz',           label: 'Question Editor' },
   { id: 'assigned',   icon: 'edit_note',      label: 'Edit Courses' },
   { id: 'course',     icon: 'account_tree',   label: 'Course Builder' },
@@ -702,6 +706,16 @@ export default function TeacherPanel() {
           {/* ── AI Lesson Planner ── */}
           {navTab === 'planner' && (user?.role === 'teacher' || user?.role === 'admin') && (
             <TeacherLessonPlanner />
+          )}
+
+          {/* ── Assignments ── */}
+          {navTab === 'assignments' && (user?.role === 'teacher' || user?.role === 'admin') && (
+            <TeacherAssignments />
+          )}
+
+          {/* ── Calendar ── */}
+          {navTab === 'calendar' && (user?.role === 'teacher' || user?.role === 'admin') && (
+            <TeacherCalendar />
           )}
 
           {/* ── Doubt Solver (live queue) ── */}
