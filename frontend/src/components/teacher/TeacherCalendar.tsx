@@ -31,9 +31,12 @@ export default function TeacherCalendar() {
   const [events, setEvents] = useState<CalEvent[]>([]);
   const [selected, setSelected] = useState<Date>(new Date());
   const [showForm, setShowForm] = useState(false);
-  const blankForm = { title: '', description: '', event_type: 'CLASS', start: '', end: '', subject: '', class_grade: '' };
+  const blankForm = { title: '', description: '', event_type: 'CLASS', start: '', end: '', subject: '', class_grade: '', section: '' };
   const [form, setForm] = useState(blankForm);
   const [saving, setSaving] = useState(false);
+  const [sections, setSections] = useState<{ id: number; name: string; class_grade: string }[]>([]);
+
+  useEffect(() => { api.get('/teacher/sections/').then(r => setSections(r.data)).catch(() => {}); }, []);
 
   const monthLabel = cursor.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
@@ -71,6 +74,7 @@ export default function TeacherCalendar() {
     try {
       const payload: any = { ...form };
       if (!payload.end) delete payload.end;
+      if (!payload.section) delete payload.section; else payload.section = Number(payload.section);
       await api.post('/teacher/calendar/', payload);
       success('Event added.');
       setShowForm(false);
@@ -204,6 +208,15 @@ export default function TeacherCalendar() {
                 </select>
               </div>
             </div>
+            {sections.length > 0 && (
+              <div className="flex flex-col gap-1.5">
+                <label className={labelCls}>Target class (optional)</label>
+                <select className={inputCls} value={form.section} onChange={e => setForm(f => ({ ...f, section: e.target.value }))}>
+                  <option value="">No specific class</option>
+                  {sections.map(s => <option key={s.id} value={s.id}>{s.name} (Grade {s.class_grade})</option>)}
+                </select>
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col gap-1.5">
                 <label className={labelCls}>Start</label>

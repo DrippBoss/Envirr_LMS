@@ -29,16 +29,33 @@ export default function StudentAssignmentsPage() {
   const [note, setNote] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [sections, setSections] = useState<{ id: number; name: string; class_grade: string; subject: string }[]>([]);
+  const [joinCode, setJoinCode] = useState('');
+  const [joining, setJoining] = useState(false);
 
   const fetchAll = useCallback(() => {
     setLoading(true);
     Promise.all([
       api.get('/student/assignments/').then(r => setItems(r.data)),
       api.get('/student/agenda/').then(r => setAgenda(r.data)).catch(() => {}),
+      api.get('/student/sections/').then(r => setSections(r.data)).catch(() => {}),
     ])
       .catch(() => toastError('Could not load assignments.'))
       .finally(() => setLoading(false));
   }, [toastError]);
+
+  const joinClass = async () => {
+    if (!joinCode.trim()) return;
+    setJoining(true);
+    try {
+      await api.post('/student/sections/join/', { join_code: joinCode.trim() });
+      success('Joined class!');
+      setJoinCode('');
+      fetchAll();
+    } catch (e: any) {
+      toastError(e?.response?.data?.detail || 'Invalid code.');
+    } finally { setJoining(false); }
+  };
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
@@ -124,6 +141,32 @@ export default function StudentAssignmentsPage() {
                 );
               })
             )}
+          </div>
+
+          {/* My Classes */}
+          <div className="bg-surface-container rounded-2xl border border-outline-variant/10 p-5">
+            <h2 className="text-base font-black font-headline text-on-surface mb-3">My Classes</h2>
+            {sections.length > 0 && (
+              <div className="space-y-2 mb-3">
+                {sections.map(s => (
+                  <div key={s.id} className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary text-lg">groups</span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-on-surface truncate">{s.name}</p>
+                      <p className="text-[10px] text-outline">Grade {s.class_grade}{s.subject ? ` · ${s.subject}` : ''}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-2">
+              <input value={joinCode} onChange={e => setJoinCode(e.target.value.toUpperCase())} onKeyDown={e => e.key === 'Enter' && joinClass()}
+                placeholder="Join code" maxLength={8}
+                className="flex-1 bg-surface-container-highest border border-outline-variant/20 rounded-xl px-3 py-2 text-sm text-on-surface tracking-widest placeholder:tracking-normal focus:outline-none focus:border-primary/50 transition-colors" />
+              <button onClick={joinClass} disabled={joining} className="px-4 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-all disabled:opacity-60">
+                {joining ? '…' : 'Join'}
+              </button>
+            </div>
           </div>
 
           {/* Upcoming agenda */}
