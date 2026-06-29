@@ -8,6 +8,7 @@ a read-only agenda alongside their assignment due-dates.
 """
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.db.models import Q
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,10 +16,29 @@ from rest_framework.permissions import IsAuthenticated
 
 from .views import IsStudent
 from .wizard_views import IsTeacherOrAdmin
-from .models import Assignment, AssignmentSubmission, CalendarEvent, SubmissionStatus
+from .models import Assignment, AssignmentSubmission, CalendarEvent, Section, SubmissionStatus
 from .serializers import (
     AssignmentSerializer, AssignmentSubmissionSerializer, CalendarEventSerializer,
 )
+
+
+def _visible_assignments(profile):
+    """Assignments a student can see: section-targeted to a section they belong
+    to, OR (no section) matching their class grade."""
+    section_ids = list(profile.sections.values_list('id', flat=True))
+    return Assignment.objects.filter(is_published=True).filter(
+        Q(section_id__in=section_ids)
+        | Q(section__isnull=True, class_grade=profile.class_grade)
+    )
+
+
+def _validate_section_owner(request, serializer):
+    """If a section was supplied, ensure the requester owns it. Returns an error
+    Response or None."""
+    section = serializer.validated_data.get('section')
+    if section and request.user.role != 'admin' and section.teacher_id != request.user.id:
+        return Response({'detail': 'That section is not yours.'}, status=status.HTTP_400_BAD_REQUEST)
+    return None
 
 
 # ── Teacher: assignments ─────────────────────────────────────────────────────
@@ -34,6 +54,9 @@ class TeacherAssignmentListCreateView(APIView):
     def post(self, request):
         ser = AssignmentSerializer(data=request.data)
         ser.is_valid(raise_exception=True)
+        err = _validate_section_owner(request, ser)
+        if err:
+            return err
         ser.save(created_by=request.user)
         return Response(ser.data, status=status.HTTP_201_CREATED)
 
@@ -111,6 +134,9 @@ class TeacherCalendarListCreateView(APIView):
     def post(self, request):
         ser = CalendarEventSerializer(data=request.data)
         ser.is_valid(raise_exception=True)
+        err = _validate_section_owner(request, ser)
+        if err:
+            return err
         ser.save(created_by=request.user)
         return Response(ser.data, status=status.HTTP_201_CREATED)
 
@@ -142,7 +168,7 @@ class StudentAssignmentListView(APIView):
 
     def get(self, request):
         profile = request.user.profile
-        qs = Assignment.objects.filter(is_published=True, class_grade=profile.class_grade)
+        qs = _visible_assignments(profile)
         subs = {
             s.assignment_id: s
             for s in AssignmentSubmission.objects.filter(
@@ -158,9 +184,7 @@ class StudentAssignmentSubmitView(APIView):
 
     def post(self, request, pk):
         profile = request.user.profile
-        assignment = get_object_or_404(
-            Assignment, pk=pk, is_published=True, class_grade=profile.class_grade,
-        )
+        assignment = get_object_or_404(_visible_assignments(profile), pk=pk)
         sub, _ = AssignmentSubmission.objects.get_or_create(
             assignment=assignment, student=profile,
         )
@@ -181,9 +205,11 @@ class StudentAgendaView(APIView):
     def get(self, request):
         profile = request.user.profile
         now = timezone.now()
-        from django.db.models import Q
+        section_ids = list(profile.sections.values_list('id', flat=True))
         events = CalendarEvent.objects.filter(
-            Q(class_grade=profile.class_grade) | Q(class_grade=''),
+            Q(section_id__in=section_ids)
+            | Q(section__isnull=True, class_grade=profile.class_grade)
+            | Q(section__isnull=True, class_grade=''),
             start__gte=now,
         )[:50]
         items = [{
@@ -193,10 +219,7 @@ class StudentAgendaView(APIView):
             'subject': e.subject,
             'at': e.start.isoformat(),
         } for e in events]
-        due = Assignment.objects.filter(
-            is_published=True, class_grade=profile.class_grade,
-            due_date__gte=now,
-        )
+        due = _visible_assignments(profile).filter(due_date__gte=now)
         items += [{
             'type': 'assignment_due',
             'event_type': 'DEADLINE',

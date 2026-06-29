@@ -535,6 +535,12 @@ class Assignment(models.Model):
         'ai_engine.QuestionPaper', null=True, blank=True,
         on_delete=models.SET_NULL, related_name='assignments',
     )
+    # Optional precise targeting: when set, only this section's members see the
+    # assignment (overrides grade matching). When null, falls back to class_grade.
+    section = models.ForeignKey(
+        'Section', null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='assignments',
+    )
     is_published = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -609,6 +615,11 @@ class CalendarEvent(models.Model):
         Assignment, null=True, blank=True,
         on_delete=models.SET_NULL, related_name='events',
     )
+    # Optional: target a specific section; else falls back to class_grade match.
+    section = models.ForeignKey(
+        'Section', null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='events',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -616,6 +627,47 @@ class CalendarEvent(models.Model):
 
     def __str__(self):
         return f'{self.title} @ {self.start:%Y-%m-%d %H:%M}'
+
+
+# ── Sections / class roster ──────────────────────────────────────────────────
+# A named class a teacher manages. Students join via a code or are added by the
+# teacher. Assignments / calendar events can target a section for precise
+# (named-student) delivery instead of a whole grade.
+class Section(models.Model):
+    name = models.CharField(max_length=120)
+    class_grade = models.CharField(max_length=5, choices=CLASS_CHOICES)
+    subject = models.CharField(max_length=100, blank=True)
+    board = models.CharField(max_length=50, blank=True)
+    teacher = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sections',
+    )
+    join_code = models.CharField(max_length=8, unique=True, default=_invite_code)
+    members = models.ManyToManyField(
+        'users.StudentProfile', through='SectionMembership',
+        related_name='sections', blank=True,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.name} (Grade {self.class_grade})'
+
+
+class SectionMembership(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='memberships')
+    student = models.ForeignKey(
+        'users.StudentProfile', on_delete=models.CASCADE, related_name='section_memberships',
+    )
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [['section', 'student']]
+        ordering = ['-joined_at']
+
+    def __str__(self):
+        return f'{self.student} ∈ {self.section.name}'
 
 
 # ── Dashboard cache invalidation ────────────────────────────────────────────

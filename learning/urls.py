@@ -13,6 +13,7 @@ from .mock_test_views import MockTestGenerateView, MockTestSubmitView, MockTestH
 from .assignment_views import (
     StudentAssignmentListView, StudentAssignmentSubmitView, StudentAgendaView,
 )
+from .section_views import StudentSectionListView, StudentSectionJoinView
 from .study_group_views import (
     StudyGroupListCreateView, StudyGroupJoinView,
     StudyGroupDetailView, StudyGroupLeaderboardView,
@@ -29,6 +30,8 @@ urlpatterns = [
     path('assignments/', StudentAssignmentListView.as_view(), name='student-assignments'),
     path('assignments/<int:pk>/submit/', StudentAssignmentSubmitView.as_view(), name='student-assignment-submit'),
     path('agenda/', StudentAgendaView.as_view(), name='student-agenda'),
+    path('sections/', StudentSectionListView.as_view(), name='student-sections'),
+    path('sections/join/', StudentSectionJoinView.as_view(), name='student-section-join'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('weak-concepts/', WeakConceptsView.as_view(), name='weak-concepts'),
     path('activity/', ActivityFeedView.as_view(), name='activity-feed'),

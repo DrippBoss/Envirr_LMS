@@ -17,6 +17,10 @@ from .assignment_views import (
     AssignmentSubmissionListView, GradeSubmissionView,
     TeacherCalendarListCreateView, TeacherCalendarDetailView,
 )
+from .section_views import (
+    TeacherSectionListCreateView, TeacherSectionDetailView,
+    SectionMembersView, SectionMemberRemoveView, StudentSearchView,
+)
 
 urlpatterns = [
     path('dashboard/', TeacherDashboardView.as_view(), name='teacher-dashboard'),
@@ -28,6 +32,12 @@ urlpatterns = [
     # Calendar
     path('calendar/', TeacherCalendarListCreateView.as_view(), name='teacher-calendar'),
     path('calendar/<int:pk>/', TeacherCalendarDetailView.as_view(), name='teacher-calendar-detail'),
+    # Sections / roster
+    path('sections/', TeacherSectionListCreateView.as_view(), name='teacher-sections'),
+    path('sections/<int:pk>/', TeacherSectionDetailView.as_view(), name='teacher-section-detail'),
+    path('sections/<int:pk>/members/', SectionMembersView.as_view(), name='teacher-section-members'),
+    path('sections/<int:pk>/members/<int:student_id>/', SectionMemberRemoveView.as_view(), name='teacher-section-member-remove'),
+    path('students/', StudentSearchView.as_view(), name='teacher-student-search'),
     path('templates/', WizardTemplateListView.as_view(), name='wizard-templates'),
     path('course/create/', WizardCourseCreateView.as_view(), name='wizard-course-create'),
     path('course/reorder/', WizardReorderView.as_view(), name='wizard-course-reorder'),
