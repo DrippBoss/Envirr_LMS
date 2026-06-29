@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react';
 import { api, useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import NodeReorderList, { type NodeItem } from './NodeReorderList';
+import Tooltip from './Tooltip';
+
+const DRAFT_KEY = 'envirr_course_builder_draft';
+
+/** Pull a YouTube video id out of any common URL shape (watch / youtu.be / embed / shorts). */
+function youTubeId(url: string): string | null {
+    if (!url) return null;
+    const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+    return m ? m[1] : null;
+}
 
 const inputCls = "w-full px-4 py-3 bg-surface-container-lowest rounded-xl text-on-surface border border-outline-variant/15 focus:outline-none focus:border-primary/50 transition-all placeholder:text-outline/50 text-sm";
 
@@ -46,10 +57,17 @@ interface DraftDeck {
     cards: DraftCard[];
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
     return (
         <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-black uppercase tracking-widest text-outline">{label}</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-outline flex items-center gap-1">
+                {label}
+                {hint && (
+                    <Tooltip label={hint}>
+                        <span className="material-symbols-outlined text-[13px] text-outline/60 cursor-help">info</span>
+                    </Tooltip>
+                )}
+            </label>
             {children}
         </div>
     );
@@ -66,8 +84,10 @@ interface CourseBuilderProps {
 
 export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderProps = {}) {
     const { user } = useAuth();
+    const { error: toastError, success: toastSuccess } = useToast();
     const isAdmin = user?.role === 'admin';
     const isEditMode = !!editUnitId;
+    const [draftFound, setDraftFound] = useState(false);
 
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -107,6 +127,61 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
     useEffect(() => {
         api.get('/teacher/templates/').then(r => setTemplates(r.data)).catch(console.error);
     }, []);
+
+    // ── Draft autosave (create mode only) ───────────────────────────────────────
+    // A non-technical teacher may take a long time; never lose their work to a
+    // refresh or stray navigation. We persist the plain-data parts to
+    // localStorage (video File objects can't be serialised — re-add after resume).
+    useEffect(() => {
+        if (isEditMode) return;
+        try {
+            if (localStorage.getItem(DRAFT_KEY)) setDraftFound(true);
+        } catch { /* storage unavailable — skip */ }
+    }, [isEditMode]);
+
+    useEffect(() => {
+        if (isEditMode) return;
+        const hasContent = title.trim() || chapters.some(c => c.nodes.length > 0) || decks.length > 0;
+        if (!hasContent) return;
+        const t = setTimeout(() => {
+            try {
+                localStorage.setItem(DRAFT_KEY, JSON.stringify({
+                    title, subject, grade, board, description, icon, chapters, decks,
+                }));
+            } catch { /* quota / unavailable — non-fatal */ }
+        }, 800);
+        return () => clearTimeout(t);
+    }, [isEditMode, title, subject, grade, board, description, icon, chapters, decks]);
+
+    const resumeDraft = () => {
+        try {
+            const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || '{}');
+            if (d.title !== undefined) setTitle(d.title);
+            if (d.subject) setSubject(d.subject);
+            if (d.grade) setGrade(d.grade);
+            if (d.board) setBoard(d.board);
+            if (d.description !== undefined) setDescription(d.description);
+            if (d.icon) setIcon(d.icon);
+            if (Array.isArray(d.chapters) && d.chapters.length) setChapters(d.chapters);
+            if (Array.isArray(d.decks)) setDecks(d.decks);
+            toastSuccess('Draft restored.');
+        } catch { toastError('Could not restore the draft.'); }
+        setDraftFound(false);
+    };
+
+    const discardDraft = () => {
+        try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+        setDraftFound(false);
+    };
+
+    const resetBuilder = () => {
+        try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+        setTitle(''); setSubject('Mathematics'); setGrade('10'); setBoard('CBSE');
+        setDescription(''); setIcon('calculate');
+        setChapters([{ tempId: Date.now(), title: 'Chapter 1', description: '', nodes: [] }]);
+        setActiveChapter(0); setDecks([]); setActiveDeckIdx(null);
+        setActiveNodeKey(null); setVideoFiles({}); setResultMsg(''); setStep(1);
+    };
 
     // Pre-fill state when editing an existing course
     useEffect(() => {
@@ -404,10 +479,11 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                 }
 
                 setResultMsg(`Course published! ID: ${d.unit_id} · ${d.nodes} nodes · ${d.questions} questions · ${d.flashcards ?? 0} flashcards`);
+                try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
                 setStep(6);
             }
         } catch (e: any) {
-            alert(e.response?.data?.error || 'Failed to create course.');
+            toastError(e.response?.data?.error || 'Failed to create course.');
         }
         setLoading(false);
     };
@@ -457,6 +533,16 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
     if (step === 1) return (
         <div className="flex flex-col gap-5">
             <Stepper />
+
+            {draftFound && (
+                <div className="flex items-center gap-3 bg-primary/5 border border-primary/20 rounded-xl px-4 py-3">
+                    <span className="material-symbols-outlined text-primary">history</span>
+                    <p className="text-sm text-on-surface flex-1">You have an unsaved course draft. Pick up where you left off?</p>
+                    <button onClick={resumeDraft} className="px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-bold hover:brightness-110 transition-all">Resume</button>
+                    <button onClick={discardDraft} className="px-3 py-1.5 rounded-lg text-outline text-xs font-bold hover:text-error transition-all">Discard</button>
+                </div>
+            )}
+
             <h3 className="text-base font-black text-on-surface font-headline">Course Identity</h3>
 
             <Field label="Course Title">
@@ -488,22 +574,19 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
             </Field>
 
             <Field label="Course Icon">
-                <div className="flex flex-col gap-2">
-                    <div className="grid grid-cols-10 gap-1.5">
-                        {COURSE_ICONS.map(ic => (
-                            <button key={ic} type="button" title={ic}
-                                onClick={() => setIcon(ic)}
-                                className={`w-9 h-9 rounded-lg flex items-center justify-center border transition-all ${
-                                    icon === ic
-                                        ? 'bg-primary/15 border-primary/40 text-primary'
-                                        : 'bg-surface-container border-outline-variant/10 text-slate-400 hover:border-primary/25 hover:text-primary'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{ic}</span>
-                            </button>
-                        ))}
-                    </div>
-                    <input className={inputCls} placeholder="Or type a custom Material Symbol name..." value={icon} onChange={e => setIcon(e.target.value)} />
+                <div className="grid grid-cols-10 gap-1.5">
+                    {COURSE_ICONS.map(ic => (
+                        <button key={ic} type="button" title={ic}
+                            onClick={() => setIcon(ic)}
+                            className={`w-9 h-9 rounded-lg flex items-center justify-center border transition-all ${
+                                icon === ic
+                                    ? 'bg-primary/15 border-primary/40 text-primary'
+                                    : 'bg-surface-container border-outline-variant/10 text-slate-400 hover:border-primary/25 hover:text-primary'
+                            }`}
+                        >
+                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>{ic}</span>
+                        </button>
+                    ))}
                 </div>
             </Field>
 
@@ -578,33 +661,44 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                         />
                     </div>
 
-                    <div className="flex flex-wrap gap-2 pb-3 border-b border-outline-variant/10">
-                        {templates.map(t => (
-                            <button key={t.id}
-                                className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all"
-                                onClick={() => addNodeToChapter(activeChapter, t)}
-                            >
-                                + {t.name}
-                            </button>
-                        ))}
-                        <button
-                            className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all"
-                            onClick={() => addNodeToChapter(activeChapter, { name: 'Video Lesson', template_type: 'LESSON' })}
-                        >
-                            + Blank Lesson
-                        </button>
-                        <button
-                            className="px-3 py-1.5 bg-error-container/10 rounded-lg border border-error-container/20 text-xs font-bold text-error hover:bg-error-container/20 transition-all"
-                            onClick={() => addNodeToChapter(activeChapter, { name: 'Test Node', template_type: 'CHAPTER_TEST' })}
-                        >
-                            + Chapter Test
-                        </button>
-                        <button
-                            className="px-3 py-1.5 bg-tertiary/10 rounded-lg border border-tertiary/20 text-xs font-bold text-tertiary hover:bg-tertiary/20 transition-all"
-                            onClick={() => addNodeToChapter(activeChapter, { template_type: 'REVISION' })}
-                        >
-                            + Revision Node
-                        </button>
+                    <div className="flex flex-col gap-2 pb-3 border-b border-outline-variant/10">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-outline">Add to this chapter</p>
+                        <div className="flex flex-wrap gap-2">
+                            {templates.map(t => (
+                                <Tooltip key={t.id} label="Adds a ready-made lesson layout you can then fill in.">
+                                    <button
+                                        className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all"
+                                        onClick={() => addNodeToChapter(activeChapter, t)}
+                                    >
+                                        + {t.name}
+                                    </button>
+                                </Tooltip>
+                            ))}
+                            <Tooltip label="A lesson with a video and practice questions.">
+                                <button
+                                    className="px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/15 text-xs font-bold text-on-surface-variant hover:border-primary/30 hover:text-primary transition-all"
+                                    onClick={() => addNodeToChapter(activeChapter, { name: 'Video Lesson', template_type: 'LESSON' })}
+                                >
+                                    + Lesson
+                                </button>
+                            </Tooltip>
+                            <Tooltip label="A graded test at the end of the chapter. Students must pass it to continue.">
+                                <button
+                                    className="px-3 py-1.5 bg-error-container/10 rounded-lg border border-error-container/20 text-xs font-bold text-error hover:bg-error-container/20 transition-all"
+                                    onClick={() => addNodeToChapter(activeChapter, { name: 'Test Node', template_type: 'CHAPTER_TEST' })}
+                                >
+                                    + Chapter Test
+                                </button>
+                            </Tooltip>
+                            <Tooltip label="Optional extra-help cards that branch off a lesson on the student's map.">
+                                <button
+                                    className="px-3 py-1.5 bg-tertiary/10 rounded-lg border border-tertiary/20 text-xs font-bold text-tertiary hover:bg-tertiary/20 transition-all"
+                                    onClick={() => addNodeToChapter(activeChapter, { template_type: 'REVISION' })}
+                                >
+                                    + Extra Help
+                                </button>
+                            </Tooltip>
+                        </div>
                     </div>
 
                     <div className="flex-1 overflow-y-auto">
@@ -712,14 +806,33 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                             {/* ── LESSON ── */}
                             {activeNode.type === 'LESSON' && (
                                 <>
-                                    <Field label="Video">
+                                    <Field label="Video" hint="Paste any YouTube link (watch, share, or embed) — or upload an .mp4 below.">
                                         <div className="flex flex-col gap-2">
                                             <input
                                                 className={inputCls}
-                                                placeholder="YouTube URL (https://www.youtube.com/watch?v=...)"
+                                                placeholder="Paste a YouTube link…"
                                                 value={activeNode.youtube_url ?? ''}
                                                 onChange={e => updateNode(activeNodeKey!, { youtube_url: e.target.value })}
                                             />
+                                            {activeNode.youtube_url && (
+                                                youTubeId(activeNode.youtube_url) ? (
+                                                    <div className="flex items-center gap-3 p-2 bg-surface-container rounded-xl border border-secondary/20">
+                                                        <img
+                                                            src={`https://img.youtube.com/vi/${youTubeId(activeNode.youtube_url)}/mqdefault.jpg`}
+                                                            alt="Video preview" className="w-24 h-14 object-cover rounded-lg shrink-0"
+                                                        />
+                                                        <span className="text-xs text-secondary font-bold flex items-center gap-1">
+                                                            <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                                                            Video linked
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-[11px] text-error/80 flex items-center gap-1">
+                                                        <span className="material-symbols-outlined text-sm">error</span>
+                                                        That doesn't look like a YouTube link — check and paste again.
+                                                    </p>
+                                                )
+                                            )}
                                             {!activeNode.youtube_url && (
                                                 <label className="flex items-center gap-2 px-4 py-2.5 bg-surface-container border border-dashed border-outline-variant/20 rounded-xl cursor-pointer hover:border-primary/30 transition-all">
                                                     <span className="material-symbols-outlined text-outline text-base">upload_file</span>
@@ -736,26 +849,27 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                                             )}
                                         </div>
                                     </Field>
-                                    <div className="grid grid-cols-4 gap-3">
-                                        <Field label="Starting Lives">
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        <Field label="Attempts" hint="How many wrong answers a student can make before the lesson restarts.">
                                             <input type="number" min={1} max={10} className={inputCls}
                                                 value={activeNode.starting_lives ?? 3}
                                                 onChange={e => updateNode(activeNodeKey!, { starting_lives: Number(e.target.value) })}
                                             />
                                         </Field>
-                                        <Field label="Practice Qs">
+                                        <Field label="Practice questions" hint="How many questions a student practises in this lesson.">
                                             <input type="number" min={1} max={50} className={inputCls}
                                                 value={activeNode.practice_question_count ?? 5}
                                                 onChange={e => updateNode(activeNodeKey!, { practice_question_count: Number(e.target.value) })}
                                             />
                                         </Field>
-                                        <Field label="XP Reward">
+                                        <Field label="Points (XP)" hint="Points students earn for finishing — these drive the leaderboard.">
                                             <input type="number" min={0} className={inputCls}
                                                 value={activeNode.xp_reward ?? 10}
                                                 onChange={e => updateNode(activeNodeKey!, { xp_reward: Number(e.target.value) })}
                                             />
                                         </Field>
-                                        <Field label="Bonus Node">
+                                        <Field label="Optional lesson" hint="Mark as optional/bonus — students may skip it.">
+
                                             <button
                                                 type="button"
                                                 onClick={() => updateNode(activeNodeKey!, { is_bonus: !(activeNode.is_bonus ?? false) })}
@@ -776,19 +890,19 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                             {/* ── CHAPTER_TEST ── */}
                             {activeNode.type === 'CHAPTER_TEST' && (
                                 <div className="grid grid-cols-3 gap-3">
-                                    <Field label="Test Questions">
+                                    <Field label="Number of questions" hint="How many questions appear in this test.">
                                         <input type="number" min={1} max={100} className={inputCls}
                                             value={activeNode.test_question_count ?? 10}
                                             onChange={e => updateNode(activeNodeKey!, { test_question_count: Number(e.target.value) })}
                                         />
                                     </Field>
-                                    <Field label="Pass % Required">
+                                    <Field label="Passing score (%)" hint="Minimum score a student needs to pass and move on to the next chapter.">
                                         <input type="number" min={0} max={100} className={inputCls}
                                             value={activeNode.test_pass_percentage ?? 70}
                                             onChange={e => updateNode(activeNodeKey!, { test_pass_percentage: Number(e.target.value) })}
                                         />
                                     </Field>
-                                    <Field label="XP Reward">
+                                    <Field label="Points (XP)" hint="Points students earn for passing — these drive the leaderboard.">
                                         <input type="number" min={0} className={inputCls}
                                             value={activeNode.xp_reward ?? 20}
                                             onChange={e => updateNode(activeNodeKey!, { xp_reward: Number(e.target.value) })}
@@ -805,12 +919,12 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                                     .filter(({ node }) => node.type === 'LESSON' || node.type === 'CHAPTER_TEST') ?? [];
                                 return (
                                     <div className="flex flex-col gap-3">
-                                        <Field label="Branches from Node">
+                                        <Field label="Appears after" hint="Which lesson this extra-help card branches from on the student's learning map.">
                                             <select className={inputCls}
                                                 value={activeNode.appears_after_node_key ?? ''}
                                                 onChange={e => updateNode(activeNodeKey!, { appears_after_node_key: e.target.value })}
                                             >
-                                                <option value="">— none (floats at start) —</option>
+                                                <option value="">— pick a lesson —</option>
                                                 {parentCandidates.map(({ key, node }) => (
                                                     <option key={key} value={key}>{node.title}</option>
                                                 ))}
@@ -818,12 +932,12 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                                             {!activeNode.appears_after_node_key && (
                                                 <p className="text-[10px] text-error/70 mt-1 flex items-center gap-1">
                                                     <span className="material-symbols-outlined text-sm">warning</span>
-                                                    Revision node needs a parent lesson to branch from on the map.
+                                                    Pick the lesson this extra-help card should branch from.
                                                 </p>
                                             )}
                                         </Field>
                                         <div className="grid grid-cols-2 gap-3">
-                                            <Field label="Map Side">
+                                            <Field label="Which side" hint="Whether the card branches to the left or right of the main path on the student's map.">
                                                 <select className={inputCls}
                                                     value={activeNode.side ?? 'right'}
                                                     onChange={e => updateNode(activeNodeKey!, { side: e.target.value as 'left' | 'right' })}
@@ -832,7 +946,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                                                     <option value="left">Left branch</option>
                                                 </select>
                                             </Field>
-                                            <Field label="XP Reward">
+                                            <Field label="Points (XP)" hint="Points students earn for completing this extra help.">
                                                 <input type="number" min={0} className={inputCls}
                                                     value={activeNode.xp_reward ?? 15}
                                                     onChange={e => updateNode(activeNodeKey!, { xp_reward: Number(e.target.value) })}
@@ -847,13 +961,13 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                             {(activeNode.type === 'LESSON' || activeNode.type === 'CHAPTER_TEST') && (
                                 <>
                                     <div className="grid grid-cols-2 gap-3">
-                                        <Field label="Chapter">
+                                        <Field label="Pull questions from chapter" hint="Which chapter of the shared question bank to browse for ready-made questions.">
                                             <select className={inputCls} value={qbChapter} onChange={e => setQbChapter(e.target.value)}>
                                                 <option value="">— select chapter —</option>
                                                 {availableChapters.map(c => <option key={c} value={c}>{c}</option>)}
                                             </select>
                                         </Field>
-                                        <Field label="Question Type">
+                                        <Field label="Question type" hint="Filter the bank by question format (multiple-choice, short answer, etc.).">
                                             <select className={inputCls} value={qbType} onChange={e => setQbType(e.target.value)}>
                                                 {Q_TYPES.map(qt => (
                                                     <option key={qt.value} value={qt.value}>{qt.label}</option>
@@ -978,7 +1092,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
                     Back
                 </button>
                 <button className="flex items-center gap-2 px-5 py-2 bg-primary/10 text-primary border border-primary/20 rounded-xl font-bold text-sm hover:bg-primary/20 transition-all" onClick={() => setStep(4)}>
-                    Flashcards
+                    Flashcards (optional)
                     <span className="material-symbols-outlined text-base">arrow_forward</span>
                 </button>
             </div>
@@ -989,6 +1103,20 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
     if (step === 4) return (
         <div className="flex flex-col gap-4">
             <Stepper />
+            <div className="flex items-center gap-3 bg-tertiary/5 border border-tertiary/20 rounded-xl px-4 py-3">
+                <span className="material-symbols-outlined text-tertiary">style</span>
+                <div className="flex-1">
+                    <p className="text-sm font-bold text-on-surface">Flashcards are optional</p>
+                    <p className="text-xs text-outline">Add quick study cards (concepts, formulas, memory tricks) — or skip straight to review.</p>
+                </div>
+                <button
+                    onClick={() => setStep(5)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-outline-variant/20 text-on-surface-variant hover:text-on-surface hover:border-primary/30 text-sm font-bold transition-all shrink-0"
+                >
+                    Skip
+                    <span className="material-symbols-outlined text-base">arrow_forward</span>
+                </button>
+            </div>
             <div className="grid grid-cols-[220px_1fr] gap-4 min-h-[500px]">
 
                 {/* Left: deck list */}
@@ -1261,7 +1389,7 @@ export default function CourseBuilder({ editUnitId, onEditDone }: CourseBuilderP
             </div>
             <button
                 className="flex items-center gap-2 px-6 py-2.5 bg-primary/10 text-primary border border-primary/20 rounded-xl font-bold text-sm hover:bg-primary/20 transition-all"
-                onClick={() => window.location.reload()}
+                onClick={resetBuilder}
             >
                 <span className="material-symbols-outlined text-base">add</span>
                 Build Another Course
