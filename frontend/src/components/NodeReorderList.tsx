@@ -27,6 +27,9 @@ interface NodeReorderListProps {
     onRename?: (idx: number, title: string) => void;
     onDelete?: (idx: number) => void;
     getAnnotation?: (node: NodeItem, idx: number) => string | null;
+    /** When provided, rows are clickable to select; the active row is highlighted. */
+    onSelect?: (idx: number) => void;
+    activeIdx?: number;
 }
 
 const TYPE_COLORS: Record<string, string> = {
@@ -35,7 +38,7 @@ const TYPE_COLORS: Record<string, string> = {
     REVISION: 'bg-tertiary/10 text-tertiary border-tertiary/20',
 };
 
-export default function NodeReorderList({ nodes, onReorder, onRename, onDelete, getAnnotation }: NodeReorderListProps) {
+export default function NodeReorderList({ nodes, onReorder, onRename, onDelete, getAnnotation, onSelect, activeIdx }: NodeReorderListProps) {
     const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
 
     const handleDragStart = (e: DragEvent, index: number) => {
@@ -83,9 +86,12 @@ export default function NodeReorderList({ nodes, onReorder, onRename, onDelete, 
                         onDragStart={(e) => !onRename && handleDragStart(e, i)}
                         onDragOver={(e) => !onRename && handleDragOver(e, i)}
                         onDragEnd={handleDragEnd}
-                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border border-outline-variant/10 bg-surface-container transition-all select-none ${
+                        onClick={() => onSelect?.(i)}
+                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border bg-surface-container transition-all select-none ${
+                            activeIdx === i ? 'border-primary/40 bg-primary/5' : 'border-outline-variant/10'
+                        } ${
                             draggedIdx === i ? 'opacity-40 scale-95' : 'opacity-100 hover:border-outline-variant/25'
-                        } ${!onRename ? 'cursor-grab' : ''}`}
+                        } ${!onRename ? 'cursor-grab' : ''} ${onSelect ? 'cursor-pointer' : ''}`}
                     >
                         <span className="material-symbols-outlined text-slate-600 text-base cursor-grab shrink-0"
                             draggable
